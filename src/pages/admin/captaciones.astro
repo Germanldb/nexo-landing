@@ -1,0 +1,617 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Captaciones Expo ISP | Nexo"
+  description="Panel interno de registros de captación Expo ISP."
+>
+  <Header />
+
+  <main class="min-h-screen pt-32 pb-24 relative overflow-hidden">
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(#0D2E34 1px, transparent 1px); background-size: 40px 40px;"
+    />
+    <div class="absolute top-0 right-0 w-[480px] h-[480px] bg-nexo-primary/10 rounded-full blur-[120px] -mr-48 -mt-48 pointer-events-none" />
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-7xl mx-auto mb-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div>
+          <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-nexo-primary/10 text-nexo-primary text-[10px] font-bold tracking-[0.2em] uppercase border border-nexo-primary/20 mb-6">
+            Panel interno
+          </span>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-nexo-dark tracking-tight leading-tight mb-4">
+            Captaciones <span class="text-nexo-primary">Expo ISP</span>
+          </h1>
+          <p class="text-lg text-nexo-dark/60 leading-relaxed max-w-2xl">
+            Registros guardados en la base de datos <strong class="text-nexo-dark/80">clientes_captacion</strong>.
+            Los elementos en papelera se eliminan definitivamente después de 3 días.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <div class="inline-flex rounded-xl border border-nexo-border overflow-hidden self-start">
+            <button
+              id="captaciones-view-active"
+              type="button"
+              class="px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] bg-nexo-primary text-nexo-dark transition-colors"
+            >
+              Activos
+            </button>
+            <button
+              id="captaciones-view-trash"
+              type="button"
+              class="px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-nexo-text hover:bg-nexo-bg-surface transition-colors"
+            >
+              Papelera <span id="captaciones-trash-count" class="opacity-70">(0)</span>
+            </button>
+          </div>
+          <input
+            id="captaciones-search"
+            type="search"
+            placeholder="Buscar nombre, empresa, email…"
+            class="nexo-form-input w-full sm:min-w-[280px]"
+            autocomplete="off"
+          />
+          <button id="captaciones-refresh" type="button" class="nexo-form-submit whitespace-nowrap">
+            Actualizar
+          </button>
+          <button id="admin-logout" type="button" class="nexo-form-submit whitespace-nowrap bg-transparent border border-nexo-border text-nexo-text hover:bg-nexo-bg-surface">
+            Salir
+          </button>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        <button
+          id="captaciones-stat-active"
+          type="button"
+          class="nexo-form-card p-6 text-left w-full transition-all hover:bg-nexo-bg-surface/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-nexo-primary/40"
+        >
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-nexo-text-muted mb-2">Total registros</p>
+          <p id="captaciones-total" class="text-3xl font-extrabold text-nexo-dark">—</p>
+          <p class="text-[10px] text-nexo-text-muted mt-2">Clic para ver activos</p>
+        </button>
+        <button
+          id="captaciones-stat-trash"
+          type="button"
+          class="nexo-form-card p-6 text-left w-full transition-all hover:bg-nexo-bg-surface/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40"
+        >
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-nexo-text-muted mb-2">En papelera</p>
+          <p id="captaciones-trash-total" class="text-3xl font-extrabold text-nexo-dark">—</p>
+          <p class="text-[10px] text-nexo-text-muted mt-2">Clic para ver y recuperar</p>
+        </button>
+        <div class="nexo-form-card p-6">
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-nexo-text-muted mb-2">Mostrando</p>
+          <p id="captaciones-showing" class="text-3xl font-extrabold text-nexo-dark">—</p>
+        </div>
+        <div class="nexo-form-card p-6">
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-nexo-text-muted mb-2">Última actualización</p>
+          <p id="captaciones-updated" class="text-lg font-bold text-nexo-dark">—</p>
+        </div>
+      </div>
+
+      <div id="captaciones-trash-notice" class="max-w-7xl mx-auto mb-6 hidden">
+        <div class="nexo-form-card p-4 border border-amber-300/30 text-amber-800 bg-amber-50/80 text-sm">
+          Estás viendo la papelera. Los registros se eliminan de forma permanente 3 días después de haber sido movidos aquí.
+        </div>
+      </div>
+
+      <div id="captaciones-loading" class="nexo-form-card p-10 text-center text-nexo-text-muted hidden">
+        Cargando registros…
+      </div>
+
+      <div id="captaciones-error" class="nexo-form-card p-6 border border-red-300/40 text-red-700 hidden" role="alert"></div>
+
+      <div id="captaciones-empty" class="nexo-form-card p-10 text-center text-nexo-text-muted hidden">
+        No hay registros todavía.
+      </div>
+
+      <div id="captaciones-trash-empty" class="nexo-form-card p-10 text-center text-nexo-text-muted hidden">
+        La papelera está vacía.
+      </div>
+
+      <div id="captaciones-table-wrap" class="nexo-form-card overflow-hidden hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[960px] text-left text-sm">
+            <thead class="bg-nexo-bg-surface border-b border-nexo-border">
+              <tr>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]">Fecha</th>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]">Contacto</th>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]">Empresa</th>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]">WhatsApp</th>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]">Soluciones</th>
+                <th class="px-4 py-3 font-bold text-nexo-text-muted uppercase tracking-wider text-[10px]"></th>
+              </tr>
+            </thead>
+            <tbody id="captaciones-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  type Captacion = {
+    id: number;
+    nombre: string;
+    cargo: string;
+    whatsapp: string;
+    email: string;
+    empresa: string;
+    num_clientes: string | null;
+    pais: string | null;
+    estado: string | null;
+    ciudad_region: string | null;
+    infraestructura: string | null;
+    soluciones: string[];
+    rsg_marcas: string[];
+    rsg_marcas_otro: string | null;
+    software_actual: string | null;
+    software_otro: string | null;
+    inconvenientes_sistema: string | null;
+    expectativas: string | null;
+    fecha_ingreso: string;
+    deleted_at: string | null;
+  };
+
+  const TRASH_ICON = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 6h18"></path>
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+      <line x1="10" x2="10" y1="11" y2="17"></line>
+      <line x1="14" x2="14" y1="11" y2="17"></line>
+    </svg>
+  `;
+
+  const RESTORE_ICON = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 7v6h6"></path>
+      <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6.69 3"></path>
+    </svg>
+  `;
+
+  const labels: Record<string, string> = {
+    menos_500: 'Menos de 500',
+    '500_2000': '500 a 2,000',
+    '2000_5000': '2,000 a 5,000',
+    mas_5000: 'Más de 5,000',
+    wisp: 'Wireless (WISP)',
+    ftth: 'Fibra (FTTH)',
+    hibrida: 'Híbrida',
+    rsg: 'RSG',
+    nexo: 'Nexo',
+    callme: 'Callme',
+    wispro: 'Wispro',
+    mikrowisp: 'Mikrowisp',
+    smartisp: 'SmartISP',
+    wisphub: 'Wisphub',
+    ucrm: 'UCRM',
+    splynx: 'Splynx',
+    otro: 'Otro',
+    mikrotik: 'MikroTik',
+    cambium_networks: 'Cambium Networks',
+    issabel_asterisk: 'Issabel / Asterisk',
+    ubiquiti: 'Ubiquiti',
+    cisco: 'Cisco',
+    zte_olt: 'ZTE OLT',
+    huawei: 'Huawei',
+    tp_link: 'TP-Link',
+    vsol_olt: 'VSOL OLT',
+    fortinet: 'Fortinet',
+    tenda: 'Tenda',
+    netonix: 'Netonix',
+    zabbix: 'Zabbix',
+    grandstream: 'GrandStream',
+    otros: 'Otros',
+  };
+
+  const loadingEl = document.getElementById('captaciones-loading');
+  const errorEl = document.getElementById('captaciones-error');
+  const emptyEl = document.getElementById('captaciones-empty');
+  const trashEmptyEl = document.getElementById('captaciones-trash-empty');
+  const trashNoticeEl = document.getElementById('captaciones-trash-notice');
+  const tableWrap = document.getElementById('captaciones-table-wrap');
+  const tbody = document.getElementById('captaciones-tbody');
+  const totalEl = document.getElementById('captaciones-total');
+  const trashTotalEl = document.getElementById('captaciones-trash-total');
+  const showingEl = document.getElementById('captaciones-showing');
+  const updatedEl = document.getElementById('captaciones-updated');
+  const searchInput = document.getElementById('captaciones-search') as HTMLInputElement | null;
+  const refreshBtn = document.getElementById('captaciones-refresh');
+  const logoutBtn = document.getElementById('admin-logout');
+  const viewActiveBtn = document.getElementById('captaciones-view-active');
+  const viewTrashBtn = document.getElementById('captaciones-view-trash');
+  const statActiveBtn = document.getElementById('captaciones-stat-active');
+  const statTrashBtn = document.getElementById('captaciones-stat-trash');
+  const trashCountEl = document.getElementById('captaciones-trash-count');
+
+  let allRows: Captacion[] = [];
+  let expandedId: number | null = null;
+  let viewingTrash = false;
+  let trashTotal = 0;
+  let retentionDays = 3;
+
+  function label(value: string | null | undefined) {
+    if (!value) return '—';
+    return labels[value] ?? value;
+  }
+
+  function formatList(values: string[]) {
+    if (!values?.length) return '—';
+    return values.map((item) => label(item)).join(', ');
+  }
+
+  function formatDate(value: string) {
+    return new Intl.DateTimeFormat('es-VE', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    }).format(new Date(value));
+  }
+
+  function getPermanentDeleteDate(deletedAt: string) {
+    const date = new Date(deletedAt);
+    date.setDate(date.getDate() + retentionDays);
+    return date;
+  }
+
+  function formatPermanentDeleteDate(deletedAt: string) {
+    return new Intl.DateTimeFormat('es-VE', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    }).format(getPermanentDeleteDate(deletedAt));
+  }
+
+  function updateViewToggle() {
+    viewActiveBtn?.classList.toggle('bg-nexo-primary', !viewingTrash);
+    viewActiveBtn?.classList.toggle('text-nexo-dark', !viewingTrash);
+    viewActiveBtn?.classList.toggle('text-nexo-text', viewingTrash);
+    viewActiveBtn?.classList.toggle('hover:bg-nexo-bg-surface', viewingTrash);
+
+    viewTrashBtn?.classList.toggle('bg-nexo-primary', viewingTrash);
+    viewTrashBtn?.classList.toggle('text-nexo-dark', viewingTrash);
+    viewTrashBtn?.classList.toggle('text-nexo-text', !viewingTrash);
+    viewTrashBtn?.classList.toggle('hover:bg-nexo-bg-surface', !viewingTrash);
+
+    statActiveBtn?.classList.toggle('ring-2', !viewingTrash);
+    statActiveBtn?.classList.toggle('ring-nexo-primary/40', !viewingTrash);
+    statActiveBtn?.classList.toggle('bg-nexo-primary/5', !viewingTrash);
+
+    statTrashBtn?.classList.toggle('ring-2', viewingTrash);
+    statTrashBtn?.classList.toggle('ring-amber-400/50', viewingTrash);
+    statTrashBtn?.classList.toggle('bg-amber-50/10', viewingTrash);
+
+    trashNoticeEl?.classList.toggle('hidden', !viewingTrash);
+  }
+
+  function scrollToList() {
+    tableWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function switchToActiveView() {
+    if (!viewingTrash) return;
+    viewingTrash = false;
+    void loadCaptaciones();
+  }
+
+  function switchToTrashView() {
+    if (viewingTrash) {
+      scrollToList();
+      return;
+    }
+    viewingTrash = true;
+    void loadCaptaciones().then(scrollToList);
+  }
+
+  function escapeHtml(value: string) {
+    return value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+  }
+
+  function detailField(title: string, value: string | null | undefined) {
+    const text = value?.trim() ? escapeHtml(value) : '—';
+    return `<div><dt class="text-[10px] font-bold uppercase tracking-wider text-nexo-text-muted mb-1">${title}</dt><dd class="text-nexo-text">${text}</dd></div>`;
+  }
+
+  function renderDetails(row: Captacion) {
+    return `
+      <dl class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        ${detailField('Cargo', row.cargo)}
+        ${detailField('Email', row.email)}
+        ${detailField('Clientes', label(row.num_clientes))}
+        ${detailField('País', row.pais)}
+        ${detailField('Estado', row.estado)}
+        ${detailField('Ciudad / región', row.ciudad_region)}
+        ${detailField('Infraestructura', label(row.infraestructura))}
+        ${detailField('Soluciones', formatList(row.soluciones))}
+        ${detailField('Marcas RSG', formatList(row.rsg_marcas))}
+        ${detailField('Otra marca RSG', row.rsg_marcas_otro)}
+        ${detailField('Software actual', label(row.software_actual))}
+        ${detailField('Otro software', row.software_otro)}
+        ${detailField('Inconvenientes', row.inconvenientes_sistema)}
+        ${detailField('Expectativas', row.expectativas)}
+      </dl>
+    `;
+  }
+
+  function filterRows(rows: Captacion[], query: string) {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((row) =>
+      [row.nombre, row.empresa, row.email, row.whatsapp, row.pais, row.estado, row.ciudad_region]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(q)),
+    );
+  }
+
+  function renderTable(rows: Captacion[]) {
+    if (!tbody || !showingEl) return;
+
+    showingEl.textContent = String(rows.length);
+
+    if (rows.length === 0) {
+      tableWrap?.classList.add('hidden');
+      emptyEl?.classList.toggle('hidden', viewingTrash);
+      trashEmptyEl?.classList.toggle('hidden', !viewingTrash);
+      tbody.innerHTML = '';
+      return;
+    }
+
+    emptyEl?.classList.add('hidden');
+    trashEmptyEl?.classList.add('hidden');
+    tableWrap?.classList.remove('hidden');
+
+    tbody.innerHTML = rows
+      .map((row) => {
+        const isOpen = expandedId === row.id;
+        const trashMeta =
+          viewingTrash && row.deleted_at
+            ? `<div class="text-xs text-amber-700 mt-1">Se elimina el ${escapeHtml(formatPermanentDeleteDate(row.deleted_at))}</div>`
+            : '';
+
+        return `
+          <tr class="border-b border-nexo-border hover:bg-nexo-bg-surface/70 transition-colors">
+            <td class="px-4 py-4 align-top whitespace-nowrap text-nexo-text-muted">
+              <div>${escapeHtml(formatDate(viewingTrash && row.deleted_at ? row.deleted_at : row.fecha_ingreso))}</div>
+              ${viewingTrash ? '<div class="text-[10px] uppercase tracking-wider mt-1 text-amber-700">En papelera</div>' : ''}
+            </td>
+            <td class="px-4 py-4 align-top">
+              <div class="font-semibold text-nexo-dark">${escapeHtml(row.nombre)}</div>
+              <div class="text-nexo-text-muted text-xs mt-1">${escapeHtml(row.email)}</div>
+              ${trashMeta}
+            </td>
+            <td class="px-4 py-4 align-top">
+              <div class="font-medium text-nexo-dark">${escapeHtml(row.empresa)}</div>
+              <div class="text-nexo-text-muted text-xs mt-1">${escapeHtml(row.cargo)}</div>
+            </td>
+            <td class="px-4 py-4 align-top whitespace-nowrap">${escapeHtml(row.whatsapp)}</td>
+            <td class="px-4 py-4 align-top">${escapeHtml(formatList(row.soluciones))}</td>
+            <td class="px-4 py-4 align-top text-right">
+              <div class="inline-flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  class="text-xs font-bold uppercase tracking-[0.12em] text-nexo-primary hover:text-nexo-accent transition-colors"
+                  data-toggle-id="${row.id}"
+                >
+                  ${isOpen ? 'Ocultar' : 'Ver más'}
+                </button>
+                ${
+                  viewingTrash
+                    ? `<button
+                        type="button"
+                        class="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg border border-nexo-primary/30 text-nexo-primary hover:bg-nexo-primary/10 transition-colors text-[10px] font-bold uppercase tracking-[0.1em]"
+                        data-restore-id="${row.id}"
+                        title="Restaurar registro"
+                        aria-label="Restaurar registro"
+                      >${RESTORE_ICON}<span>Restaurar</span></button>`
+                    : `<button
+                        type="button"
+                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-red-300/40 text-red-600 hover:bg-red-50 transition-colors"
+                        data-delete-id="${row.id}"
+                        title="Mover a papelera"
+                        aria-label="Mover a papelera"
+                      >${TRASH_ICON}</button>`
+                }
+              </div>
+            </td>
+          </tr>
+          ${
+            isOpen
+              ? `<tr class="bg-nexo-bg-surface/50 border-b border-nexo-border">
+                  <td colspan="6" class="px-4 py-5">${renderDetails(row)}</td>
+                </tr>`
+              : ''
+          }
+        `;
+      })
+      .join('');
+
+    tbody.querySelectorAll('[data-toggle-id]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const id = Number((button as HTMLButtonElement).dataset.toggleId);
+        expandedId = expandedId === id ? null : id;
+        renderTable(filterRows(allRows, searchInput?.value ?? ''));
+      });
+    });
+
+    tbody.querySelectorAll('[data-delete-id]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const id = Number((button as HTMLButtonElement).dataset.deleteId);
+        void deleteCaptacion(id);
+      });
+    });
+
+    tbody.querySelectorAll('[data-restore-id]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const id = Number((button as HTMLButtonElement).dataset.restoreId);
+        void restoreCaptacion(id);
+      });
+    });
+  }
+
+  function setLoading(isLoading: boolean) {
+    loadingEl?.classList.toggle('hidden', !isLoading);
+  }
+
+  function setError(message: string | null) {
+    if (!errorEl) return;
+    if (!message) {
+      errorEl.classList.add('hidden');
+      errorEl.textContent = '';
+      return;
+    }
+    errorEl.textContent = message;
+    errorEl.classList.remove('hidden');
+  }
+
+  async function ensureAuth() {
+    try {
+      const response = await fetch('/api/admin/session', { credentials: 'include' });
+      const data = (await response.json()) as { ok?: boolean };
+      if (!response.ok || !data.ok) {
+        window.location.href = '/admin/';
+        return false;
+      }
+      return true;
+    } catch {
+      window.location.href = '/admin/';
+      return false;
+    }
+  }
+
+  async function loadCaptaciones() {
+    setError(null);
+    setLoading(true);
+    emptyEl?.classList.add('hidden');
+    trashEmptyEl?.classList.add('hidden');
+    tableWrap?.classList.add('hidden');
+
+    try {
+      const query = viewingTrash ? '?papelera=1' : '';
+      const response = await fetch(`/api/captaciones${query}`, { credentials: 'include' });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        total?: number;
+        activeTotal?: number;
+        trashTotal?: number;
+        retentionDays?: number;
+        data?: Captacion[];
+        message?: string;
+      };
+
+      if (response.status === 401) {
+        window.location.href = '/admin/';
+        return;
+      }
+
+      if (!response.ok || !data.ok || !data.data) {
+        throw new Error(data.message ?? 'No se pudieron cargar los registros');
+      }
+
+      allRows = data.data;
+      expandedId = null;
+      trashTotal = data.trashTotal ?? 0;
+      retentionDays = data.retentionDays ?? 3;
+      if (totalEl) totalEl.textContent = String(data.activeTotal ?? data.total ?? allRows.length);
+      if (trashTotalEl) trashTotalEl.textContent = String(trashTotal);
+      if (trashCountEl) trashCountEl.textContent = `(${trashTotal})`;
+      if (updatedEl) updatedEl.textContent = formatDate(new Date().toISOString());
+      updateViewToggle();
+      renderTable(filterRows(allRows, searchInput?.value ?? ''));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error de conexión');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteCaptacion(id: number) {
+    const row = allRows.find((item) => item.id === id);
+    const label = row ? `${row.nombre} · ${row.empresa}` : `registro #${id}`;
+    const confirmed = window.confirm(
+      `¿Mover a la papelera "${label}"?\n\nSe eliminará definitivamente después de ${retentionDays} días.`,
+    );
+    if (!confirmed) return;
+
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/captaciones/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = (await response.json()) as { ok?: boolean; message?: string };
+
+      if (response.status === 401) {
+        window.location.href = '/admin/';
+        return;
+      }
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message ?? 'No se pudo mover el registro a la papelera');
+      }
+
+      await loadCaptaciones();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error de conexión');
+    }
+  }
+
+  async function restoreCaptacion(id: number) {
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/captaciones/${id}/restaurar`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const data = (await response.json()) as { ok?: boolean; message?: string };
+
+      if (response.status === 401) {
+        window.location.href = '/admin/';
+        return;
+      }
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message ?? 'No se pudo restaurar el registro');
+      }
+
+      viewingTrash = false;
+      await loadCaptaciones();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error de conexión');
+    }
+  }
+
+  searchInput?.addEventListener('input', () => {
+    renderTable(filterRows(allRows, searchInput.value));
+  });
+
+  refreshBtn?.addEventListener('click', () => {
+    loadCaptaciones();
+  });
+
+  viewActiveBtn?.addEventListener('click', switchToActiveView);
+  viewTrashBtn?.addEventListener('click', switchToTrashView);
+  statActiveBtn?.addEventListener('click', switchToActiveView);
+  statTrashBtn?.addEventListener('click', switchToTrashView);
+
+  logoutBtn?.addEventListener('click', async () => {
+    await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/admin/';
+  });
+
+  ensureAuth().then((allowed) => {
+    if (allowed) loadCaptaciones();
+  });
+</script>

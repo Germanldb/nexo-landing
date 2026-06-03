@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import ProblemSection from '../components/ProblemSection.astro';
+import ReconciliationSection from '../components/ReconciliationSection.astro';
+import EcosystemSection from '../components/EcosystemSection.astro';
+import MapSection from '../components/MapSection.astro';
+import FAQSection from '../components/FAQSection.astro';
+import CTASection from '../components/CTASection.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout 
+	title="Nexo | Centro de Comando Operativo para ISPs" 
+	description="Nexo centraliza facturación, pagos, red, soporte y monitoreo para ISPs. Una plataforma con más orden, visibilidad y control operativo.">
+	
+	<Header />
+	
+	<main>
+		<Hero />
+        
+        <!-- Problem / Value Section -->
+        <ProblemSection />
+
+        <!-- CORE FOCUS: Payments & Reconciliation -->
+        <ReconciliationSection />
+
+        <!-- Geographic / Map Focus -->
+        <MapSection />
+
+        <!-- Modular Ecosystem -->
+        <EcosystemSection />
+		
+		<section id="casos" class="py-24 bg-white relative overflow-hidden">
+            <div class="container mx-auto px-6">
+                <!-- Marco claro (mismo patrón que el laptop del Hero) -->
+                <div class="casos-panel-frame w-full">
+                    <div class="casos-panel-inner bg-nexo-dark p-12 md:p-24 flex flex-col lg:flex-row items-center gap-20 overflow-hidden relative w-full">
+                    <!-- Subtle Tech Accent -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-nexo-primary/10 rounded-full blur-[100px]"></div>
+
+                    <div class="lg:w-1/2 relative z-10 gsap-reveal">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="h-[1px] w-12 bg-nexo-primary"></div>
+                            <span class="text-nexo-primary font-bold tracking-widest uppercase text-[10px]">Versatilidad Técnica</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tighter leading-tight">Nexo se adapta <br/> a tu <span class="text-nexo-primary">infraestructura.</span></h2>
+                        <p class="text-xl text-white/50 mb-10 leading-relaxed">Conéctate vía API a tu stack actual — MikroTik, OLT u otra tecnología — sin rehacer toda la red. FTTH, WISP o híbrido: el control operativo sigue en un solo lugar.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="bg-white/5 p-8 rounded-3xl border border-white/5 hover:border-nexo-primary/30 transition-all group">
+                                <div class="w-12 h-12 bg-nexo-primary/10 text-nexo-primary rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">🏢</div>
+                                <p class="font-bold text-lg text-white">ISPs Corporativos</p>
+                            </div>
+                            <div class="bg-white/5 p-8 rounded-3xl border border-white/5 hover:border-nexo-primary/30 transition-all group">
+                                <div class="w-12 h-12 bg-nexo-accent/10 text-nexo-accent rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">📡</div>
+                                <p class="font-bold text-lg text-white">Proveedores WISP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 relative gsap-reveal">
+                        <div class="absolute -inset-10 bg-nexo-primary/10 rounded-full blur-[120px]"></div>
+                        <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1000" class="rounded-[3rem] shadow-2xl relative border border-white/10" alt="Infraestructura ISP" />
+                    </div>
+                    </div>
+                </div>
+            </div>
+		</section>
+
+		<FAQSection />
+		<CTASection />
+	</main>
+
+	<Footer />
+
+</BaseLayout>
+
+<style>
+  #casos .casos-panel-frame {
+    padding: 25px;
+    border-radius: 4rem;
+    background: rgb(238, 245, 245);
+    border: 1px solid rgba(13, 46, 52, 0.06);
+    box-shadow: 0 50px 50px -20px rgba(13, 46, 52, 0.35);
+  }
+
+  #casos .casos-panel-inner {
+    border-radius: 2.75rem;
+  }
+</style>
+
+<style is:global>
+  html.theme-dark #casos .casos-panel-frame {
+    background: var(--nexo-bg-base);
+    border-color: var(--nexo-border);
+    box-shadow: 0 50px 100px -24px rgba(0, 0, 0, 0.45);
+  }
+</style>

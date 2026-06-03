@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ExpoIspRegistrationForm from '../components/ExpoIspRegistrationForm.astro';
+import bgFondo from '../assets/bg-fondo.png';
+---
+
+<BaseLayout
+  title="Registro Expo ISP | Nexo"
+  description="Regístrate en Expo ISP con Nexo. Completa tus datos de contacto y empresa."
+>
+  <Header />
+
+  <main class="registro-expoisp-page relative min-h-screen overflow-hidden pt-32 pb-24">
+    <div class="registro-expoisp-bg absolute inset-0 z-0 h-full min-h-full w-full overflow-hidden pointer-events-none" aria-hidden="true">
+      <img
+        src={bgFondo.src}
+        alt=""
+        width={bgFondo.width}
+        height={bgFondo.height}
+        class="registro-expoisp-bg-img block h-full min-h-full w-full min-w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+
+    <div class="container relative z-10 mx-auto px-6">
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-nexo-primary/10 text-nexo-primary text-[10px] font-bold tracking-[0.2em] uppercase border border-nexo-primary/20 mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-nexo-primary animate-pulse"></span>
+          Expo ISP
+        </span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-nexo-dark tracking-tight leading-tight mb-6">
+          Registro <span class="text-nexo-primary">Expo ISP</span>
+        </h1>
+        <p class="text-lg text-nexo-dark/60 leading-relaxed max-w-2xl mx-auto">
+          Cuéntanos sobre tu ISP, tu rol y las soluciones que te interesan. Los datos nos ayudan a preparar una propuesta acorde a tu operación.
+        </p>
+      </div>
+
+      <div class="max-w-3xl mx-auto nexo-form-card p-8 md:p-12">
+        <ExpoIspRegistrationForm />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

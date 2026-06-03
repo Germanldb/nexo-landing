@@ -1,0 +1,743 @@
+---
+const clientRanges = [
+  { value: '', label: 'Selecciona un rango' },
+  { value: 'menos_500', label: 'Menos de 500 clientes' },
+  { value: '500_2000', label: '500 a 2,000 clientes' },
+  { value: '2000_5000', label: '2,000 a 5,000 clientes' },
+  { value: 'mas_5000', label: 'Más de 5,000 clientes' },
+];
+
+const billingSoftware = [
+  { value: '', label: 'Selecciona una opción' },
+  { value: 'wispro', label: 'Wispro' },
+  { value: 'mikrowisp', label: 'Mikrowisp' },
+  { value: 'smartisp', label: 'SmartISP' },
+  { value: 'wisphub', label: 'Wisphub' },
+  { value: 'ucrm', label: 'UCRM' },
+  { value: 'splynx', label: 'Splynx' },
+  { value: 'otro', label: 'Otro' },
+];
+
+const infrastructure = [
+  { id: 'infra-wisp', name: 'infraestructura', value: 'wisp', label: 'Wireless (WISP)' },
+  { id: 'infra-ftth', name: 'infraestructura', value: 'ftth', label: 'Fibra (FTTH)' },
+  { id: 'infra-hibrida', name: 'infraestructura', value: 'hibrida', label: 'Híbrida' },
+];
+
+const servicios = [
+  { id: 'sol-rsg', name: 'soluciones', value: 'rsg', label: 'RSG' },
+  { id: 'sol-nexo', name: 'soluciones', value: 'nexo', label: 'Nexo' },
+  { id: 'sol-callme', name: 'soluciones', value: 'callme', label: 'Callme' },
+];
+
+const rsgBrands = [
+  { value: 'mikrotik', label: 'MikroTik' },
+  { value: 'cambium_networks', label: 'Cambium Networks' },
+  { value: 'issabel_asterisk', label: 'Issabel / Asterisk' },
+  { value: 'ubiquiti', label: 'Ubiquiti' },
+  { value: 'cisco', label: 'Cisco' },
+  { value: 'zte_olt', label: 'ZTE OLT' },
+  { value: 'huawei', label: 'Huawei' },
+  { value: 'tp_link', label: 'TP-Link' },
+  { value: 'vsol_olt', label: 'VSOL OLT' },
+  { value: 'fortinet', label: 'Fortinet' },
+  { value: 'tenda', label: 'Tenda' },
+  { value: 'netonix', label: 'Netonix' },
+  { value: 'zabbix', label: 'Zabbix' },
+  { value: 'grandstream', label: 'GrandStream' },
+  { value: 'otros', label: 'Otros', isOther: true },
+];
+
+import { geoCountries, DEFAULT_COUNTRY } from '../data/geo-hispano';
+
+const countryCodes = ['58', '57', '54', '52', '51', '56', '593', '591', '595', '598', '506', '507', '1', '34'];
+
+const veCarriers = [
+  { value: '0414', label: '0414' },
+  { value: '0424', label: '0424' },
+  { value: '0416', label: '0416' },
+  { value: '0426', label: '0426' },
+  { value: '0412', label: '0412' },
+  { value: '0422', label: '0422' },
+];
+---
+
+<form id="registro-expoisp-form" class="nexo-form" method="post" action="#" novalidate>
+  <!-- Asistente -->
+  <fieldset class="nexo-form-section">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="md:col-span-2">
+        <label for="nombre" class="nexo-form-label">Nombre completo<span class="text-nexo-primary" aria-hidden="true"> *</span></label>
+        <input type="text" id="nombre" name="nombre" required autocomplete="name" class="nexo-form-input" placeholder="Ej. María González" />
+      </div>
+      <div class="md:col-span-2">
+        <label for="cargo" class="nexo-form-label">Cargo / Puesto<span class="text-nexo-primary" aria-hidden="true"> *</span></label>
+        <input type="text" id="cargo" name="cargo" required class="nexo-form-input" placeholder="Ej. Gerente de Operaciones, Director" />
+      </div>
+      <div class="min-w-0">
+        <span id="whatsapp-label" class="nexo-form-label block">WhatsApp de contacto<span class="text-nexo-primary" aria-hidden="true"> *</span></span>
+        <div id="whatsapp-fields" class="nexo-phone-group mt-1" role="group" aria-labelledby="whatsapp-label">
+          <select id="whatsapp-country" class="nexo-form-input nexo-phone-country" aria-label="Código de país">
+            {countryCodes.map((code) => (
+              <option value={code} selected={code === '58'}>{`+${code}`}</option>
+            ))}
+          </select>
+          <select id="whatsapp-carrier" class="nexo-form-input nexo-phone-carrier" aria-label="Operadora móvil">
+            {veCarriers.map((opt) => (
+              <option value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+          <input
+            type="tel"
+            id="whatsapp-local"
+            autocomplete="tel-national"
+            inputmode="numeric"
+            class="nexo-form-input nexo-phone-local"
+            placeholder="1234567"
+            required
+          />
+        </div>
+        <input type="hidden" id="whatsapp" name="whatsapp" />
+        <p id="whatsapp-hint" class="nexo-form-hint">Selecciona operadora y los 7 dígitos restantes del número.</p>
+      </div>
+      <div class="min-w-0">
+        <label for="email" class="nexo-form-label">Correo electrónico corporativo<span class="text-nexo-primary" aria-hidden="true"> *</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email" class="nexo-form-input mt-1" placeholder="nombre@tuisp.com" />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ISP -->
+  <fieldset class="nexo-form-section">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="md:col-span-2">
+        <label for="empresa" class="nexo-form-label">Nombre del ISP / Empresa<span class="text-nexo-primary" aria-hidden="true"> *</span></label>
+        <input type="text" id="empresa" name="empresa" required autocomplete="organization" class="nexo-form-input" placeholder="Nombre comercial de tu ISP" />
+      </div>
+      <div>
+        <label for="num_clientes" class="nexo-form-label">Número de clientes (aproximado)</label>
+        <select id="num_clientes" name="num_clientes" class="nexo-form-input">
+          {clientRanges.map((opt) => (
+            <option value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <p id="licencia-hint" class="nexo-form-hint hidden" aria-live="polite"></p>
+      </div>
+      <div>
+        <label for="pais" class="nexo-form-label">País</label>
+        <select id="pais" name="pais" class="nexo-form-input">
+          {geoCountries.map((country) => (
+            <option value={country.value} selected={country.value === DEFAULT_COUNTRY}>{country.label}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label for="estado" class="nexo-form-label">Estado / Provincia</label>
+        <select id="estado" name="estado" class="nexo-form-input" disabled>
+          <option value="">Selecciona un estado / provincia</option>
+        </select>
+      </div>
+      <div>
+        <label for="ciudad_region" id="ciudad-region-label" class="nexo-form-label">Ciudad / Región de cobertura</label>
+        <select id="ciudad_region" name="ciudad_region" class="nexo-form-input" disabled>
+          <option value="">Selecciona una ciudad / región</option>
+        </select>
+      </div>
+      <div id="ciudad-otra-wrap" class="hidden md:col-span-2">
+        <label for="ciudad_region_otra" class="nexo-form-label">Especifica tu localidad o zona de cobertura</label>
+        <input
+          type="text"
+          id="ciudad_region_otra"
+          name="ciudad_region_otra"
+          class="nexo-form-input"
+          placeholder="Ej. zona industrial, parroquia o sector específico"
+        />
+      </div>
+      <div class="md:col-span-2">
+        <span class="nexo-form-label block mb-1">Tipo de infraestructura</span>
+        <p class="nexo-form-hint mb-4">Selecciona una opción.</p>
+        <div class="nexo-brand-tags nexo-brand-tags--infra" role="radiogroup" aria-label="Tipo de infraestructura">
+          {infrastructure.map((opt) => (
+            <label class="nexo-brand-tag">
+              <input
+                type="radio"
+                id={opt.id}
+                name={opt.name}
+                value={opt.value}
+                class="nexo-brand-tag-input"
+              />
+              <span class="nexo-brand-tag-dot" aria-hidden="true"></span>
+              <span class="nexo-brand-tag-text">{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Soluciones -->
+  <fieldset class="nexo-form-section">
+    <legend class="nexo-form-section-title">Interés en soluciones</legend>
+    <p class="nexo-form-hint mb-4">Selecciona una o varias opciones. Clic de nuevo para quitar.</p>
+    <div class="nexo-brand-tags nexo-brand-tags--servicios mb-6" role="group" aria-label="Soluciones de interés">
+      {servicios.map((sol) => (
+        <label class="nexo-brand-tag">
+          <input
+            type="checkbox"
+            id={sol.id}
+            name={sol.name}
+            value={sol.value}
+            class="nexo-brand-tag-input solucion-checkbox"
+            data-solution={sol.value}
+          />
+          <span class="nexo-brand-tag-dot" aria-hidden="true"></span>
+          <span class="nexo-brand-tag-text">{sol.label}</span>
+        </label>
+      ))}
+    </div>
+    <div id="rsg-marcas-wrap" class="hidden">
+      <p class="nexo-form-label mb-1">Marcas con las que trabajas (RSG)</p>
+      <p class="nexo-form-hint mb-4">Selecciona todas las que apliquen. Clic de nuevo para quitar.</p>
+      <div class="nexo-brand-tags" role="group" aria-label="Marcas RSG">
+        {rsgBrands.map((brand) => (
+          <label class="nexo-brand-tag">
+            <input
+              type="checkbox"
+              id={brand.isOther ? 'rsg-brand-otros' : undefined}
+              name="rsg_marcas"
+              value={brand.value}
+              class="nexo-brand-tag-input"
+              data-rsg-brand-other={brand.isOther ? 'true' : undefined}
+            />
+            <span class="nexo-brand-tag-dot" aria-hidden="true"></span>
+            <span class="nexo-brand-tag-text">{brand.label}</span>
+          </label>
+        ))}
+      </div>
+      <div id="rsg-marcas-otro-wrap" class="hidden mt-4">
+        <label for="rsg_marcas_otro" class="nexo-form-label">Especifica otra marca</label>
+        <input
+          type="text"
+          id="rsg_marcas_otro"
+          name="rsg_marcas_otro"
+          class="nexo-form-input"
+          placeholder="Nombre de la marca o fabricante"
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Software actual -->
+  <fieldset class="nexo-form-section">
+    <legend class="nexo-form-section-title">Stack actual</legend>
+    <div class="grid grid-cols-1 gap-6">
+      <div>
+        <label for="software_actual" class="nexo-form-label">Software de gestión o facturación actual</label>
+        <select id="software_actual" name="software_actual" class="nexo-form-input">
+          {billingSoftware.map((opt) => (
+            <option value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      </div>
+      <div id="software-otro-wrap" class="hidden">
+        <label for="software_otro" class="nexo-form-label">Especifica otro software</label>
+        <input type="text" id="software_otro" name="software_otro" class="nexo-form-input" placeholder="Nombre del sistema" />
+      </div>
+      <div>
+        <label for="inconvenientes_sistema" class="nexo-form-label">
+          ¿Cuáles han sido tus inconvenientes al día de hoy con tu sistema actual?
+        </label>
+        <textarea
+          id="inconvenientes_sistema"
+          name="inconvenientes_sistema"
+          rows={4}
+          class="nexo-form-input resize-y min-h-[120px]"
+          placeholder="Ej. conciliación manual, cortes tardíos, reportes incompletos…"
+        />
+      </div>
+      <div>
+        <label for="expectativas" class="nexo-form-label">¿Qué te gustaría que hiciera tu sistema de gestión?</label>
+        <textarea
+          id="expectativas"
+          name="expectativas"
+          rows={4}
+          class="nexo-form-input resize-y min-h-[120px]"
+          placeholder="Cuéntanos qué procesos quieres automatizar o mejorar…"
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <p class="text-sm text-nexo-text-muted">
+    Los campos marcados con <span class="text-nexo-primary">*</span> son obligatorios.
+  </p>
+
+  <div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
+    <button type="submit" class="nexo-form-submit w-full sm:w-auto">Completar registro</button>
+    <a href="/" class="text-sm font-bold text-nexo-text-muted hover:text-nexo-primary transition-colors uppercase tracking-[0.1em]">
+      Volver al inicio
+    </a>
+  </div>
+
+  <p id="registro-expoisp-notice" class="hidden nexo-form-notice" role="status" aria-live="polite"></p>
+  <p id="registro-expoisp-error" class="hidden nexo-form-error" role="alert"></p>
+</form>
+
+<script>
+  import {
+    DEFAULT_COUNTRY,
+    OTRA_CIUDAD_VALUE,
+    findCountryMeta,
+    loadCountryGeo,
+    type GeoCountry,
+  } from '../data/geo-hispano';
+
+  const form = document.getElementById('registro-expoisp-form') as HTMLFormElement | null;
+  const notice = document.getElementById('registro-expoisp-notice');
+  const errorEl = document.getElementById('registro-expoisp-error');
+  const rsgWrap = document.getElementById('rsg-marcas-wrap');
+  const rsgCheckbox = () =>
+    document.getElementById('sol-rsg') as HTMLInputElement | null;
+  const solucionInputs = () =>
+    form?.querySelectorAll<HTMLInputElement>('.solucion-checkbox') ?? [];
+  const rsgBrandInputs = () =>
+    form?.querySelectorAll<HTMLInputElement>('input[name="rsg_marcas"]') ?? [];
+  const rsgOtrosWrap = document.getElementById('rsg-marcas-otro-wrap');
+  const rsgOtrosInput = document.getElementById('rsg_marcas_otro') as HTMLInputElement | null;
+  const rsgOtrosCheckbox = document.getElementById('rsg-brand-otros') as HTMLInputElement | null;
+  const softwareSelect = document.getElementById('software_actual') as HTMLSelectElement | null;
+  const softwareOtroWrap = document.getElementById('software-otro-wrap');
+  const numClientes = document.getElementById('num_clientes') as HTMLSelectElement | null;
+  const licenciaHint = document.getElementById('licencia-hint');
+  const whatsappCountry = document.getElementById('whatsapp-country') as HTMLSelectElement | null;
+  const whatsappCarrier = document.getElementById('whatsapp-carrier') as HTMLSelectElement | null;
+  const whatsappLocal = document.getElementById('whatsapp-local') as HTMLInputElement | null;
+  const whatsappHidden = document.getElementById('whatsapp') as HTMLInputElement | null;
+  const whatsappHint = document.getElementById('whatsapp-hint');
+  const whatsappGroup = document.getElementById('whatsapp-fields');
+  const paisSelect = document.getElementById('pais') as HTMLSelectElement | null;
+  const estadoSelect = document.getElementById('estado') as HTMLSelectElement | null;
+  const ciudadSelect = document.getElementById('ciudad_region') as HTMLSelectElement | null;
+  const ciudadLabel = document.getElementById('ciudad-region-label');
+  const ciudadOtraWrap = document.getElementById('ciudad-otra-wrap');
+  const ciudadOtraInput = document.getElementById('ciudad_region_otra') as HTMLInputElement | null;
+
+  let activeGeo: GeoCountry | null = null;
+
+  const licenseHints: Record<string, string> = {
+    menos_500: 'Tamaño ISP inicial — podemos orientarte en licencias para operaciones en crecimiento.',
+    '500_2000': 'ISP mediano — revisaremos paquetes de licencias acordes a tu escala.',
+    '2000_5000': 'ISP consolidado — propuesta de licencias y módulos según volumen.',
+    mas_5000: 'ISP de gran escala — contacto comercial para licenciamiento empresarial.',
+  };
+
+  function getSelectedRsgBrands(): HTMLInputElement[] {
+    return [...rsgBrandInputs()].filter((input) => input.checked);
+  }
+
+  function clearRsgBrands() {
+    rsgBrandInputs().forEach((input) => {
+      input.checked = false;
+    });
+    if (rsgOtrosInput) rsgOtrosInput.value = '';
+    toggleRsgMarcasOtro();
+  }
+
+  function toggleRsgMarcasOtro() {
+    const show = rsgOtrosCheckbox?.checked ?? false;
+    rsgOtrosWrap?.classList.toggle('hidden', !show);
+    if (rsgOtrosInput) {
+      rsgOtrosInput.required = show;
+      if (!show) rsgOtrosInput.value = '';
+    }
+  }
+
+  function toggleRsgMarcas() {
+    const show = rsgCheckbox()?.checked ?? false;
+    rsgWrap?.classList.toggle('hidden', !show);
+    if (!show) clearRsgBrands();
+    else toggleRsgMarcasOtro();
+  }
+
+  function toggleSoftwareOtro() {
+    const isOtro = softwareSelect?.value === 'otro';
+    softwareOtroWrap?.classList.toggle('hidden', !isOtro);
+    const otroInput = document.getElementById('software_otro') as HTMLInputElement | null;
+    if (otroInput) otroInput.required = !!isOtro;
+  }
+
+  function updateLicenciaHint() {
+    const key = numClientes?.value ?? '';
+    const msg = licenseHints[key];
+    if (!licenciaHint) return;
+    if (msg) {
+      licenciaHint.textContent = msg;
+      licenciaHint.classList.remove('hidden');
+    } else {
+      licenciaHint.textContent = '';
+      licenciaHint.classList.add('hidden');
+    }
+  }
+
+  solucionInputs().forEach((input) => {
+    input.addEventListener('change', toggleRsgMarcas);
+  });
+  rsgOtrosCheckbox?.addEventListener('change', toggleRsgMarcasOtro);
+  rsgBrandInputs().forEach((input) => {
+    input.addEventListener('change', () => {
+      if (input.dataset.rsgBrandOther === 'true') toggleRsgMarcasOtro();
+    });
+  });
+  softwareSelect?.addEventListener('change', toggleSoftwareOtro);
+  numClientes?.addEventListener('change', updateLicenciaHint);
+
+  toggleRsgMarcas();
+  toggleSoftwareOtro();
+  toggleRsgMarcasOtro();
+
+  function isVenezuelaCountry() {
+    return whatsappCountry?.value === '58';
+  }
+
+  function toggleWhatsappLayout() {
+    const isVe = isVenezuelaCountry();
+    whatsappCarrier?.classList.toggle('hidden', !isVe);
+    whatsappGroup?.classList.toggle('nexo-phone-group--intl', !isVe);
+    if (whatsappCarrier) whatsappCarrier.required = isVe;
+    if (whatsappLocal) {
+      whatsappLocal.placeholder = isVe ? '1234567' : 'Número de teléfono';
+      whatsappLocal.maxLength = isVe ? 7 : 15;
+    }
+    if (whatsappHint) {
+      whatsappHint.textContent = isVe
+        ? 'Selecciona operadora y los 7 dígitos restantes del número.'
+        : 'Ingresa tu número sin el código de país.';
+    }
+    if (!isVe && whatsappCarrier) whatsappCarrier.selectedIndex = 0;
+  }
+
+  function resetWhatsappFields() {
+    if (whatsappCountry) whatsappCountry.value = '58';
+    if (whatsappCarrier) whatsappCarrier.selectedIndex = 0;
+    if (whatsappLocal) whatsappLocal.value = '';
+    if (whatsappHidden) whatsappHidden.value = '';
+    toggleWhatsappLayout();
+  }
+
+  function sanitizeLocalDigits(value: string) {
+    return value.replace(/\D/g, '');
+  }
+
+  function buildWhatsappNumber(): string | null {
+    const country = whatsappCountry?.value ?? '';
+    const local = sanitizeLocalDigits(whatsappLocal?.value ?? '');
+
+    if (!country || !local) return null;
+
+    if (isVenezuelaCountry()) {
+      const carrier = whatsappCarrier?.value ?? '';
+      if (!carrier || local.length !== 7) return null;
+      const carrierDigits = carrier.replace(/^0/, '');
+      return `+${country}${carrierDigits}${local}`;
+    }
+
+    if (local.length < 6 || local.length > 15) return null;
+    return `+${country}${local}`;
+  }
+
+  function validateWhatsappFields(): { ok: boolean; message: string } {
+    const country = whatsappCountry?.value ?? '';
+    const local = sanitizeLocalDigits(whatsappLocal?.value ?? '');
+
+    if (!country) {
+      return { ok: false, message: 'Selecciona el código de país.' };
+    }
+
+    if (!local) {
+      return { ok: false, message: 'Ingresa el número de WhatsApp.' };
+    }
+
+    if (isVenezuelaCountry()) {
+      if (!whatsappCarrier?.value) {
+        return { ok: false, message: 'Selecciona la operadora móvil.' };
+      }
+      if (local.length !== 7) {
+        return { ok: false, message: 'El número venezolano debe tener 7 dígitos después del prefijo (Ej. 1234567).' };
+      }
+      return { ok: true, message: '' };
+    }
+
+    if (local.length < 6 || local.length > 15) {
+      return { ok: false, message: 'Ingresa un número válido (entre 6 y 15 dígitos).' };
+    }
+
+    return { ok: true, message: '' };
+  }
+
+  whatsappCountry?.addEventListener('change', toggleWhatsappLayout);
+  whatsappLocal?.addEventListener('input', () => {
+    if (!whatsappLocal) return;
+    whatsappLocal.value = sanitizeLocalDigits(whatsappLocal.value);
+  });
+
+  toggleWhatsappLayout();
+
+  type SelectOption = { value: string; label: string };
+
+  function fillSelect(
+    select: HTMLSelectElement | null,
+    options: SelectOption[],
+    placeholder: string,
+    disabled: boolean,
+  ) {
+    if (!select) return;
+
+    select.innerHTML = '';
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = placeholder;
+    select.appendChild(emptyOption);
+
+    options.forEach((option) => {
+      const element = document.createElement('option');
+      element.value = option.value;
+      element.textContent = option.label;
+      select.appendChild(element);
+    });
+
+    select.disabled = disabled;
+    select.value = '';
+  }
+
+  function updateCityLevelLabel() {
+    const meta = findCountryMeta(paisSelect?.value ?? '');
+    if (!ciudadLabel) return;
+
+    ciudadLabel.textContent =
+      meta?.cityLevel === 'municipio'
+        ? 'Municipio / Región de cobertura'
+        : 'Ciudad / Región de cobertura';
+  }
+
+  function toggleCiudadOtra() {
+    const show = ciudadSelect?.value === OTRA_CIUDAD_VALUE;
+    ciudadOtraWrap?.classList.toggle('hidden', !show);
+    if (ciudadOtraInput) {
+      ciudadOtraInput.required = show;
+      if (!show) ciudadOtraInput.value = '';
+    }
+  }
+
+  function resetCiudadOtra() {
+    if (ciudadOtraInput) ciudadOtraInput.value = '';
+    toggleCiudadOtra();
+  }
+
+  async function updateStates() {
+    updateCityLevelLabel();
+    resetCiudadOtra();
+
+    const countryValue = paisSelect?.value ?? '';
+    activeGeo = countryValue ? await loadCountryGeo(countryValue) : null;
+
+    if (!activeGeo) {
+      fillSelect(estadoSelect, [], 'Selecciona un estado / provincia', true);
+      fillSelect(ciudadSelect, [], 'Selecciona una ciudad / región', true);
+      return;
+    }
+
+    fillSelect(
+      estadoSelect,
+      activeGeo.states.map((state) => ({ value: state.value, label: state.label })),
+      'Selecciona un estado / provincia',
+      false,
+    );
+    fillSelect(ciudadSelect, [], 'Selecciona una ciudad / región', true);
+  }
+
+  function updateCities() {
+    resetCiudadOtra();
+    const state = activeGeo?.states.find((item) => item.value === estadoSelect?.value);
+
+    if (!state) {
+      fillSelect(ciudadSelect, [], 'Selecciona una ciudad / región', true);
+      return;
+    }
+
+    fillSelect(ciudadSelect, state.cities, 'Selecciona una ciudad / región', false);
+  }
+
+  async function resetGeoFields() {
+    if (paisSelect) paisSelect.value = DEFAULT_COUNTRY;
+    await updateStates();
+  }
+
+  function getSelectLabel(name: string) {
+    const select = form?.elements.namedItem(name) as HTMLSelectElement | null;
+    if (!select?.value) return '';
+    return select.options[select.selectedIndex]?.text.trim() ?? '';
+  }
+
+  function getCiudadRegionValue() {
+    if (ciudadSelect?.value === OTRA_CIUDAD_VALUE) {
+      return ciudadOtraInput?.value.trim() ?? '';
+    }
+    return getSelectLabel('ciudad_region');
+  }
+
+  paisSelect?.addEventListener('change', () => {
+    void updateStates();
+  });
+  estadoSelect?.addEventListener('change', updateCities);
+  ciudadSelect?.addEventListener('change', toggleCiudadOtra);
+  void resetGeoFields();
+
+  function validateWhatsApp(value: string): boolean {
+    const digits = value.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 15;
+  }
+
+  function collectPayload() {
+    if (!form) return null;
+
+    const getValue = (name: string) =>
+      (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null)?.value?.trim() ?? '';
+
+    const soluciones = [...form.querySelectorAll<HTMLInputElement>('.solucion-checkbox:checked')].map(
+      (input) => input.value,
+    );
+    const rsgMarcas = getSelectedRsgBrands().map((input) => input.value);
+    const infraestructura =
+      (form.querySelector('input[name="infraestructura"]:checked') as HTMLInputElement | null)?.value ?? '';
+    const whatsapp = buildWhatsappNumber() ?? whatsappHidden?.value ?? '';
+
+    return {
+      nombre: getValue('nombre'),
+      cargo: getValue('cargo'),
+      whatsapp,
+      email: getValue('email'),
+      empresa: getValue('empresa'),
+      num_clientes: getValue('num_clientes'),
+      pais: getSelectLabel('pais'),
+      estado: getSelectLabel('estado'),
+      ciudad_region: getCiudadRegionValue(),
+      infraestructura,
+      soluciones,
+      rsg_marcas: rsgMarcas,
+      rsg_marcas_otro: getValue('rsg_marcas_otro'),
+      software_actual: getValue('software_actual'),
+      software_otro: getValue('software_otro'),
+      inconvenientes_sistema: getValue('inconvenientes_sistema'),
+      expectativas: getValue('expectativas'),
+    };
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl?.classList.add('hidden');
+    notice?.classList.add('hidden');
+
+    const whatsappValidation = validateWhatsappFields();
+    if (!whatsappValidation.ok) {
+      if (errorEl) {
+        errorEl.textContent = whatsappValidation.message;
+        errorEl.classList.remove('hidden');
+      }
+      whatsappLocal?.focus();
+      return;
+    }
+
+    const fullWhatsapp = buildWhatsappNumber();
+    if (!fullWhatsapp || !validateWhatsApp(fullWhatsapp)) {
+      if (errorEl) {
+        errorEl.textContent = 'Revisa el número de WhatsApp e intenta de nuevo.';
+        errorEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    if (whatsappHidden) whatsappHidden.value = fullWhatsapp;
+
+    if (ciudadSelect?.value === OTRA_CIUDAD_VALUE && !ciudadOtraInput?.value.trim()) {
+      if (errorEl) {
+        errorEl.textContent = 'Indica tu localidad o zona de cobertura.';
+        errorEl.classList.remove('hidden');
+      }
+      ciudadOtraInput?.focus();
+      return;
+    }
+
+    if (rsgCheckbox()?.checked) {
+      const selectedBrands = getSelectedRsgBrands();
+      const hasOtros = rsgOtrosCheckbox?.checked ?? false;
+      const otroText = rsgOtrosInput?.value.trim() ?? '';
+
+      if (selectedBrands.length === 0) {
+        if (errorEl) {
+          errorEl.textContent = 'Selecciona al menos una marca con la que trabajas (RSG).';
+          errorEl.classList.remove('hidden');
+        }
+        rsgWrap?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      if (hasOtros && !otroText) {
+        if (errorEl) {
+          errorEl.textContent = 'Indica qué otra marca utilizas.';
+          errorEl.classList.remove('hidden');
+        }
+        rsgOtrosInput?.focus();
+        return;
+      }
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const payload = collectPayload();
+    if (!payload) return;
+
+    submitBtn?.setAttribute('disabled', 'true');
+
+    try {
+      const response = await fetch('/api/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; errors?: string[]; message?: string } | null;
+
+      if (!response.ok) {
+        const message =
+          data?.errors?.join(' ') ??
+          data?.message ??
+          'No se pudo guardar tu registro. Intenta de nuevo en unos minutos.';
+        if (errorEl) {
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (notice) {
+        notice.textContent =
+          'Gracias por registrarte en Expo ISP. Hemos recibido tu información y nos pondremos en contacto contigo pronto.';
+        notice.classList.remove('hidden');
+      }
+
+      form.reset();
+      resetWhatsappFields();
+      await resetGeoFields();
+      toggleRsgMarcas();
+      toggleRsgMarcasOtro();
+      toggleSoftwareOtro();
+      updateLicenciaHint();
+    } catch {
+      if (errorEl) {
+        errorEl.textContent = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        errorEl.classList.remove('hidden');
+      }
+    } finally {
+      submitBtn?.removeAttribute('disabled');
+    }
+  });
+</script>

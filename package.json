@@ -1,0 +1,31 @@
+{
+  "name": "nexo-landing-premium",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "node scripts/generate-geo.mjs && astro build",
+    "generate:geo": "node scripts/generate-geo.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.5.0",
+    "gsap": "^3.14.2",
+    "lucide-astro": "^0.363.0",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  },
+  "devDependencies": {
+    "country-state-city": "^3.2.1"
+  }
+}

@@ -1,0 +1,54 @@
+---
+const problems = [
+  {
+    title: 'Sistemas desconectados',
+    desc: 'Facturación, clientes, red y soporte en herramientas separadas impiden automatizar y ralentizan cada activación o corte.',
+    icon: '🧩'
+  },
+  {
+    title: 'Poca visibilidad operativa',
+    desc: 'Sin trazabilidad de tráfico, equipos y tickets, el equipo técnico y administrativo trabaja a ciegas y reacciona tarde.',
+    icon: '📡'
+  },
+  {
+    title: 'Fuga de recaudación',
+    desc: 'La rentabilidad del ISP queda expuesta sin conciliación bancaria automatizada, cortes precisos y reactivación al instante.',
+    icon: '💸'
+  }
+];
+---
+
+<section class="py-32 bg-white relative overflow-hidden">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row gap-20 items-center">
+            <div class="lg:w-1/2 gsap-reveal">
+                <span class="text-nexo-primary font-bold tracking-[0.2em] uppercase text-xs mb-6 block">El desafío del crecimiento</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-nexo-dark mb-8 tracking-tight leading-tight">
+                    ¿Tu ISP crece, pero <br/> 
+                    <span class="text-nexo-primary italic font-serif">el desorden también?</span>
+                </h2>
+                <p class="text-xl text-nexo-dark/60 leading-relaxed mb-10">
+                    Nexo nació para centralizar la gestión de tu proveedor: aligerar la carga operativa y devolverte tiempo para optimizar la red y hacer crecer el negocio.
+                </p>
+                <div class="flex items-center gap-6 p-6 bg-nexo-dark-50 rounded-2xl border border-nexo-dark-100">
+                    <div class="w-12 h-12 bg-nexo-dark text-white rounded-full flex items-center justify-center text-xl font-bold">!</div>
+                    <p class="text-sm font-bold text-nexo-dark/80 italic">"Más que facturación: un entorno ordenado, automatizado y controlable para operar con criterio."</p>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 grid gap-6 gsap-reveal">
+                {problems.map(p => (
+                    <div class="group p-8 bg-nexo-dark-50 rounded-[2rem] border border-transparent hover:border-nexo-primary/20 hover:bg-white hover:shadow-2xl transition-all duration-500">
+                        <div class="flex gap-6 items-start">
+                            <div class="text-4xl">{p.icon}</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-nexo-dark mb-2 group-hover:text-nexo-primary transition-colors">{p.title}</h3>
+                                <p class="text-nexo-dark/60 leading-relaxed">{p.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</section>

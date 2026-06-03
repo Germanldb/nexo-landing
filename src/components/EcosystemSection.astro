@@ -1,0 +1,84 @@
+---
+const modules = [
+  {
+    cat: 'Administración & Finanzas',
+    items: [
+      { name: 'Facturación automatizada', desc: 'Emisión masiva, facturación electrónica y control fiscal sin reprocesos manuales.' },
+      { name: 'Conciliación bancaria', desc: 'Validación con bancos y pasarelas: pago detectado, factura cerrada y servicio reactivado.' },
+      { name: 'Módulo Cashea', desc: 'Tus clientes pagan en cuotas; tu ISP recibe según la programación acordada.' },
+      { name: 'Pagos y cortes automáticos', desc: 'Cortes por mora y reactivaciones sin intervención humana en el flujo diario.' },
+      { name: 'WhatsApp y notificaciones', desc: 'Avisos de cobro, estado de servicio y comunicación directa con el abonado.' },
+    ]
+  },
+  {
+    cat: 'Operación técnica & red',
+    items: [
+      { name: 'Gestión de red vía API', desc: 'Integración con MikroTik u otra tecnología: velocidad, IPs, MACs, suspensiones y reactivaciones.' },
+      { name: 'PPPoE, Hotspot y Radius', desc: 'Colas simples, PCQ, amarre de IP y DHCP en el mismo ecosistema operativo.' },
+      { name: 'Smart OLT / FTTH', desc: 'Autoriza, edita y elimina ONUs; mapea VLANs y zonas con consistencia entre OLT y sistema.' },
+      { name: 'Auditoría de tráfico', desc: 'Consumo por cliente, rangos de fecha e IPs visitadas para soporte y análisis de uso.' },
+      { name: 'Monitoreo de equipos', desc: 'Estado de conexión, ping, gráficos de rendimiento y acceso rápido a configuración.' },
+      { name: 'Soporte con tickets', desc: 'Tickets, asignación de técnicos y notificaciones por correo con trazabilidad completa.' },
+    ]
+  },
+  {
+    cat: 'Logística & expansión',
+    items: [
+      { name: 'Warehouse (almacén)', desc: 'Rastrea ONUs, routers y consumibles desde ingreso hasta instalación en cliente.' },
+      { name: 'Multi-sucursales', desc: 'Opera por regiones o sedes con reporte consolidado en la matriz.' },
+      { name: 'Portal del cliente', desc: 'Autogestión de pagos, tickets y consulta de consumo en línea.' },
+      { name: 'Planes y servicios', desc: 'Gestión de planes de internet y servicios personalizados por operación.' },
+      { name: 'Administración VoIP', desc: 'Control de servicios de voz integrado al ciclo de vida del abonado.' },
+      { name: 'Integración con IA', desc: 'Mantén tus comunicaciones activas y automatizadas con IA.' },
+    ]
+  }
+];
+---
+
+<section id="modulos" class="py-32 bg-nexo-dark-50 relative overflow-hidden">
+    <div class="container mx-auto px-6">
+        
+        <div class="text-center max-w-3xl mx-auto mb-24 gsap-reveal">
+            <span class="text-nexo-primary font-bold tracking-[0.2em] uppercase text-[10px] mb-6 block">Arquitectura modular</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-nexo-dark mb-8 tracking-tight">Más que facturación: <br/> operación con <span class="text-nexo-primary italic">criterio.</span></h2>
+            <p class="text-xl text-nexo-dark/60 leading-relaxed">
+                Activa solo lo que tu ISP necesita hoy. Nexo convierte la operación diaria en un entorno más ordenado, automatizado y controlable.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-12 gsap-reveal">
+            {modules.map(group => (
+                <div class="flex flex-col">
+                    <h3 class="text-nexo-dark text-xs font-black uppercase tracking-[0.2em] mb-10 pb-4 border-b border-nexo-dark/10">
+                        {group.cat}
+                    </h3>
+                    <div class="space-y-6">
+                        {group.items.map(item => (
+                            <div
+                                id={item.name === 'Portal del cliente' ? 'identidad' : undefined}
+                                class="ecosystem-module-card group p-8 transition-all duration-500 scroll-mt-32"
+                            >
+                                <h4 class="text-xl font-extrabold text-nexo-dark mb-3 group-hover:text-nexo-primary transition-colors">{item.name}</h4>
+                                <p class="text-nexo-dark/50 text-sm leading-relaxed">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+
+    </div>
+</section>
+
+<style>
+  #modulos .ecosystem-module-card {
+    background: var(--nexo-bg-elevated);
+    border: 1px solid var(--nexo-border);
+    border-radius: 2rem;
+    box-shadow: 0 10px 10px rgba(15, 23, 42, 0.12);
+  }
+
+  #modulos .ecosystem-module-card:hover {
+    border-color: rgba(179, 205, 29, 0.35);
+  }
+</style>

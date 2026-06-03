@@ -1,0 +1,68 @@
+---
+const faqs = [
+  { 
+    q: "¿Nexo solo factura o es una plataforma completa?", 
+    a: "Es mucho más que facturación. Nexo centraliza clientes, cobros, red, soporte, monitoreo de equipos, Smart OLT, auditoría de tráfico y logística en un solo entorno conectado." 
+  },
+  { 
+    q: "¿Nexo es compatible con mi infraestructura actual?", 
+    a: "Sí. Se integra vía API con MikroTik y otras tecnologías habituales en ISP: PPPoE, Hotspot, colas simples, PCQ, Radius y DHCP. También gestiona Smart OLT para FTTH sin obligarte a cambiar todo tu parque." 
+  },
+  { 
+    q: "¿Cómo funciona la integración con Cashea?", 
+    a: "Tus clientes pueden financiar en cuotas mientras tu operación registra y concilia el flujo según tu modelo comercial, mejorando la tasa de recaudación sin fricción en caja." 
+  },
+  { 
+    q: "¿Qué medios de pago soporta?", 
+    a: "Integración con entidades como BDV y Bancaribe, Pago Móvil, Cashea, PayPal y otras pasarelas, con conciliación que valida el pago y puede reactivar el servicio de forma automática." 
+  },
+  { 
+    q: "¿Qué alcance tiene el módulo de Warehouse (almacén)?", 
+    a: "Control de inventario de punta a punta: ONUs, routers y consumibles desde el depósito hasta la asignación al técnico y la instalación en el cliente." 
+  },
+  { 
+    q: "¿Puedo gestionar múltiples sucursales?", 
+    a: "Sí. Segmenta por zonas o ciudades con inventario, técnicos y administración propia, manteniendo visibilidad consolidada desde la matriz." 
+  },
+  { 
+    q: "¿La conciliación bancaria es automática?", 
+    a: "Sí. Nexo cruza transferencias y pagos móviles con tus facturas. Al validar la coincidencia, puede cerrar la deuda y reactivar el servicio sin pasos manuales." 
+  },
+  { 
+    q: "¿Qué incluye el soporte dentro de Nexo?", 
+    a: "Sistema de tickets, asignación de técnicos, notificaciones por correo y contexto operativo (tráfico, equipos y estado del abonado) para responder con más criterio." 
+  }
+];
+---
+
+<section id="faq" class="py-32 container mx-auto max-w-6xl px-6">
+    <div class="text-center mb-24 gsap-reveal">
+        <span class="text-nexo-primary font-bold tracking-[0.2em] uppercase text-[10px] mb-6 block">Resolviendo dudas</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-nexo-dark mb-8 tracking-tight">Preguntas <span class="text-nexo-primary">frecuentes.</span></h2>
+        <p class="text-nexo-dark/50 text-xl max-w-xl mx-auto">Todo lo que necesitas saber para operar tu ISP con una sola plataforma.</p>
+    </div>
+
+    <div id="faq-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        {faqs.map(faq => (
+            <details class="faq-item group bg-white border border-nexo-dark/5 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:border-nexo-primary/30 transition-all duration-500 h-fit">
+                <summary class="flex justify-between items-center gap-4 p-8 md:p-10 cursor-pointer list-none font-bold text-lg md:text-xl text-nexo-dark group-hover:text-nexo-dark transition-colors">
+                    {faq.q}
+                    <div class="w-10 h-10 rounded-xl bg-nexo-dark/5 flex items-center justify-center transition-all duration-500 group-open:rotate-180 group-open:bg-nexo-primary group-open:text-white group-hover:bg-nexo-primary/10">
+                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </summary>
+                <div class="px-8 md:px-10 pb-8 md:pb-10 text-nexo-dark/60 leading-relaxed text-base md:text-lg pt-2">
+                    {faq.a}
+                </div>
+            </details>
+        ))}
+    </div>
+</section>
+
+<style>
+  #faq .shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+</style>

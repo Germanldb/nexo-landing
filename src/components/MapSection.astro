@@ -1,0 +1,200 @@
+---
+/** Posiciones en el mismo viewBox que /latam-dots-mask.svg */
+const countryMarkers = [
+  { id: 'mx', label: 'México', cx: 1180, cy: 472 },
+  { id: 'gt', label: 'Guatemala', cx: 1324, cy: 650 },
+  { id: 'pr', label: 'Puerto Rico', cx: 1772, cy: 570 },
+  { id: 'co', label: 'Colombia', cx: 1615, cy: 850 },
+  { id: 've', label: 'Venezuela', cx: 1690, cy: 739 },
+  { id: 'ec', label: 'Ecuador', cx: 1550, cy: 928 },
+  { id: 'pe', label: 'Perú', cx: 1575, cy: 1050 },
+  { id: 'br', label: 'Brasil', cx: 1905, cy: 1073 },
+  { id: 'ar', label: 'Argentina', cx: 1805, cy: 1495 },
+  { id: 'cl', label: 'Chile', cx: 1730, cy: 1629 },
+];
+
+const mapViewBox = '448 140 1812 1903';
+---
+
+<section id="cobertura" class="py-32 bg-white relative overflow-hidden">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row items-center gap-20">
+            
+            <div class="lg:w-1/2 gsap-reveal">
+                <span class="text-nexo-primary font-bold tracking-[0.2em] uppercase text-[10px] mb-6 block">Presencia Regional</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-nexo-dark mb-8 tracking-tight">Conciliación sin <br/> <span class="text-nexo-primary">fronteras físicas.</span></h2>
+                <p class="text-xl text-nexo-dark/60 leading-relaxed mb-10">
+                    Unifica pagos nacionales e internacionales en una sola vista financiera. Automatiza la conciliación y reduce la fricción entre lo que entra al banco y lo que refleja tu operación.
+                </p>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <div class="text-3xl font-black text-nexo-dark mb-2">+10</div>
+                        <p class="text-xs text-nexo-dark/40 uppercase font-black tracking-widest">Entidades Bancarias</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-nexo-dark mb-2">Multi</div>
+                        <p class="text-xs text-nexo-dark/40 uppercase font-black tracking-widest">País / Divisa</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 w-full gsap-reveal relative">
+                <div
+                    class="latam-map-visual aspect-square rounded-[4rem] border border-nexo-dark/5 p-4 sm:p-6 relative"
+                    aria-label="Mapa de cobertura en Latinoamérica"
+                >
+                    <div class="latam-map-stage">
+                        <div class="latam-map-dots" aria-hidden="true"></div>
+
+                        <svg
+                            class="latam-map-markers"
+                            viewBox={mapViewBox}
+                            preserveAspectRatio="xMidYMid meet"
+                            aria-hidden="true"
+                        >
+                            <defs>
+                                <filter id="latam-pulse-glow" x="-100%" y="-100%" width="300%" height="300%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                                    <feMerge>
+                                        <feMergeNode in="blur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            {countryMarkers.map((marker, index) => (
+                                <g
+                                    class="latam-map-pulse"
+                                    transform={`translate(${marker.cx} ${marker.cy})`}
+                                    style={`--pulse-delay: ${(index * 0.45).toFixed(2)}s`}
+                                >
+                                    <circle class="latam-pulse-core" r="5" filter="url(#latam-pulse-glow)" />
+                                    <circle class="latam-pulse-ring" r="8" />
+                                    <circle class="latam-pulse-ring latam-pulse-ring--b" r="8" />
+                                    <circle class="latam-pulse-ring latam-pulse-ring--c" r="8" />
+                                    <title>{marker.label}</title>
+                                </g>
+                            ))}
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+  #cobertura .latam-map-visual {
+    background: var(--nexo-bg-elevated);
+    border: 1px solid var(--nexo-border);
+    border-radius: 2rem;
+    box-shadow: 0 10px 10px rgba(15, 23, 42, 0.12);
+  }
+
+  #cobertura .latam-map-stage {
+    position: absolute;
+    inset: 4%;
+  }
+
+  #cobertura .latam-map-dots {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    -webkit-mask-image: url(/latam-dots-mask.svg);
+    mask-image: url(/latam-dots-mask.svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-image: radial-gradient(circle, var(--latam-map-dot-color, #1a3a3a) 1.25px, transparent 1.25px);
+    background-size: 5px 5px;
+    opacity: 0.92;
+  }
+
+  #cobertura .latam-map-markers {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  #cobertura .latam-map-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  #cobertura .latam-pulse-core {
+    fill: var(--nexo-primary);
+    stroke: #ffffff;
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: latam-core-glow 2.4s ease-in-out infinite;
+    animation-delay: var(--pulse-delay, 0s);
+  }
+
+  #cobertura .latam-pulse-ring {
+    fill: rgba(179, 205, 29, 0.18);
+    stroke: var(--nexo-primary);
+    stroke-width: 3.5;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: latam-ripple 3s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+    animation-delay: var(--pulse-delay, 0s);
+  }
+
+  #cobertura .latam-pulse-ring--b {
+    animation-delay: calc(var(--pulse-delay, 0s) + 0.75s);
+  }
+
+  #cobertura .latam-pulse-ring--c {
+    animation-delay: calc(var(--pulse-delay, 0s) + 1.5s);
+  }
+
+  @keyframes latam-core-glow {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scale(0.85);
+    }
+  }
+
+  @keyframes latam-ripple {
+    0% {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    55% {
+      opacity: 0.45;
+    }
+    100% {
+      transform: scale(5);
+      opacity: 0;
+    }
+  }
+</style>
+
+<style is:global>
+  html.theme-dark #cobertura .latam-pulse-core {
+    stroke: rgba(255, 255, 255, 0.6);
+  }
+
+  html.theme-dark #cobertura .latam-pulse-ring {
+    fill: rgba(179, 205, 29, 0.28);
+    stroke: #c8e030;
+  }
+</style>
