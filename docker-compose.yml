@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8081:80"
+      - "${WEB_PORT:-8081}:80"
     depends_on:
       api:
         condition: service_healthy
@@ -10,8 +10,8 @@ services:
 
   api:
     build: ./api
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       DATABASE_URL: mysql://nexo:${MYSQL_PASSWORD:-nexo_secret}@db:3306/clientes_captacion
       PORT: 3000
