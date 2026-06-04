@@ -87,6 +87,26 @@ import Footer from '../components/Footer.astro';
   #casos .casos-panel-inner {
     border-radius: 2.75rem;
   }
+
+  @media (max-width: 767px) {
+    #casos .container {
+      padding-left: 0;
+      padding-right: 0;
+      max-width: none;
+    }
+
+    #casos .casos-panel-frame {
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    #casos .casos-panel-inner {
+      border-radius: 0;
+    }
+  }
 </style>
 
 <style is:global>
@@ -94,5 +114,13 @@ import Footer from '../components/Footer.astro';
     background: var(--nexo-bg-base);
     border-color: var(--nexo-border);
     box-shadow: 0 50px 100px -24px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 767px) {
+    html.theme-dark #casos .casos-panel-frame {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
   }
 </style>
