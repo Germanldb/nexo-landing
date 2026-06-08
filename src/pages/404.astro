@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+	title="404 | Nexo"
+	description="La página que buscas no existe o fue movida. Vuelve al inicio de Nexo para continuar navegando."
+>
+	<Header />
+
+	<main class="not-found-page relative overflow-hidden bg-nexo-dark-50">
+		<div class="absolute inset-0 pointer-events-none opacity-[0.04]" style="background-image: radial-gradient(#0D2E34 1px, transparent 1px); background-size: 34px 34px;"></div>
+		<div class="absolute -top-28 -left-24 h-72 w-72 rounded-full bg-nexo-primary/20 blur-3xl"></div>
+		<div class="absolute -bottom-28 -right-24 h-72 w-72 rounded-full bg-nexo-dark/20 blur-3xl"></div>
+
+		<section class="relative z-10 px-6 py-28 md:py-36">
+			<div class="mx-auto max-w-4xl">
+				<div class="not-found-card rounded-[2rem] border border-nexo-dark/10 bg-white p-8 shadow-[0_40px_100px_-35px_rgba(13,46,52,0.45)] md:p-14">
+					<p class="mb-4 inline-flex items-center gap-2 rounded-full border border-nexo-primary/30 bg-nexo-primary/10 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.2em] text-nexo-primary">
+						<span class="h-2 w-2 rounded-full bg-nexo-primary"></span>
+						Error de navegación
+					</p>
+
+					<div class="mb-7 flex items-end gap-4 md:gap-6">
+						<span class="text-[5rem] font-black leading-none tracking-[-0.04em] text-nexo-dark md:text-[7rem]">404</span>
+						<span class="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-nexo-dark/50">Página no encontrada</span>
+					</div>
+
+					<h1 class="mb-5 max-w-2xl text-3xl font-extrabold leading-tight tracking-tight text-nexo-dark md:text-5xl">
+						El enlace que abriste ya no está disponible.
+					</h1>
+					<p class="mb-10 max-w-2xl text-base leading-relaxed text-nexo-dark/70 md:text-lg">
+						Puede que la URL haya cambiado o que hayas llegado desde un enlace desactualizado. Usa una de estas rutas para retomar la navegación.
+					</p>
+
+					<div class="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						<a href="/" class="group rounded-2xl border border-nexo-dark/10 bg-white px-5 py-4 transition-all hover:-translate-y-1 hover:border-nexo-primary/40 hover:shadow-lg">
+							<p class="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-nexo-dark/40">Principal</p>
+							<p class="font-extrabold text-nexo-dark">Volver al inicio</p>
+							<p class="mt-2 text-sm text-nexo-dark/60">Regresa al centro de mando de Nexo.</p>
+						</a>
+
+						<a href="/#contacto" class="group rounded-2xl border border-nexo-dark/10 bg-white px-5 py-4 transition-all hover:-translate-y-1 hover:border-nexo-primary/40 hover:shadow-lg">
+							<p class="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-nexo-dark/40">Demostración</p>
+							<p class="font-extrabold text-nexo-dark">Solicitar demo</p>
+							<p class="mt-2 text-sm text-nexo-dark/60">Habla con el equipo para ver Nexo en acción.</p>
+						</a>
+
+					</div>
+
+					<div class="rounded-2xl border border-nexo-dark/10 bg-nexo-dark-50 p-5 md:p-6">
+						<p class="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-nexo-dark/40">Sugerencia rápida</p>
+						<p class="text-sm leading-relaxed text-nexo-dark/70 md:text-base">
+							Si escribiste la dirección manualmente, revisa errores de tipeo o vuelve al inicio para continuar desde el menú principal.
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</BaseLayout>
+
+<style is:global>
+	html.theme-dark .not-found-page .not-found-card {
+		background: var(--nexo-bg-elevated);
+		border-color: var(--nexo-border);
+		box-shadow: 0 40px 100px -35px rgba(0, 0, 0, 0.6);
+	}
+
+	html.theme-dark .not-found-page a,
+	html.theme-dark .not-found-page .rounded-2xl.border {
+		background: color-mix(in srgb, var(--nexo-bg-elevated) 85%, transparent);
+		border-color: var(--nexo-border);
+	}
+
+	html.theme-dark .not-found-page .text-nexo-dark,
+	html.theme-dark .not-found-page .text-nexo-dark\/70,
+	html.theme-dark .not-found-page .text-nexo-dark\/60,
+	html.theme-dark .not-found-page .text-nexo-dark\/50,
+	html.theme-dark .not-found-page .text-nexo-dark\/40 {
+		color: var(--nexo-text) !important;
+	}
+
+	html.theme-dark .not-found-page .text-nexo-dark\/70 {
+		color: var(--nexo-text-muted) !important;
+	}
+
+	html.theme-dark .not-found-page .text-nexo-dark\/60,
+	html.theme-dark .not-found-page .text-nexo-dark\/50,
+	html.theme-dark .not-found-page .text-nexo-dark\/40 {
+		opacity: 0.78;
+	}
+</style>
