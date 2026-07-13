@@ -1,0 +1,150 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const subsections = [
+  {
+    title: 'Fichas (Inventario)',
+    menu: 'Fichas Hotspot → Fichas',
+    what: 'Gestionar el inventario de tickets de acceso WiFi temporal: crear lotes, imprimir, vender y consultar.',
+    tabs: ['Disponibles (sin vender, estado NUEVO)', 'Vendidas (ya comercializadas)'],
+    stepsNew: [
+      'Vaya a Fichas Hotspot → Fichas → pestaña Disponibles.',
+      'Haga clic en Nuevo.',
+      'Seleccione el perfil hotspot (plan de tiempo/velocidad) y la cantidad de fichas a generar.',
+      'Haga clic en Crear.',
+      'Las fichas aparecen en la tabla con usuario y PIN generados.',
+      'Opcional: clic en Imprimir para generar PDF con las fichas.',
+    ],
+    stepsPrint: [
+      'Seleccione las fichas deseadas (checkbox).',
+      'Haga clic en Imprimir.',
+      'Elija plantilla de impresión.',
+      'Se genera PDF listo para imprimir y entregar.',
+    ],
+    stepsSms: [
+      'En pestaña Vendidas, seleccione la ficha.',
+      'Haga clic en Enviar SMS.',
+      'Ingrese número de teléfono.',
+      'El cliente recibe usuario y PIN por mensaje de texto.',
+    ],
+  },
+  {
+    title: 'Routers Hotspot',
+    menu: 'Fichas Hotspot → Routers',
+    what: 'Configurar routers dedicados a hotspot: perfiles, límites y WiFi Social.',
+    tabs: ['Routers (equipos hotspot)', 'Perfiles (planes de tiempo/velocidad)', 'Wi-Fi Social (registro con redes sociales)'],
+    stepsNew: [
+      'Vaya a Fichas Hotspot → Routers.',
+      'Haga clic en Nuevo router.',
+      'Configure IP, credenciales API y zona.',
+      'Guarde.',
+    ],
+  },
+  {
+    title: 'Plantillas',
+    menu: 'Fichas Hotspot → Plantillas',
+    what: 'Editor visual de plantillas de impresión de fichas: tamaño, logo, campos y diseño (A4 o ticket térmico).',
+    steps: [],
+  },
+  {
+    title: 'Ventas',
+    menu: 'Fichas Hotspot → Ventas',
+    what: 'Reporte de ventas de fichas: fecha, vendedor, monto y plan vendido.',
+    steps: [],
+  },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 11</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Fichas Hotspot</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Fichas Hotspot (menú expandible) · Sistema de tickets de acceso WiFi temporal.
+    </p>
+  </div>
+
+  <div class="space-y-12">
+    {subsections.map(sub => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
+        <p class="text-nexo-dark/40 text-sm mb-4">
+          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+        </p>
+        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
+
+        {sub.tabs && (
+          <div class="flex flex-wrap gap-2 mb-5">
+            {sub.tabs.map(tab => (
+              <span class="px-3 py-1.5 bg-nexo-dark/5 border border-nexo-dark/10 rounded-lg text-xs font-semibold text-nexo-dark/60">{tab}</span>
+            ))}
+          </div>
+        )}
+
+        {sub.stepsNew && sub.stepsNew.length > 0 && (
+          <div class="mb-5">
+            <h4 class="text-sm font-bold text-nexo-dark mb-3">Crear lote de fichas</h4>
+            <div class="doc-card">
+              <ol class="space-y-3">
+                {sub.stepsNew.map((step, i) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                    <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        )}
+
+        {sub.stepsPrint && sub.stepsPrint.length > 0 && (
+          <div class="mb-5">
+            <h4 class="text-sm font-bold text-nexo-dark mb-3">Imprimir fichas</h4>
+            <div class="doc-card">
+              <ol class="space-y-3">
+                {sub.stepsPrint.map((step, i) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                    <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        )}
+
+        {sub.stepsSms && sub.stepsSms.length > 0 && (
+          <div class="mb-5">
+            <h4 class="text-sm font-bold text-nexo-dark mb-3">Enviar ficha por SMS</h4>
+            <div class="doc-card">
+              <ol class="space-y-3">
+                {sub.stepsSms.map((step, i) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                    <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        )}
+
+        {sub.steps && sub.steps.length > 0 && (
+          <div class="doc-card">
+            <ol class="space-y-3">
+              {sub.steps.map((step, i) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        <div class="doc-section-divider mt-10"></div>
+      </div>
+    ))}
+  </div>
+</section>

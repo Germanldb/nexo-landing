@@ -1,0 +1,111 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const faqGroups = [
+  {
+    category: 'General',
+    questions: [
+      {
+        q: '¿Por qué no veo un módulo en el menú?',
+        a: 'Su rol no tiene permiso para ese módulo. Contacte al administrador para que le asigne los permisos necesarios desde Ajustes → Gestión personal.',
+      },
+      {
+        q: '¿Puedo usar Nexo desde el celular?',
+        a: 'Sí, el panel es responsive y funciona desde el navegador del celular. Sin embargo, se recomienda usar escritorio para tareas complejas como alta de clientes, facturación y gestión de red.',
+      },
+      {
+        q: '¿Cómo busco un cliente rápidamente?',
+        a: 'Use el buscador de la barra superior. Escriba al menos 3 caracteres del nombre, cédula o código del cliente y seleccione de la lista desplegable.',
+      },
+    ],
+  },
+  {
+    category: 'Facturación',
+    questions: [
+      {
+        q: '¿Cómo genero una factura manual?',
+        a: 'Desde la ficha del cliente → Facturación → botón "Nueva factura". O espere la generación automática del cron según la configuración de facturación.',
+      },
+      {
+        q: 'El cliente pagó pero sigue suspendido.',
+        a: 'Verifique que el pago se aplicó a la factura correcta y que cubre el monto total. Revise en Finanzas → Transacciones para confirmar el estado del pago.',
+      },
+      {
+        q: '¿Cómo anulo una factura?',
+        a: 'Vaya a Finanzas → Facturas, ubique la factura y haga clic en el botón Anular. Requiere permiso de anular facturas.',
+      },
+    ],
+  },
+  {
+    category: 'Red',
+    questions: [
+      {
+        q: 'Un cliente no tiene internet pero aparece activo en Nexo.',
+        a: 'Verifique: 1) Estado en el router (¿está conectado?), 2) ONU autorizada en la OLT, 3) Queues/colas en MikroTik activas, 4) Que no tenga corte por falta de pago.',
+      },
+      {
+        q: '¿Cómo reinicio la ONU de un cliente?',
+        a: 'Desde la ficha del cliente → Servicios → botón AdminOLT/SmartOLT → Reiniciar ONT.',
+      },
+    ],
+  },
+  {
+    category: 'Hotspot',
+    questions: [
+      {
+        q: '¿Cómo vendo una ficha hotspot?',
+        a: 'Cree un lote en Fichas Hotspot → Fichas → Nuevo. Imprima las fichas y entregue al cliente. La ficha se marca como vendida automáticamente al usarse o de forma manual.',
+      },
+    ],
+  },
+  {
+    category: 'Soporte',
+    questions: [
+      {
+        q: '¿El cliente puede ver las notas internas de un ticket?',
+        a: 'No. Las notas internas solo son visibles para los operadores del ISP. El cliente solo ve las respuestas públicas.',
+      },
+    ],
+  },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 22</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Preguntas frecuentes</h2>
+  </div>
+
+  <div class="space-y-10">
+    {faqGroups.map(group => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-5">{group.category}</h3>
+        <div class="space-y-3">
+          {group.questions.map(qa => (
+            <details class="group bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-2xl overflow-hidden hover:border-nexo-primary/20 transition-colors">
+              <summary class="flex justify-between items-center gap-4 p-6 cursor-pointer list-none font-bold text-nexo-dark text-sm">
+                {qa.q}
+                <div class="w-8 h-8 rounded-xl bg-nexo-dark/5 flex items-center justify-center transition-all duration-300 group-open:rotate-180 group-open:bg-nexo-primary group-open:text-nexo-dark shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </summary>
+              <div class="px-6 pb-6 text-nexo-dark/60 text-sm leading-relaxed">
+                {qa.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-16 pt-8 border-t border-nexo-dark/10 text-center">
+    <p class="text-nexo-dark/40 text-sm">
+      Documento generado para Nexo (Mikrowisp 6) · Versión 1.0 · Julio 2026
+    </p>
+    <p class="text-nexo-dark/30 text-xs mt-2">
+      Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.
+    </p>
+  </div>
+</section>

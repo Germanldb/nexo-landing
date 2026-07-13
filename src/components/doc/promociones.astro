@@ -1,0 +1,60 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 8</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Promociones</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Promociones · Crear ofertas especiales para atraer o retener clientes.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">¿Para qué sirve?</h3>
+      <p class="text-nexo-dark/70 text-lg leading-relaxed">
+        Las promociones le permiten crear descuentos, meses gratis o precios especiales temporales. Se aplican al registrar un nuevo cliente o al modificar un servicio existente.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Crear una promoción</h3>
+      <div class="doc-card">
+        <ol class="space-y-4">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-base">Vaya a <strong class="text-nexo-dark">Promociones</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-base">Haga clic en <strong class="text-nexo-dark">Nueva promoción</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <div class="text-nexo-dark/70 text-base">
+              <span class="block mb-2">Configure los siguientes campos:</span>
+              <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                <li><strong class="text-nexo-dark">Nombre</strong> de la promoción.</li>
+                <li><strong class="text-nexo-dark">Tipo:</strong> Descuento porcentual, monto fijo o meses gratis.</li>
+                <li><strong class="text-nexo-dark">Perfiles aplicables:</strong> Qué planes incluye.</li>
+                <li><strong class="text-nexo-dark">Vigencia:</strong> Fecha de inicio y fin.</li>
+                <li><strong class="text-nexo-dark">Condiciones:</strong> Nuevos clientes, existentes, etc.</li>
+              </ul>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-base">Guarde y active la promoción.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
+            <span class="text-nexo-dark/70 text-base">Al registrar un cliente o servicio, seleccione la promoción aplicable.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

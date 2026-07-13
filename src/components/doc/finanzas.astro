@@ -1,0 +1,137 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const subsections = [
+  {
+    title: 'Facturas',
+    menu: 'Finanzas → Facturas',
+    what: 'Consultar, generar, cobrar y administrar todas las facturas del ISP.',
+    steps: [
+      'Vaya a Finanzas → Facturas.',
+      'Use los filtros: Tipo de fecha (emisión/vencimiento), Estado (pendiente, pagada, anulada, vencida), Rango de fechas y Router/nodo.',
+      'Para cobrar: localice la factura, clic en Agregar pago (✓), complete monto y forma de pago, confirme.',
+    ],
+  },
+  {
+    title: 'Registrar Pagos',
+    menu: 'Finanzas → Registrar Pagos',
+    what: 'Módulo optimizado para caja: registrar pagos de forma rápida en mostrador.',
+    tabs: ['Registrar pago (formulario activo)', 'Pagos registrados hoy', 'Promesas de pago'],
+    steps: [
+      'Vaya a Finanzas → Registrar Pagos (o clic en $ de la barra superior).',
+      'Busque al cliente por nombre/cédula o escanee el código de barras de la factura.',
+      'Se despliega panel con facturas pendientes del cliente.',
+      'Seleccione la factura a pagar.',
+      'Configure forma de pago (efectivo, transferencia, pago móvil), monto y referencia.',
+      'Elija impresión: Recibo / Factura / POS / Ninguna.',
+      'Haga clic en Registrar pago.',
+      'Si hay saldo pendiente, el sistema pregunta si desea registrar pago parcial.',
+    ],
+  },
+  {
+    title: 'Pagos Masivos',
+    menu: 'Finanzas → Registrar Pagos Masivos',
+    what: 'Importar archivo (Excel/CSV) con múltiples pagos para procesarlos de una sola vez.',
+    steps: [],
+  },
+  {
+    title: 'Transacciones',
+    menu: 'Finanzas → Transacciones',
+    what: 'Listado de todas las transacciones financieras: pagos, notas de crédito y ajustes de saldo.',
+    steps: [],
+  },
+  {
+    title: 'Pago móvil recibidos',
+    menu: 'Finanzas → Pago móvil recibidos',
+    what: 'Ver pagos móviles recibidos automáticamente desde el banco y conciliarlos con facturas de clientes.',
+    steps: [
+      'Vaya a Finanzas → Pago móvil recibidos.',
+      'Revise la lista de pagos recibidos (fecha, monto, referencia, banco).',
+      'Para pagos no conciliados automáticamente: clic en Conciliar, busque al cliente y asigne a la factura correspondiente.',
+      'Confirme. El pago se aplica y el servicio se activa si corresponde.',
+    ],
+  },
+  {
+    title: 'Pasarelas de pago',
+    menu: 'Finanzas → [pasarela]',
+    what: 'Consulte pagos procesados por pasarelas en línea: Evertec (Place To Pay), Banco Provincial y Cashea. Verifique estados y gestione devoluciones.',
+    steps: [],
+  },
+  {
+    title: 'Dólar Price / Casa de cambio',
+    menu: 'Finanzas → Dolar price',
+    what: 'Gestión de tasa de cambio para facturación en moneda extranjera (USD) con conversión a moneda local (Bs, ARS, etc.).',
+    steps: [],
+  },
+  {
+    title: 'Otros Ingresos & Egresos',
+    menu: 'Finanzas → Otros Ingresos & Egresos',
+    what: 'Registrar movimientos financieros no relacionados con clientes: gastos operativos, ingresos extraordinarios.',
+    steps: [],
+  },
+  {
+    title: 'Reportes de Pagos (Portal Cliente)',
+    menu: 'Finanzas → Reportes de Pagos (Portal Cliente)',
+    what: 'Pagos reportados por clientes desde el portal. El operador verifica y aprueba o rechaza.',
+    steps: [],
+  },
+  {
+    title: 'Facturación SyH',
+    menu: 'Finanzas → Facturación SyH',
+    what: 'Facturación electrónica integrada con sistema SyH (Venezuela). Solo disponible si el módulo SyH está activo.',
+    steps: [],
+  },
+  {
+    title: 'Estadísticas de pagos',
+    menu: 'Finanzas → Estadísticas',
+    what: 'Gráficos y reportes de ingresos por periodo, forma de pago, operador y sucursal.',
+    steps: [],
+  },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 13</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Finanzas</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Finanzas (menú expandible) · Centro de control financiero del ISP.
+    </p>
+  </div>
+
+  <div class="space-y-12">
+    {subsections.map(sub => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
+        <p class="text-nexo-dark/40 text-sm mb-4">
+          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+        </p>
+        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
+
+        {sub.tabs && (
+          <div class="flex flex-wrap gap-2 mb-5">
+            {sub.tabs.map(tab => (
+              <span class="px-3 py-1.5 bg-nexo-dark/5 border border-nexo-dark/10 rounded-lg text-xs font-semibold text-nexo-dark/60">{tab}</span>
+            ))}
+          </div>
+        )}
+
+        {sub.steps.length > 0 && (
+          <div class="doc-card">
+            <ol class="space-y-3">
+              {sub.steps.map((step, i) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        <div class="doc-section-divider mt-10"></div>
+      </div>
+    ))}
+  </div>
+</section>

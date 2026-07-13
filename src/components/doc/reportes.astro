@@ -1,0 +1,67 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const reportTypes = [
+  { type: 'Administración', desc: 'Clientes activos/suspendidos, morosos, crecimiento.' },
+  { type: 'Ventas', desc: 'Ingresos por periodo, por plan, por operador.' },
+  { type: 'Almacén', desc: 'Inventario, movimientos, productos asignados.' },
+  { type: 'Red', desc: 'Tráfico, uptime de routers, clientes online.' },
+  { type: 'Soporte', desc: 'Tickets abiertos/cerrados, tiempos de respuesta.' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 15</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Reportes</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Reportes (menú expandible) · Generar reportes detallados de cada área del ISP.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Sub-módulos disponibles</h3>
+      <div class="space-y-3">
+        {reportTypes.map((r, i) => (
+          <div class="flex items-start gap-4 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-5 py-4">
+            <span class="w-7 h-7 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-bold text-nexo-dark text-sm">{r.type}</p>
+              <p class="text-nexo-dark/60 text-sm mt-0.5">{r.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Generar un reporte</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Vaya a Reportes → el tipo deseado.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm">Configure filtros: fechas, sucursal, router, operador.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Generar</strong> o <strong class="text-nexo-dark">Buscar</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-sm">Revise la tabla o gráfico resultante.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
+            <span class="text-nexo-dark/70 text-sm">Exporte a Excel o PDF con el botón correspondiente.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

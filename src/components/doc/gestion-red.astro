@@ -1,0 +1,136 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const subsections = [
+  {
+    title: 'Routers',
+    menu: 'Gestión de Red → Routers',
+    what: 'Administrar los equipos MikroTik (routers) que dan servicio a los clientes: conexión, configuración, monitoreo y backups.',
+    steps: [
+      'Vaya a Gestión de Red → Routers.',
+      'Haga clic en Nuevo.',
+      'Complete los campos: Nombre (ej. "Nodo Centro"), IP del MikroTik, Credenciales API y Coordenadas GPS (opcional).',
+      'Presione Guardar.',
+      'El router aparecerá en la lista con indicador de estado (conectado/desconectado).',
+    ],
+    tabs: ['Datos & Configuración', 'Bloqueo de Páginas', 'Mikrotik (info en vivo)', 'Gráficos', 'Log', 'Backups'],
+  },
+  {
+    title: 'Smart OLT / AdminOLT',
+    menu: 'Gestión de Red → Smart OLT o AdminOLT',
+    what: 'Gestionar equipos OLT de fibra óptica: autorizar ONUs, monitorear señal y configurar perfiles de velocidad.',
+    steps: [
+      'Vaya a Gestión de Red → AdminOLT (o Smart OLT).',
+      'Revise el listado de ONUs registradas.',
+      'Para autorizar una ONU nueva, vaya a la ficha del cliente → pestaña Servicios → botón AdminOLT/SmartOLT.',
+      'Seleccione la ONU pendiente de la lista de no autorizadas.',
+      'Haga clic en Autorizar.',
+      'Configure los parámetros WAN si aplica.',
+      'Guarde. La ONU quedará activa en la OLT y el servicio se habilitará.',
+    ],
+  },
+  {
+    title: 'Redes (IPv4 / IPv6)',
+    menu: 'Gestión de Red → Redes',
+    what: 'Administrar pools de direcciones IP, subredes y asignaciones para clientes.',
+    steps: [
+      'Vaya a Gestión de Red → Redes.',
+      'Revise la lista de pools/subredes configuradas.',
+      'Cada pool muestra: rango, router asociado, IPs usadas vs disponibles.',
+      'Para asignar IP a un cliente, hágalo desde la ficha del cliente al crear o editar el servicio.',
+    ],
+  },
+  {
+    title: 'Monitoreo (Emisores)',
+    menu: 'Gestión de Red → Monitoreo',
+    what: 'Monitorear el estado de emisores inalámbricos, antenas y equipos de transmisión.',
+    steps: [
+      'Vaya a Gestión de Red → Monitoreo.',
+      'Revise la lista de emisores con indicadores de estado (online/offline).',
+      'Haga clic en un emisor para ver detalle: señal, clientes conectados y uptime.',
+    ],
+  },
+  {
+    title: 'Cajas NAP',
+    menu: 'Gestión de Red → Cajas Nap',
+    what: 'Gestionar cajas de distribución de fibra óptica en calle: ubicación, puertos y clientes conectados.',
+    steps: [
+      'Vaya a Gestión de Red → Cajas Nap.',
+      'Haga clic en Nuevo.',
+      'Complete: nombre, ubicación (dirección/coordenadas) y capacidad de puertos.',
+      'Guarde.',
+      'Al dar de alta clientes con fibra, asigne el puerto NAP correspondiente en la ficha del servicio.',
+    ],
+  },
+  {
+    title: 'Tráfico',
+    menu: 'Gestión de Red → Tráfico',
+    what: 'Visualizar el consumo de ancho de banda por router, cliente o periodo.',
+    steps: [
+      'Vaya a Gestión de Red → Tráfico.',
+      'Seleccione el router o cliente a consultar.',
+      'Elija el rango de fechas.',
+      'Revise los gráficos de subida y bajada.',
+      'Exporte a Excel o PDF si necesita un reporte.',
+    ],
+  },
+  {
+    title: 'IPs Visitadas',
+    menu: 'Gestión de Red → Ips Visitadas',
+    what: 'Ver qué sitios web o destinos IP visitan los clientes. Requiere logging activo en el router.',
+    steps: [],
+  },
+  {
+    title: 'Monitor BlackList',
+    menu: 'Gestión de Red → Monitor BlackList',
+    what: 'Monitorear y gestionar listas negras de IPs o dominios bloqueados en la red.',
+    steps: [],
+  },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 6</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Gestión de Red</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Gestión de Red (menú expandible) · Todo lo relacionado con la infraestructura de red del ISP.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    {subsections.map(sub => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
+        <p class="text-nexo-dark/40 text-sm mb-4">
+          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+        </p>
+        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
+
+        {sub.steps.length > 0 && (
+          <div class="doc-card">
+            <ol class="space-y-3">
+              {sub.steps.map((step, i) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {sub.tabs && (
+          <div class="mt-4 flex flex-wrap gap-2">
+            {sub.tabs.map(tab => (
+              <span class="px-3 py-1.5 bg-nexo-dark/5 border border-nexo-dark/10 rounded-lg text-xs font-semibold text-nexo-dark/60">{tab}</span>
+            ))}
+          </div>
+        )}
+
+        <div class="doc-section-divider mt-10"></div>
+      </div>
+    ))}
+  </div>
+</section>

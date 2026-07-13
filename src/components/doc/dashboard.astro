@@ -1,0 +1,71 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const elements = [
+  { name: 'Saludo personalizado', desc: 'Buenos días / tardes / noches según la hora del operador.' },
+  { name: 'Tarjetas de métricas', desc: 'Totales de clientes activos, facturación del periodo, pagos recibidos.' },
+  { name: 'Gráficos', desc: 'Evolución de clientes, ingresos mensuales y tráfico de red.' },
+  { name: 'Alertas', desc: 'Clientes desconectados, morosos, estado de licencia y avisos urgentes.' },
+  { name: 'Accesos rápidos', desc: 'Enlaces directos a los módulos que más utiliza.' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 5</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Dashboard</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Dashboard (primer ítem del menú lateral) ·
+      <strong class="text-nexo-dark">Ruta:</strong> <code class="doc-code-inline">/admin/</code> o <code class="doc-code-inline">#ajax/home</code>
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">¿Para qué sirve?</h3>
+      <p class="text-nexo-dark/70 text-lg leading-relaxed">
+        Es la pantalla de inicio de Nexo. Muestra un resumen operativo completo del ISP: clientes activos, ingresos, desconexiones, gráficos de tráfico y alertas que requieren atención inmediata.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Elementos principales</h3>
+      <div class="space-y-3">
+        {elements.map((el, i) => (
+          <div class="flex items-start gap-4 doc-card !py-4 !px-5">
+            <span class="w-7 h-7 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-bold text-nexo-dark text-sm">{el.name}</p>
+              <p class="text-nexo-dark/60 text-sm mt-0.5">{el.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cómo consultar métricas</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-base">Inicie sesión; el Dashboard se carga automáticamente.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-base">Revise las tarjetas superiores para obtener cifras del día y del mes.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-base">Use los filtros de periodo (24h, 7 días, mes) en los gráficos si están disponibles.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-base">Haga clic en cualquier métrica para ir al módulo detallado (si el enlace está activo).</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

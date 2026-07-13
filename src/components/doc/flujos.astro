@@ -1,0 +1,106 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const flows = [
+  {
+    title: 'Alta completa de cliente (sin instalación)',
+    steps: [
+      'Clientes → Usuarios → Nuevo',
+      'Paso 1: Datos personales',
+      'Paso 2: Facturación',
+      'Paso 3: Servicios',
+      'Registrar Cliente',
+      '[Automático] Factura generada + servicio activo en router',
+    ],
+  },
+  {
+    title: 'Alta con instalación',
+    steps: [
+      'Clientes → Instalaciones → Nuevo registro',
+      'Aceptar instalación (asignar técnico)',
+      'Agregar materiales (almacén)',
+      'Imprimir hoja → Técnico instala en campo',
+      'Tareas: marcar "En curso" → "Finalizar"',
+      'Dar de alta → Wizard de usuarios (datos pre-cargados)',
+      'Cliente activo',
+    ],
+  },
+  {
+    title: 'Cobro en caja',
+    steps: [
+      'Barra superior → $ (Registrar pago)',
+      'Buscar cliente',
+      'Seleccionar factura',
+      'Forma de pago + monto',
+      'Registrar pago',
+      '[Automático] Servicio activado si estaba suspendido',
+      'Imprimir recibo',
+    ],
+  },
+  {
+    title: 'Ciclo de morosidad',
+    steps: [
+      '[Automático - Cron] Factura generada el día configurado',
+      '[Automático] Avisos SMS/email según configuración',
+      '[Automático] Corte el día de corte configurado',
+      'Cliente suspendido en router/OLT',
+      'Cliente paga (caja o portal)',
+      '[Automático] Servicio reactivado',
+    ],
+  },
+  {
+    title: 'Venta de ficha hotspot',
+    steps: [
+      'Fichas Hotspot → Fichas → Nuevo (lote)',
+      'Imprimir fichas',
+      'Entregar al cliente (venta manual)',
+      'Marcar como vendida (automático al usar o manual)',
+      'Consultar ventas en Fichas Hotspot → Ventas',
+    ],
+  },
+  {
+    title: 'Atención de soporte',
+    steps: [
+      'Cliente abre ticket (portal) o operador crea ticket (admin)',
+      'Aparece en Tickets → Esperando Respuesta',
+      'Operador responde',
+      'Cliente recibe notificación',
+      'Operador cierra ticket cuando resuelto',
+    ],
+  },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 20</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Flujos de trabajo integrados</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">Resumen visual de los procesos más importantes de Nexo.</p>
+  </div>
+
+  <div class="space-y-8">
+    {flows.map(flow => (
+      <div class="doc-card">
+        <h3 class="text-lg font-bold text-nexo-dark mb-4">{flow.title}</h3>
+        <div class="space-y-0">
+          {flow.steps.map((step, i) => (
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col items-center">
+                <span class:list={[
+                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
+                  step.startsWith('[Automático') ? 'bg-nexo-dark/10 text-nexo-dark/50' : 'bg-nexo-primary text-nexo-dark'
+                ]}>{i + 1}</span>
+                {i < flow.steps.length - 1 && <div class="w-0.5 h-4 bg-nexo-dark/10 my-1"></div>}
+              </div>
+              <span class:list={[
+                'text-sm leading-relaxed pt-1',
+                step.startsWith('[Automático') ? 'text-nexo-dark/40 italic' : 'text-nexo-dark/70'
+              ]}>{step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,130 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const controls = [
+  { name: 'Plantillas de duración', desc: 'Tiempos estimados por tipo de tarea.' },
+  { name: 'Cola reprogramadas', desc: 'Tareas reprogramadas pendientes de reasignación.' },
+  { name: 'Vista Cronología', desc: 'Línea de tiempo visual del día.' },
+  { name: 'Vista Tareas', desc: 'Tabla con filtros por estado y técnico.' },
+  { name: 'Filtro Mis Tareas', desc: 'Solo tareas asignadas al operador logueado.' },
+  { name: 'Navegación por fecha', desc: 'Flechas ◀ ▶ para cambiar de día.' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 12</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Tareas y planificación</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Tareas (menú expandible) · Organizar y gestionar el trabajo diario del ISP.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    <!-- Tareas del día -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">Tareas del día</h3>
+      <p class="text-nexo-dark/40 text-sm mb-4">
+        <strong class="text-nexo-dark/60">Menú:</strong> Tareas → Tareas
+      </p>
+      <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">
+        Organizar el trabajo diario: instalaciones programadas, visitas técnicas y tareas libres. La vista predeterminada muestra las tareas de hoy.
+      </p>
+
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Crear una tarea</h4>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Vaya a Tareas → Tareas (fecha de hoy por defecto).</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Agregar Tarea</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <div class="text-nexo-dark/70 text-sm">
+              <span class="block mb-2">Complete:</span>
+              <ul class="list-disc list-inside space-y-1 ml-4 text-xs">
+                <li><strong class="text-nexo-dark">Tipo:</strong> Instalación, visita técnica o tarea libre.</li>
+                <li><strong class="text-nexo-dark">Cliente vinculado</strong> (si aplica).</li>
+                <li><strong class="text-nexo-dark">Técnico asignado.</strong></li>
+                <li><strong class="text-nexo-dark">Fecha y hora.</strong></li>
+                <li><strong class="text-nexo-dark">Descripción / notas.</strong></li>
+              </ul>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-sm">Guarde.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Flujo de instalación -->
+    <div>
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Gestionar tarea de instalación</h4>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Localice la tarea en la vista Cronología o Tareas.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm"><strong class="text-nexo-dark">Pendiente</strong> → Clic <strong class="text-nexo-dark">En curso</strong> cuando el técnico sale a campo.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-sm"><strong class="text-nexo-dark">En curso</strong> → Clic <strong class="text-nexo-dark">Finalizar instalación</strong> (redirige a alta de cliente) o <strong class="text-nexo-dark">Reprogramar</strong>.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div>
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Controles adicionales</h4>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {controls.map(c => (
+          <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-5 py-4">
+            <span class="w-2 h-2 rounded-full bg-nexo-primary mt-2 shrink-0"></span>
+            <div>
+              <p class="font-bold text-nexo-dark text-sm">{c.name}</p>
+              <p class="text-nexo-dark/50 text-xs mt-0.5">{c.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="doc-section-divider"></div>
+
+    <!-- Planificación -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">Planificación (Calendario)</h3>
+      <p class="text-nexo-dark/40 text-sm mb-4">
+        <strong class="text-nexo-dark/60">Menú:</strong> Tareas → Planificación · <strong class="text-nexo-dark/60">Ruta:</strong> <code class="doc-code-inline">#ajax/calendar_tareas</code>
+      </p>
+      <p class="text-nexo-dark/70 text-base leading-relaxed">
+        Vista de calendario mensual o semanal con todas las tareas programadas. Permite arrastrar tareas para reprogramarlas con un clic.
+      </p>
+    </div>
+
+    <div class="doc-section-divider"></div>
+
+    <!-- Monitoreo Vehicular -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">Monitoreo Vehicular</h3>
+      <p class="text-nexo-dark/40 text-sm mb-4">
+        <strong class="text-nexo-dark/60">Menú:</strong> Tareas → Monitoreo Vehicular
+      </p>
+      <p class="text-nexo-dark/70 text-base leading-relaxed">
+        Seguimiento GPS de vehículos de la empresa en mapa en tiempo real. Requiere integración con dispositivo GPS en cada vehículo.
+      </p>
+    </div>
+  </div>
+</section>

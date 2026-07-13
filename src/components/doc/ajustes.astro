@@ -1,0 +1,176 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const configSections = [
+  {
+    title: 'Configuración',
+    items: [
+      { name: 'General', desc: 'Nombre empresa, logo, moneda, zona horaria, datos fiscales.' },
+      { name: 'Ubicaciones', desc: 'Zonas geográficas de operación.' },
+      { name: 'Sucursales', desc: 'Sedes o puntos de venta.' },
+      { name: 'Cloud', desc: 'Integración con servicios en la nube.' },
+      { name: 'Google', desc: 'Integración con Google Maps, Calendar.' },
+      { name: 'Calendario', desc: 'Sincronización de calendario de técnicos.' },
+    ],
+  },
+  {
+    title: 'Administración',
+    items: [
+      { name: 'Gestión personal', desc: 'Operadores, roles y permisos.' },
+      { name: 'Portal cliente', desc: 'Configuración del portal de abonados.' },
+      { name: 'Importar clientes', desc: 'Importación masiva desde Excel/CSV.' },
+      { name: 'Cambios masivos', desc: 'Modificar configuración de facturación en lote.' },
+      { name: 'Login RADIUS', desc: 'Equipos NAS autorizados.' },
+      { name: 'Backups Mikrotik', desc: 'Configuración de respaldos automáticos.' },
+    ],
+  },
+  {
+    title: 'Facturación',
+    items: [
+      { name: 'Facturación', desc: 'Día de facturación, corte, mora, impuestos, numeración.' },
+      { name: 'Pasarelas de pago', desc: 'Configuración de bancos y procesadores.' },
+    ],
+  },
+  {
+    title: 'Soporte y mensajes',
+    items: [
+      { name: 'Servidor de correo', desc: 'SMTP para envío de emails.' },
+      { name: 'Tickets', desc: 'Departamentos de soporte.' },
+      { name: 'Zendesk', desc: 'Integración con Zendesk.' },
+      { name: 'Mensajería (SMS)', desc: 'Proveedor SMS, plantillas, WhatsApp.' },
+    ],
+  },
+  {
+    title: 'Herramientas',
+    items: [
+      { name: 'Editor plantillas', desc: 'PDF, correos, avisos.' },
+      { name: 'Configuración plantillas', desc: 'Valores predeterminados al registrar clientes.' },
+      { name: 'Mensajes facturas', desc: 'Textos en facturas y recibos.' },
+      { name: 'Campos personalizados', desc: 'Campos extra en ficha de cliente.' },
+      { name: 'Configuración VPN', desc: 'Servidor OpenVPN para operadores.' },
+    ],
+  },
+  {
+    title: 'Sistema',
+    items: [
+      { name: 'Base de datos', desc: 'Backup y restauración.' },
+      { name: 'Crontab', desc: 'Tareas programadas.' },
+      { name: 'Logs', desc: 'Registros del sistema y accesos.' },
+      { name: 'Servidor', desc: 'Estado de servicios (MySQL, Radius, VPN).' },
+      { name: 'Migrar sistema', desc: 'Migración desde Mikrowisp 5.' },
+      { name: 'Freeradius', desc: 'Logs y estado del servidor Radius.' },
+      { name: 'Licencia', desc: 'Token de licencia, límites, actualizaciones.' },
+    ],
+  },
+];
+
+const adminSteps = [
+  'Vaya a Ajustes → Gestión personal.',
+  'Pestaña Operadores.',
+  'Haga clic en Nuevo operador.',
+  'Complete: nombre, usuario, contraseña, email, sucursal.',
+  'Asigne plantilla de rol o configure permisos manualmente en el árbol de permisos.',
+  'Guarde.',
+];
+
+const portalSteps = [
+  'Vaya a Ajustes → Portal cliente.',
+  'Pestañas: General, Reporte pago, Banners.',
+  'Active/desactive secciones visibles para el abonado.',
+  'Configure textos, logos y colores del portal.',
+  'Guarde.',
+];
+
+const paymentSteps = [
+  'Vaya a Ajustes → Pasarelas de pago.',
+  'Localice el banco deseado (Banesco, Mercantil, BDV, Bancaribe, etc.).',
+  'Active la pasarela con el switch.',
+  'Complete credenciales API del banco.',
+  'Configure método: Botón de pago, C2P, Pago móvil, Transferencia o Debin.',
+  'Guarde y pruebe con un pago de prueba.',
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 18</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Ajustes generales</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Ajustes Generales · Pantalla de configuración del sistema.
+    </p>
+  </div>
+
+  <div class="space-y-12">
+    {configSections.map(section => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-4">{section.title}</h3>
+        <div class="doc-card overflow-hidden p-0">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-nexo-dark/[0.03]">
+                <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Sección</th>
+                <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {section.items.map((item, i) => (
+                <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
+                  <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{item.name}</td>
+                  <td class="px-5 py-3 text-nexo-dark/60 text-sm">{item.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ))}
+
+    <div class="doc-section-divider"></div>
+
+    <!-- Crear operador -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Crear operador con permisos</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          {adminSteps.map((step, i) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <!-- Configurar portal -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Configurar portal del cliente</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          {portalSteps.map((step, i) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <!-- Configurar pasarela -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Configurar pasarela de pago</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          {paymentSteps.map((step, i) => (
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

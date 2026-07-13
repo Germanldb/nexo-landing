@@ -1,0 +1,95 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const ticketStates = [
+  { state: 'Esperando Respuesta', route: '#ajax/soporte?action=open', desc: 'Tickets sin responder por el operador.' },
+  { state: 'Respondidos', route: '#ajax/soporte?action=answered', desc: 'Tickets con respuesta pendiente de cierre del cliente.' },
+  { state: 'Cerrados', route: '#ajax/soporte?action=close', desc: 'Tickets resueltos y cerrados.' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 16</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Soporte y tickets</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Tickets (menú expandible) o Zendesk Support · Sistema de atención al cliente.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Sistema de tickets interno</h3>
+      <div class="space-y-3 mb-6">
+        {ticketStates.map(ts => (
+          <div class="flex items-start gap-4 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-5 py-4">
+            <span class="w-3 h-3 rounded-full bg-nexo-primary mt-1.5 shrink-0"></span>
+            <div>
+              <p class="font-bold text-nexo-dark text-sm">{ts.state}</p>
+              <p class="text-nexo-dark/50 text-xs mt-0.5"><code class="doc-code-inline text-xs">{ts.route}</code></p>
+              <p class="text-nexo-dark/60 text-sm mt-1">{ts.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Atender un ticket</h4>
+      <div class="doc-card mb-6">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Vaya a Tickets → Esperando Respuesta.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm">Revise la lista ordenada por prioridad/fecha y haga clic en el ticket.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-sm">Pestañas disponibles: <strong class="text-nexo-dark">Añadir respuesta</strong> (visible para cliente), <strong class="text-nexo-dark">Añadir nota</strong> (interna), <strong class="text-nexo-dark">Otros tickets</strong> del mismo cliente.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-sm">Escriba la respuesta y adjunte archivos si es necesario.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
+            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Enviar respuesta</strong>. El cliente recibe notificación.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">6</span>
+            <span class="text-nexo-dark/70 text-sm">Cuando esté resuelto, haga clic en <strong class="text-nexo-dark">Cerrar ticket</strong>.</span>
+          </li>
+        </ol>
+      </div>
+
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Crear ticket manualmente</h4>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Nuevo Ticket</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm">Seleccione cliente, departamento (Soporte, Facturación, Comercial), escriba asunto y descripción.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-sm">Adjunte archivos si aplica, asigne prioridad y técnico, y guarde.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="doc-section-divider"></div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">Zendesk Support</h3>
+      <p class="text-nexo-dark/70 text-base leading-relaxed">
+        Si la integración Zendesk está activa, el menú muestra <strong class="text-nexo-dark">Zendesk Support</strong> que redirige al módulo conectado con Zendesk para gestión de tickets externa.
+      </p>
+    </div>
+  </div>
+</section>

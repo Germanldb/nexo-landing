@@ -1,0 +1,60 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const submodules = [
+  { name: 'Mensajes enviados', desc: 'Historial de SMS enviados a clientes.' },
+  { name: 'Mensajes recibidos', desc: 'SMS entrantes y contador de mensajes WhatsApp.' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 17</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Mensajería (SMS / WhatsApp)</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Mensajería (menú expandible) · Enviar y recepcionar mensajes a clientes.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Sub-módulos</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {submodules.map(s => (
+          <div class="doc-card">
+            <div class="w-8 h-8 rounded-xl bg-nexo-primary/10 flex items-center justify-center mb-3">
+              <svg class="w-4 h-4 text-nexo-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            </div>
+            <p class="font-bold text-nexo-dark text-sm">{s.name}</p>
+            <p class="text-nexo-dark/60 text-sm mt-1">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-6">Enviar SMS a un cliente</h3>
+      <div class="doc-card">
+        <ol class="space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+            <span class="text-nexo-dark/70 text-sm">Desde la <strong class="text-nexo-dark">ficha del cliente</strong> → pestaña Email & SMS → Enviar SMS.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+            <span class="text-nexo-dark/70 text-sm">O desde <strong class="text-nexo-dark">Mensajería → Mensajes enviados → Nuevo</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+            <span class="text-nexo-dark/70 text-sm">Seleccione plantilla o escriba mensaje personalizado.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+            <span class="text-nexo-dark/70 text-sm">Confirme envío.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

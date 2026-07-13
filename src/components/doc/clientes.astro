@@ -1,0 +1,172 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const wizardSteps = [
+  {
+    num: 1,
+    title: 'Datos personales',
+    fields: ['Nombre completo o razón social.', 'Cédula / RIF / documento (validación automática según país).', 'Dirección, teléfono, email.', 'Coordenadas GPS (opcional).'],
+  },
+  {
+    num: 2,
+    title: 'Facturación y notificaciones',
+    fields: ['Tipo: Prepago o Postpago.', 'Día de pago (1-28).', 'Día de corte automático.', 'Activar/desactivar avisos por SMS, email y push.', 'Configuración de mora.'],
+  },
+  {
+    num: 3,
+    title: 'Servicios',
+    fields: ['Seleccione router/nodo.', 'Elija perfil de servicio.', 'Configure tipo de conexión (PPPoE, Hotspot, etc.).', 'Asigne IP (automática o estática).', 'Configure IPv6 si aplica.', 'Seleccione ubicación/NAP si es fibra.'],
+  },
+];
+
+const clientSubsections = [
+  {
+    title: 'Mapa de Clientes',
+    menu: 'Clientes → Mapa Clientes',
+    what: 'Visualizar geográficamente la ubicación de todos los clientes en un mapa interactivo. Requiere coordenadas GPS en las fichas.',
+    steps: ['Vaya a Clientes → Mapa Clientes.', 'El mapa muestra marcadores por cliente.', 'Haga clic en un marcador para ver datos básicos.', 'Use los filtros para mostrar solo activos, suspendidos, etc.'],
+  },
+  {
+    title: 'Anuncios',
+    menu: 'Clientes → Anuncios',
+    what: 'Publicar avisos visibles en el portal del cliente: mantenimientos, promociones, comunicados oficiales.',
+    steps: ['Vaya a Clientes → Anuncios.', 'Haga clic en Nuevo.', 'Escriba título y contenido del anuncio.', 'Configure vigencia (fecha inicio/fin).', 'Seleccione si aplica a todos los clientes o a un grupo específico.', 'Publique.'],
+  },
+  {
+    title: 'Notificaciones Push',
+    menu: 'Clientes → Notificaciones push',
+    what: 'Enviar notificaciones push a la app móvil o navegador del cliente.',
+    steps: [],
+  },
+  {
+    title: 'Instalaciones',
+    menu: 'Clientes → Instalaciones',
+    what: 'Gestionar el ciclo completo de instalaciones: pre-registro de prospectos, órdenes de instalación, materiales y alta final del cliente.',
+    steps: [
+      'Crear pre-registro: Vaya a Clientes → Instalaciones → Registro → Nuevo. Ingrese cédula, nombre, teléfono, dirección y plan deseado. Guarde (estado: Pendiente).',
+      'Aceptar instalación: En la pestaña Instalaciones, localice la orden y haga clic en Aceptar instalación. Asigne técnico y fecha.',
+      'Agregar materiales: Haga clic en Materiales, seleccione productos del almacén (ONU, cable, conectores). El inventario se descuenta automáticamente.',
+      'Imprimir hoja: Haga clic en Imprimir para generar PDF con datos del cliente, materiales y plan.',
+      'Dar de alta: Haga clic en Dar de alta. Se abre el wizard de alta de cliente con datos pre-cargados.',
+    ],
+  },
+  {
+    title: 'Contratos',
+    menu: 'Clientes → Contratos',
+    what: 'Generar, enviar y administrar contratos formales con clientes en formato PDF.',
+    steps: ['Vaya a Clientes → Contratos o desde la ficha del cliente.', 'Haga clic en Nuevo contrato.', 'Seleccione plantilla.', 'Revise datos pre-cargados del cliente.', 'Genere PDF y envíe por correo o imprima para firma física.'],
+  },
+  {
+    title: 'Correos',
+    menu: 'Clientes → Correos',
+    what: 'Bandeja de correos enviados/recibidos relacionados con clientes: facturas, avisos y respuestas.',
+    steps: [],
+  },
+];
+
+const toolButtons = [
+  { btn: 'Nuevo', permiso: 'Usuarios → Nuevo', desc: 'Alta de cliente' },
+  { btn: 'Filtrar', permiso: 'Todos', desc: 'Filtro avanzado colapsable' },
+  { btn: 'Estado', permiso: 'Todos', desc: 'TODOS / ACTIVOS / SUSPENDIDOS / RETIRADOS / ONLINE' },
+  { btn: 'Suspender masivo', permiso: 'Activar', desc: 'Suspender seleccionados' },
+  { btn: 'Activar masivo', permiso: 'Activar', desc: 'Activar seleccionados' },
+  { btn: 'Retirar masivo', permiso: 'Retirar', desc: 'Retirar seleccionados' },
+  { btn: 'Eliminar masivo', permiso: 'Eliminar', desc: 'Eliminar seleccionados' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 9</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Clientes</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Clientes (menú expandible) · Gestión completa del ciclo de vida de cada cliente.
+    </p>
+  </div>
+
+  <div class="space-y-12">
+    <!-- Listado de usuarios -->
+    <div>
+      <h3 class="text-xl font-bold text-nexo-dark mb-2">Usuarios (Listado de clientes)</h3>
+      <p class="text-nexo-dark/40 text-sm mb-4">
+        <strong class="text-nexo-dark/60">Menú:</strong> Clientes → Usuarios
+      </p>
+      <p class="text-nexo-dark/70 text-base leading-relaxed mb-6">
+        Listar, buscar, filtrar y gestionar todos los clientes del ISP. La barra de herramientas ofrece acciones rápidas sobre la selección actual.
+      </p>
+
+      <div class="doc-card overflow-hidden p-0 mb-6">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="bg-nexo-dark/[0.03]">
+              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Botón</th>
+              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Permiso</th>
+              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toolButtons.map((b, i) => (
+              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
+                <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{b.btn}</td>
+                <td class="px-5 py-3 text-nexo-dark/60 text-sm"><code class="doc-code-inline text-xs">{b.permiso}</code></td>
+                <td class="px-5 py-3 text-nexo-dark/60 text-sm">{b.desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Wizard de alta -->
+      <h4 class="text-lg font-bold text-nexo-dark mb-4">Alta de nuevo cliente (Wizard 3 pasos)</h4>
+      <div class="space-y-4">
+        {wizardSteps.map(step => (
+          <div class="doc-card">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-8 h-8 rounded-xl bg-nexo-primary text-nexo-dark flex items-center justify-center text-sm font-bold">{step.num}</span>
+              <h5 class="font-bold text-nexo-dark">{step.title}</h5>
+            </div>
+            <ul class="space-y-2 ml-11">
+              {step.fields.map(f => (
+                <li class="flex items-start gap-2 text-sm text-nexo-dark/70">
+                  <span class="w-1.5 h-1.5 rounded-full bg-nexo-primary mt-2 shrink-0"></span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-4 bg-nexo-primary/10 border border-nexo-primary/30 rounded-xl px-5 py-4 text-sm text-nexo-dark/70">
+        <strong class="text-nexo-dark">Consejo:</strong> Si el cliente viene de una instalación, use el botón Dar de alta desde el módulo Instalaciones para pre-cargar los datos.
+      </div>
+    </div>
+
+    <div class="doc-section-divider"></div>
+
+    <!-- Sub-secciones -->
+    {clientSubsections.map(sub => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
+        <p class="text-nexo-dark/40 text-sm mb-4">
+          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+        </p>
+        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
+        {sub.steps.length > 0 && (
+          <div class="doc-card">
+            <ol class="space-y-3">
+              {sub.steps.map((step, i) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+        <div class="doc-section-divider mt-10"></div>
+      </div>
+    ))}
+  </div>
+</section>

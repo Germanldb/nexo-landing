@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Intro from '../../components/doc/intro.astro';
+import Glosario from '../../components/doc/glosario.astro';
+import Acceso from '../../components/doc/acceso.astro';
+import BarraSuperior from '../../components/doc/barra-superior.astro';
+import Dashboard from '../../components/doc/dashboard.astro';
+import GestionRed from '../../components/doc/gestion-red.astro';
+import Servicios from '../../components/doc/servicios.astro';
+import Promociones from '../../components/doc/promociones.astro';
+import Clientes from '../../components/doc/clientes.astro';
+import FichaCliente from '../../components/doc/ficha-cliente.astro';
+import FichasHotspot from '../../components/doc/fichas-hotspot.astro';
+import Tareas from '../../components/doc/tareas.astro';
+import Finanzas from '../../components/doc/finanzas.astro';
+import Almacen from '../../components/doc/almacen.astro';
+import Reportes from '../../components/doc/reportes.astro';
+import Soporte from '../../components/doc/soporte.astro';
+import Mensajeria from '../../components/doc/mensajeria.astro';
+import Ajustes from '../../components/doc/ajustes.astro';
+import PortalCliente from '../../components/doc/portal-cliente.astro';
+import Flujos from '../../components/doc/flujos.astro';
+import Permisos from '../../components/doc/permisos.astro';
+import FaqDoc from '../../components/doc/faq-doc.astro';
+
+const sections = [
+  { num: 1, title: 'Introducción', id: 'intro' },
+  { num: 2, title: 'Conceptos básicos', id: 'glosario' },
+  { num: 3, title: 'Acceso al sistema', id: 'acceso' },
+  { num: 4, title: 'Barra superior', id: 'barra-superior' },
+  { num: 5, title: 'Dashboard', id: 'dashboard' },
+  { num: 6, title: 'Gestión de Red', id: 'gestion-red' },
+  { num: 7, title: 'Servicios y perfiles', id: 'servicios' },
+  { num: 8, title: 'Promociones', id: 'promociones' },
+  { num: 9, title: 'Clientes', id: 'clientes' },
+  { num: 10, title: 'Ficha del cliente', id: 'ficha-cliente' },
+  { num: 11, title: 'Fichas Hotspot', id: 'fichas-hotspot' },
+  { num: 12, title: 'Tareas y planificación', id: 'tareas' },
+  { num: 13, title: 'Finanzas', id: 'finanzas' },
+  { num: 14, title: 'Almacén', id: 'almacen' },
+  { num: 15, title: 'Reportes', id: 'reportes' },
+  { num: 16, title: 'Soporte y tickets', id: 'soporte' },
+  { num: 17, title: 'Mensajería', id: 'mensajeria' },
+  { num: 18, title: 'Ajustes generales', id: 'ajustes' },
+  { num: 19, title: 'Portal del cliente', id: 'portal-cliente' },
+  { num: 20, title: 'Flujos de trabajo', id: 'flujos' },
+  { num: 21, title: 'Permisos y roles', id: 'permisos' },
+  { num: 22, title: 'Preguntas frecuentes', id: 'faq-doc' },
+];
+---
+
+<BaseLayout title="Documentación — Nexo" description="Manual completo de usuario para la plataforma Nexo.">
+  <div class="doc-page flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="doc-sidebar" class="doc-sidebar w-72 xl:w-80 shrink-0 fixed top-24 left-0 h-[calc(100vh-6rem)] overflow-y-auto px-5 py-8 z-40 hidden lg:block transition-transform duration-300">
+      <div class="mb-8">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary">Manual de usuario</span>
+        <h2 class="text-lg font-extrabold text-nexo-dark mt-1">Nexo v1.0</h2>
+      </div>
+      <nav class="space-y-0.5">
+        {sections.map(s => (
+          <a
+            href={`#${s.id}`}
+            class="doc-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-nexo-dark/50 hover:text-nexo-dark hover:bg-nexo-dark/5 transition-all duration-200"
+          >
+            <span class="w-6 h-6 rounded-lg bg-nexo-dark/5 flex items-center justify-center text-[10px] font-bold text-nexo-dark/40 shrink-0">{s.num}</span>
+            <span>{s.title}</span>
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <!-- Mobile sidebar toggle -->
+    <button
+      id="doc-sidebar-toggle"
+      class="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-nexo-dark text-white shadow-xl flex items-center justify-center hover:bg-nexo-primary hover:text-nexo-dark transition-all"
+      aria-label="Abrir navegación"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
+
+    <!-- Mobile sidebar overlay -->
+    <div id="doc-sidebar-overlay" class="lg:hidden fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Content -->
+    <main class="flex-1 lg:ml-72 xl:ml-80 min-w-0">
+      <div class="px-6 sm:px-10 lg:px-16 xl:px-20 py-12 lg:py-16">
+        <Intro id="intro" />
+        <Glosario id="glosario" />
+        <Acceso id="acceso" />
+        <BarraSuperior id="barra-superior" />
+        <Dashboard id="dashboard" />
+        <GestionRed id="gestion-red" />
+        <Servicios id="servicios" />
+        <Promociones id="promociones" />
+        <Clientes id="clientes" />
+        <FichaCliente id="ficha-cliente" />
+        <FichasHotspot id="fichas-hotspot" />
+        <Tareas id="tareas" />
+        <Finanzas id="finanzas" />
+        <Almacen id="almacen" />
+        <Reportes id="reportes" />
+        <Soporte id="soporte" />
+        <Mensajeria id="mensajeria" />
+        <Ajustes id="ajustes" />
+        <PortalCliente id="portal-cliente" />
+        <Flujos id="flujos" />
+        <Permisos id="permisos" />
+        <FaqDoc id="faq-doc" />
+
+        <!-- Back to top -->
+        <div class="mt-16 pt-8 border-t border-nexo-dark/10 text-center">
+          <a href="#intro" class="inline-flex items-center gap-2 text-sm font-semibold text-nexo-dark/40 hover:text-nexo-primary transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+            Volver al inicio
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .doc-sidebar {
+      background: var(--nexo-bg-elevated);
+      border-right: 1px solid var(--nexo-border);
+    }
+    .doc-nav-link.active {
+      color: var(--nexo-text);
+      background: color-mix(in srgb, var(--nexo-primary) 10%, transparent);
+    }
+    .doc-nav-link.active span:first-child {
+      background: var(--nexo-primary);
+      color: #0D2E34;
+    }
+    .doc-section-divider {
+      border-top: 1px solid var(--nexo-border);
+    }
+    @media (min-width: 1024px) {
+      .doc-sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .doc-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .doc-sidebar::-webkit-scrollbar-thumb {
+        background: var(--nexo-border);
+        border-radius: 4px;
+      }
+    }
+  </style>
+
+  <script>
+    const links = document.querySelectorAll('.doc-nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const sidebar = document.getElementById('doc-sidebar');
+    const toggle = document.getElementById('doc-sidebar-toggle');
+    const overlay = document.getElementById('doc-sidebar-overlay');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const id = entry.target.id;
+          const active = document.querySelector(`.doc-nav-link[href="#${id}"]`);
+          active?.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -70% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          sidebar?.classList.add('hidden');
+          overlay?.classList.add('hidden');
+        }
+      });
+    });
+
+    toggle?.addEventListener('click', () => {
+      sidebar?.classList.toggle('hidden');
+      overlay?.classList.toggle('hidden');
+      if (!overlay?.classList.contains('hidden')) {
+        requestAnimationFrame(() => {
+          overlay?.classList.remove('opacity-0');
+          overlay?.classList.add('opacity-100');
+        });
+      } else {
+        overlay?.classList.remove('opacity-100');
+        overlay?.classList.add('opacity-0');
+      }
+    });
+
+    overlay?.addEventListener('click', () => {
+      sidebar?.classList.add('hidden');
+      overlay?.classList.remove('opacity-100');
+      overlay?.classList.add('opacity-0');
+      setTimeout(() => overlay?.classList.add('hidden'), 300);
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,103 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const profiles = [
+  {
+    title: 'Perfiles de Internet',
+    menu: 'Servicios → Internet',
+    what: 'Crear y administrar planes de internet: velocidad de bajada/subida, precio, tipo de conexión (PPPoE, Hotspot, DHCP), límites de tráfico.',
+    steps: [
+      'Vaya a Servicios → Internet.',
+      'Haga clic en Nuevo.',
+      'Complete: Nombre del perfil (ej. "Plan 50 Mbps"), Velocidad bajada/subida, Precio mensual, Tipo de conexión (PPPoE, Hotspot, DHCP, IP estática), Router asociado y Límite de tráfico (opcional).',
+      'Configure colas y reglas de MikroTik si aplica.',
+      'Presione Guardar.',
+    ],
+    note: 'Cambiar el precio de un perfil no modifica automáticamente el precio de clientes ya contratados. Debe actualizar cada servicio individualmente o usar Cambios Masivos en Ajustes.',
+  },
+  {
+    title: 'Perfiles de Voz (VoIP)',
+    menu: 'Servicios → Voz',
+    what: 'Misma lógica que Internet pero para servicios de telefonía IP. Configure extensiones, minutos incluidos y tarifas.',
+    steps: [],
+  },
+  {
+    title: 'Perfiles CATV',
+    menu: 'Servicios → Catv',
+    what: 'Planes de televisión por cable analógico o digital.',
+    steps: [],
+  },
+  {
+    title: 'Perfiles Personalizados',
+    menu: 'Servicios → Personalizado',
+    what: 'Servicios no estándar definidos por el ISP: cámaras de vigilancia, enlaces dedicados, servicios especiales.',
+    steps: [],
+  },
+  {
+    title: 'IPTV',
+    menu: 'Servicios → IPTV',
+    what: 'Gestionar servicios de televisión por protocolo IP, incluyendo integración con plataformas como Setplex/Nora.',
+    steps: [
+      'Vaya a Servicios → IPTV.',
+      'Revise el listado de suscriptores activos.',
+      'Use los filtros para buscar por nombre, plan o estado.',
+      'Acciones disponibles: Activar/Suspender suscripción, Editar datos, Actualizar plan.',
+      'Para vincular IPTV a un cliente del ISP, hágalo desde la ficha del cliente en la pestaña Servicios.',
+    ],
+  },
+];
+
+const toolbarButtons = [
+  { btn: 'Nuevo', desc: 'Alta de nuevo cliente' },
+  { btn: 'Filtrar', desc: 'Filtro avanzado colapsable' },
+  { btn: 'Estado', desc: 'TODOS / ACTIVOS / SUSPENDIDOS / RETIRADOS / ONLINE' },
+  { btn: 'Suspender masivo', desc: 'Suspender clientes seleccionados' },
+  { btn: 'Activar masivo', desc: 'Activar clientes seleccionados' },
+  { btn: 'Retirar masivo', desc: 'Retirar clientes seleccionados' },
+  { btn: 'Eliminar masivo', desc: 'Eliminar clientes seleccionados' },
+];
+---
+
+<section id={id} class="doc-section mb-20">
+  <div class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 7</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Servicios y perfiles</h2>
+    <p class="text-nexo-dark/50 text-lg mt-4">
+      <strong class="text-nexo-dark">Menú:</strong> Servicios (menú expandible) · Los perfiles definen los planes de servicio que se ofrecen a los clientes.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    {profiles.map(sub => (
+      <div>
+        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
+        <p class="text-nexo-dark/40 text-sm mb-4">
+          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+        </p>
+        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
+
+        {sub.steps.length > 0 && (
+          <div class="doc-card">
+            <ol class="space-y-3">
+              {sub.steps.map((step, i) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {sub.note && (
+          <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-sm text-nexo-dark/70">
+            <strong class="text-nexo-dark">Importante:</strong> {sub.note}
+          </div>
+        )}
+
+        <div class="doc-section-divider mt-10"></div>
+      </div>
+    ))}
+  </div>
+</section>
