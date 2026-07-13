@@ -4,99 +4,75 @@ const { id } = Astro.props;
 
 const flows = [
   {
-    title: 'Alta completa de cliente (sin instalación)',
+    title: 'Alta sin instalación',
     steps: [
       'Clientes → Usuarios → Nuevo',
-      'Paso 1: Datos personales',
-      'Paso 2: Facturación',
-      'Paso 3: Servicios',
-      'Registrar Cliente',
-      '[Automático] Factura generada + servicio activo en router',
+      'Paso 1: datos personales → Paso 2: facturación → Paso 3: servicios',
+      'Registrar cliente → factura generada y servicio activo en router',
     ],
   },
   {
     title: 'Alta con instalación',
     steps: [
-      'Clientes → Instalaciones → Nuevo registro',
-      'Aceptar instalación (asignar técnico)',
-      'Agregar materiales (almacén)',
-      'Imprimir hoja → Técnico instala en campo',
-      'Tareas: marcar "En curso" → "Finalizar"',
-      'Dar de alta → Wizard de usuarios (datos pre-cargados)',
-      'Cliente activo',
+      'Instalaciones → Nuevo registro → Aceptar (técnico) → materiales',
+      'Imprimir hoja → técnico instala → Tareas: En curso → Finalizar',
+      'Dar de alta → wizard precargado → cliente activo',
     ],
   },
   {
     title: 'Cobro en caja',
     steps: [
-      'Barra superior → $ (Registrar pago)',
-      'Buscar cliente',
-      'Seleccionar factura',
-      'Forma de pago + monto',
-      'Registrar pago',
-      '[Automático] Servicio activado si estaba suspendido',
-      'Imprimir recibo',
+      'Barra superior → $ (Registrar pago) → buscar cliente',
+      'Seleccionar factura → forma de pago + monto → Registrar',
+      'Si estaba suspendido, el servicio se reactiva → imprimir recibo',
     ],
   },
   {
     title: 'Ciclo de morosidad',
     steps: [
-      '[Automático - Cron] Factura generada el día configurado',
-      '[Automático] Avisos SMS/email según configuración',
-      '[Automático] Corte el día de corte configurado',
-      'Cliente suspendido en router/OLT',
-      'Cliente paga (caja o portal)',
-      '[Automático] Servicio reactivado',
+      'Cron: factura el día configurado → avisos SMS/email',
+      'Corte el día de corte → cliente suspendido en router/OLT',
+      'Cliente paga (caja o portal) → servicio reactivado',
     ],
   },
   {
     title: 'Venta de ficha hotspot',
     steps: [
-      'Fichas Hotspot → Fichas → Nuevo (lote)',
-      'Imprimir fichas',
-      'Entregar al cliente (venta manual)',
-      'Marcar como vendida (automático al usar o manual)',
-      'Consultar ventas en Fichas Hotspot → Ventas',
+      'Fichas Hotspot → Nuevo lote → imprimir',
+      'Entregar → marcar vendida (al usar o manual)',
+      'Consultar en Fichas Hotspot → Ventas',
     ],
   },
   {
     title: 'Atención de soporte',
     steps: [
-      'Cliente abre ticket (portal) o operador crea ticket (admin)',
-      'Aparece en Tickets → Esperando Respuesta',
-      'Operador responde',
-      'Cliente recibe notificación',
-      'Operador cierra ticket cuando resuelto',
+      'Cliente abre ticket (portal) u operador lo crea',
+      'Aparece en Esperando respuesta → operador responde',
+      'Cliente recibe notificación → operador cierra al resolver',
     ],
   },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 20</span>
-    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Flujos de trabajo integrados</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">Resumen visual de los procesos más importantes de Nexo.</p>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 20</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Flujos de trabajo</h2>
+    <p class="text-nexo-dark/50 text-sm mt-2">Procesos clave de punta a punta, incluyendo lo que hace el sistema en automático.</p>
   </div>
 
-  <div class="space-y-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {flows.map(flow => (
-      <div class="doc-card">
-        <h3 class="text-lg font-bold text-nexo-dark mb-4">{flow.title}</h3>
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="text-sm font-bold text-nexo-dark mb-3">{flow.title}</h3>
         <div class="space-y-0">
           {flow.steps.map((step, i) => (
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-2.5">
               <div class="flex flex-col items-center">
-                <span class:list={[
-                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-                  step.startsWith('[Automático') ? 'bg-nexo-dark/10 text-nexo-dark/50' : 'bg-nexo-primary text-nexo-dark'
-                ]}>{i + 1}</span>
-                {i < flow.steps.length - 1 && <div class="w-0.5 h-4 bg-nexo-dark/10 my-1"></div>}
+                <span class="w-5 h-5 rounded-full bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+                {i < flow.steps.length - 1 && <div class="w-0.5 h-3 bg-nexo-dark/10 my-0.5"></div>}
               </div>
-              <span class:list={[
-                'text-sm leading-relaxed pt-1',
-                step.startsWith('[Automático') ? 'text-nexo-dark/40 italic' : 'text-nexo-dark/70'
-              ]}>{step}</span>
+              <span class="text-xs text-nexo-dark/65 leading-relaxed pt-0.5">{step}</span>
             </div>
           ))}
         </div>

@@ -1,65 +1,60 @@
 ---
+import DocImage from './DocImage.astro';
+import imgAdmin from '../../assets/img-docs/doc-50.png';
+import imgVentas from '../../assets/img-docs/doc-38.png';
+import imgAlmacen from '../../assets/img-docs/doc-33.png';
+import imgRed from '../../assets/img-docs/doc-34.png';
+import imgSoporte from '../../assets/img-docs/doc-35.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
 const reportTypes = [
-  { type: 'Administración', desc: 'Clientes activos/suspendidos, morosos, crecimiento.' },
-  { type: 'Ventas', desc: 'Ingresos por periodo, por plan, por operador.' },
-  { type: 'Almacén', desc: 'Inventario, movimientos, productos asignados.' },
-  { type: 'Red', desc: 'Tráfico, uptime de routers, clientes online.' },
-  { type: 'Soporte', desc: 'Tickets abiertos/cerrados, tiempos de respuesta.' },
+  { type: 'Administración', desc: 'Clientes, morosos, crecimiento.', image: imgAdmin, caption: 'Reportes → Administración.' },
+  { type: 'Ventas', desc: 'Ingresos por periodo, plan u operador.', image: imgVentas, caption: 'Reportes → Ventas.' },
+  { type: 'Almacén', desc: 'Inventario y movimientos.', image: imgAlmacen, caption: 'Reportes → Almacén.' },
+  { type: 'Red', desc: 'Mapa NAP y clientes online.', image: imgRed, caption: 'Reportes → Red.' },
+  { type: 'Soporte', desc: 'Tickets y tiempos de respuesta.', image: imgSoporte, caption: 'Reportes → Soporte.' },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 15</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 15</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Reportes</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Reportes (menú expandible) · Generar reportes detallados de cada área del ISP.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Menú: Reportes · Análisis por área del ISP.</p>
   </div>
 
   <div class="space-y-8">
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Sub-módulos disponibles</h3>
-      <div class="space-y-3">
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Tipos disponibles</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
         {reportTypes.map((r, i) => (
-          <div class="flex items-start gap-4 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-5 py-4">
-            <span class="w-7 h-7 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+          <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
             <div>
               <p class="font-bold text-nexo-dark text-sm">{r.type}</p>
-              <p class="text-nexo-dark/60 text-sm mt-0.5">{r.desc}</p>
+              <p class="text-nexo-dark/55 text-xs mt-0.5">{r.desc}</p>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div class="space-y-6">
+        {reportTypes.map(r => (
+          <DocImage src={r.image} alt={`Reporte de ${r.type} en Nexo`} caption={r.caption} />
         ))}
       </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Generar un reporte</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Vaya a Reportes → el tipo deseado.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Configure filtros: fechas, sucursal, router, operador.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Generar</strong> o <strong class="text-nexo-dark">Buscar</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">Revise la tabla o gráfico resultante.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
-            <span class="text-nexo-dark/70 text-sm">Exporte a Excel o PDF con el botón correspondiente.</span>
-          </li>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Generar un reporte</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Reportes → tipo deseado</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Filtros: fechas, sucursal, etc.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Generar / Buscar</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Exportar Excel o PDF</li>
         </ol>
       </div>
     </div>

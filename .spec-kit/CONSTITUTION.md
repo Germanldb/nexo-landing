@@ -59,16 +59,21 @@
 
 ### R11 — Documentación como componentes Astro
 - Los componentes de documentación van en `src/components/doc/`.
-- Solo `docpage.astro` va en `src/pages/doc/` (es la única ruta).
+- Solo `docpage.astro` va en `src/pages/doc/` (es la única ruta pública del manual).
 - Cada sección es un componente `.astro` independiente con interfaz `Props { id?: string }`.
-- Estilos de documentación: `.doc-card`, `.doc-section-divider`, `.doc-code-inline` en `global.css`.
+- Capturas de pantalla: `src/assets/img-docs/doc-XX.png` vía `DocImage.astro` (`astro:assets` + lazy load).
+- Inventario de capturas: `src/assets/img-docs/FALTANTES.txt` (integradas / descartadas / próximo número).
+- Estilos en `global.css`: `.doc-card`, `.doc-section-divider`, `.doc-code-inline`, `.doc-figure*`, `.doc-nav*`.
 - NO usar `@tailwindcss/typography` ni plugins externos para estilos de docs.
-- Contenido informativo completo pero sin exceder 4-6 líneas por párrafo.
-- Usar tarjetas `.doc-card` para pasos, listas y contenido destacado.
+- Contenido: denso y consultable. Mantener pasos, campos, advertencias y flujos operativos; no vaciar la explicación “para ganar espacio”.
+- Evitar tono mecánico: no repetir en cada bloque “Menú:…”, “¿Para qué sirve?” ni primer paso “Vaya a X → Y” si el título/screenshot ya lo dicen.
+- Preferir grids, listas cortas y captions breves (sin eco del título). Párrafos cortos; lo operativo va en `.doc-card` con pasos numerados.
+- No poner pie de versión ni mensajes “actualice este manual…” al final del documento.
 
 ### R12 — Layout de documentación
-- Sidebar fijo a la izquierda (`w-72` / `w-80` en xl) con scroll spy por IntersectionObserver.
-- Contenido principal sin max-width artificial, usa el espacio disponible con padding responsivo.
-- Sidebar: sticky, overflow-y-auto, scrollbar personalizado en desktop.
-- Mobile: hamburger toggle + overlay con transición opacity.
-- Botón "Volver al inicio" al final del contenido.
+- La página del manual **no** monta el `Header` de la landing: el sidebar ocupa `top-0` / `h-screen`.
+- Sidebar fijo izquierdo (`w-72` / `w-80` en xl), overflow-y-auto, scrollbar personalizado en desktop.
+- Navegación agrupada en acordeón (`navGroups`): categorías colapsadas por defecto; una abierta a la vez; el scroll spy abre el grupo de la sección visible.
+- Contenido principal sin max-width artificial; padding superior contenido (sin hueco de header).
+- Mobile: hamburger + overlay con transición opacity.
+- Botón “Volver al inicio” al final del contenido (discreto).

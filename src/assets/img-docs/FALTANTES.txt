@@ -1,0 +1,25 @@
+CAPTURAS — Documentación Nexo
+=============================
+Actualizado: 2026-07-13
+
+────────────────────────────────────────────────────────────
+INTEGRADAS (set esencial + barra)
+────────────────────────────────────────────────────────────
+[x] doc-52  Ficha del cliente → ficha-cliente.astro
+[x] doc-53  Registrar Pagos → finanzas.astro
+[x] doc-54  Portal cliente → portal-cliente.astro
+[x] doc-55  Barra superior (header) → barra-superior.astro
+[x] doc-56  Menú de usuario (dropdown) → barra-superior.astro
+
+────────────────────────────────────────────────────────────
+DESCARTADO A PROPÓSITO
+────────────────────────────────────────────────────────────
+• Login admin, Wizard alta, recorte doc-46
+• 2FA, pestañas extra de ficha, ventas hotspot,
+  pagos masivos, transacciones, dólar price, PlaceToPay,
+  flujos, permisos, glosario, FAQ
+
+────────────────────────────────────────────────────────────
+NOTA
+────────────────────────────────────────────────────────────
+Siguiente número libre: doc-57.png

@@ -44,9 +44,12 @@ nexo-landing/
 │   └── sources/venezuela.json    # Datos fuente Venezuela
 │
 ├── src/
-│   ├── assets/                   # Imágenes optimizadas por Astro
+│   ├── assets/
+│   │   └── img-docs/             # Capturas del manual (doc-01…doc-56.png)
+│   │       ├── doc-XX.png        # Screenshots del panel Nexo
+│   │       └── FALTANTES.txt     # Integradas / descartadas / próximo número
 │   ├── components/               # Componentes Astro (.astro)
-│   │   ├── Header.astro          # Nav fijo + toggle dark/light
+│   │   ├── Header.astro          # Nav fijo + toggle dark/light (landing; NO en docpage)
 │   │   ├── Hero.astro            # Hero con laptop preview
 │   │   ├── ProblemSection.astro  # 3 pain points
 │   │   ├── ReconciliationSection.astro  # Demo interactiva 6 canales
@@ -56,29 +59,9 @@ nexo-landing/
 │   │   ├── CTASection.astro      # Call to action final
 │   │   ├── Footer.astro          # Footer
 │   │   ├── ExpoIspRegistrationForm.astro  # Form 743 líneas
-│   │   └── doc/                  # Componentes de documentación (22 secciones)
-│   │       ├── intro.astro       # Sección 1: Introducción
-│   │       ├── glosario.astro    # Sección 2: Conceptos básicos
-│   │       ├── acceso.astro      # Sección 3: Acceso al sistema
-│   │       ├── barra-superior.astro # Sección 4: Barra superior
-│   │       ├── dashboard.astro   # Sección 5: Dashboard
-│   │       ├── gestion-red.astro # Sección 6: Gestión de Red
-│   │       ├── servicios.astro   # Sección 7: Servicios y perfiles
-│   │       ├── promociones.astro # Sección 8: Promociones
-│   │       ├── clientes.astro    # Sección 9: Clientes
-│   │       ├── ficha-cliente.astro # Sección 10: Ficha del cliente
-│   │       ├── fichas-hotspot.astro # Sección 11: Fichas Hotspot
-│   │       ├── tareas.astro      # Sección 12: Tareas y planificación
-│   │       ├── finanzas.astro    # Sección 13: Finanzas
-│   │       ├── almacen.astro     # Sección 14: Almacén
-│   │       ├── reportes.astro    # Sección 15: Reportes
-│   │       ├── soporte.astro     # Sección 16: Soporte y tickets
-│   │       ├── mensajeria.astro  # Sección 17: Mensajería
-│   │       ├── ajustes.astro     # Sección 18: Ajustes generales
-│   │       ├── portal-cliente.astro # Sección 19: Portal del cliente
-│   │       ├── flujos.astro      # Sección 20: Flujos de trabajo
-│   │       ├── permisos.astro    # Sección 21: Permisos y roles
-│   │       └── faq-doc.astro     # Sección 22: Preguntas frecuentes
+│   │   └── doc/                  # Manual de usuario (22 secciones + DocImage)
+│   │       ├── DocImage.astro    # Figure + Image (astro:assets) + caption
+│   │       ├── intro.astro … faq-doc.astro  # Secciones 1–22 (ver SPEC.md)
 │   ├── data/
 │   │   └── geo-hispano.ts        # Tipos + índice de 21 países
 │   ├── layouts/
@@ -89,14 +72,15 @@ nexo-landing/
 │   │   ├── terminos.astro        # Términos y condiciones
 │   │   ├── 404.astro             # Página 404 personalizada
 │   │   ├── doc/
-│   │   │   └── docpage.astro     # Documentación principal (layout + sidebar)
+│   │   │   ├── docpage.astro     # Manual: sidebar acordeón + 22 secciones
+│   │   │   └── doc-nexo.md       # Fuente markdown (referencia; no es la ruta pública)
 │   │   └── admin/
 │   │       ├── index.astro       # Login admin
 │   │       └── captaciones.astro # Dashboard de leads
 │   ├── scripts/
 │   │   └── landing-theme.ts      # Lógica toggle dark/light
 │   └── styles/
-│       └── global.css            # CSS vars, dark mode overrides, forms, doc styles
+│       └── global.css            # CSS vars, dark mode, forms, doc-card/figure/nav
 │
 ├── .spec-kit/                    # Contexto del proyecto
 │   ├── CONSTITUTION.md           # Reglas de oro
@@ -221,29 +205,37 @@ docker-compose up -d        # Producción
 | `nexo-brand-tag` | Tag seleccionable pill con dot indicator |
 | `gsap-reveal` | Trigger de animación scroll |
 | `preserve-brand-colors` | Eximir del dark mode override |
-| `doc-card` | Card para contenido de documentación (elevated bg, border, hover) |
+| `doc-card` | Card para pasos/listas del manual (elevated bg, border, hover) |
 | `doc-section-divider` | Separador horizontal entre secciones |
 | `doc-code-inline` | Código inline con fondo lime transparente |
+| `doc-figure` / `-frame` / `-img` / `-caption` | Screenshot del manual vía `DocImage` |
+| `doc-nav` / `-group` / `-toggle` / `-link` | Nav lateral agrupada (acordeón + active) |
 
 ## Layout de documentación
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Header (fijo)                                           │
-├──────────┬──────────────────────────────────────────────┤
-│ Sidebar  │ Contenido                                    │
-│ (fijo)   │                                              │
-│ w-72/80  │ px-6 sm:px-10 lg:px-16 xl:px-20            │
-│          │ py-12 lg:py-16                               │
-│ • Título │                                              │
-│ • 22 nav │ Sección 1: Intro                             │
-│   links  │ Sección 2: Glosario                          │
-│          │ ...                                          │
-│ Scroll   │ Sección22: FAQ                               │
+┌──────────┬──────────────────────────────────────────────┐
+│ Sidebar  │ Contenido (sin Header de landing)            │
+│ top-0    │                                              │
+│ h-screen │ padding superior contenido (sin hueco extra) │
+│ w-72/80  │                                              │
+│          │                                              │
+│ Manual   │ Grupos nav (acordeón):                       │
+│ Nexo     │   Introducción / Primeros pasos / Módulos… │
+│          │                                              │
+│ • Grupo  │ Sección + DocImage + pasos compactos         │
+│  ▾ items │ …                                            │
+│ Scroll   │ FAQ                                          │
 │ spy      │ [Volver al inicio]                           │
 └──────────┴──────────────────────────────────────────────┘
 ```
 
-- **Sidebar:** Fixed, `w-72` (lg) / `w-80` (xl), overflow-y-auto, scrollbar personalizado
-- **Contenido:** `flex-1`, sin max-width, padding responsivo
-- **Mobile:** Sidebar hidden, hamburger toggle, overlay con transición
+### Cómo extender el manual
+1. Nuevo componente en `src/components/doc/` con `Props { id?: string }`.
+2. Importarlo y montarlo en `docpage.astro`; añadir entrada en `navGroups`.
+3. Captura nueva: `doc-XX.png` en `img-docs/`, importar y usar `<DocImage />`; actualizar `FALTANTES.txt`.
+4. Mantener densidad + info operativa (R11 en CONSTITUTION).
+
+- **Sidebar:** Fixed `top-0` `h-screen`, `w-72`/`w-80`, acordeón + scroll spy
+- **Contenido:** `flex-1`, sin max-width, sin Header global
+- **Mobile:** Sidebar hidden, hamburger toggle, overlay

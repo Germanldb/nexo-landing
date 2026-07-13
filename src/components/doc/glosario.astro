@@ -2,50 +2,94 @@
 interface Props { id?: string; }
 const { id } = Astro.props;
 
-const terms = [
-  { term: 'Cliente / Usuario', desc: 'Persona o empresa que contrata los servicios de internet del ISP.' },
-  { term: 'Servicio', desc: 'Conexión activa (Internet, Voz, CATV, IPTV) asociada a un cliente específico.' },
-  { term: 'Perfil', desc: 'Plan de servicio que define velocidad, precio y reglas de facturación.' },
-  { term: 'Router / Nodo', desc: 'Equipo MikroTik que gestiona la conexión de los clientes en una zona.' },
-  { term: 'OLT', desc: 'Equipo de fibra óptica (AdminOLT o SmartOLT) que controla las ONUs de los clientes.' },
-  { term: 'ONU / ONT', desc: 'Equipo de fibra óptica instalado en el hogar del cliente.' },
-  { term: 'NAP', desc: 'Caja de distribución de fibra en la calle que conecta múltiples clientes.' },
-  { term: 'Radius', desc: 'Servidor de autenticación que valida el acceso de usuarios a la red.' },
-  { term: 'Corte', desc: 'Suspensión automática del servicio cuando el cliente no paga a tiempo.' },
-  { term: 'Prepago', desc: 'El cliente paga antes de usar el servicio durante el periodo.' },
-  { term: 'Postpago', desc: 'El cliente usa el servicio y paga al final del periodo.' },
-  { term: 'Ficha Hotspot', desc: 'Ticket de acceso temporal a WiFi con PIN y usuario generados.' },
-  { term: 'Pasarela', desc: 'Integración con banco o procesador de pagos en línea.' },
-  { term: 'Sucursal', desc: 'Sede o punto de operación del ISP (puede tener varias).' },
-  { term: 'Ticket', desc: 'Solicitud de soporte técnico que un cliente abre o un operador crea.' },
+const groups = [
+  {
+    title: 'Clientes y operación',
+    terms: [
+      { term: 'Cliente / Usuario', desc: 'Persona o empresa que contrata los servicios de internet del ISP. En Nexo se gestiona desde Clientes → Usuarios y su ficha (ViewUser).' },
+      { term: 'Servicio', desc: 'Conexión activa asociada a un cliente (Internet, Voz, CATV, IPTV u otro perfil personalizado).' },
+      { term: 'Perfil / Plan', desc: 'Definición del plan: velocidad, precio, tipo de conexión y reglas de facturación.' },
+      { term: 'Ficha del cliente (ViewUser)', desc: 'Pantalla central de cada abonado: resumen, servicios, facturación, tickets, documentos y herramientas.' },
+      { term: 'Instalación', desc: 'Proceso de alta en campo: pre-registro, materiales, técnico y dar de alta al cliente.' },
+      { term: 'Sucursal', desc: 'Sede o punto de operación del ISP. Filtra clientes, inventario y reportes por ubicación.' },
+      { term: 'Operador', desc: 'Usuario interno del panel admin (caja, soporte, técnico, etc.) con un rol y permisos.' },
+      { term: 'Rol / Permiso', desc: 'Define qué menús y acciones puede ver o ejecutar cada operador en el sistema.' },
+      { term: 'Ticket', desc: 'Solicitud de soporte técnico abierta por el cliente o creada por un operador.' },
+      { term: 'Tarea', desc: 'Trabajo programado (instalación, visita técnica, etc.) en el módulo Tareas / Planificación.' },
+    ],
+  },
+  {
+    title: 'Red e infraestructura',
+    terms: [
+      { term: 'Router / Nodo', desc: 'Equipo MikroTik que gestiona la conexión de clientes en una zona. Se administra en Gestión de Red → Routers.' },
+      { term: 'API MikroTik', desc: 'Conexión entre Nexo y el router para activar, cortar, monitorear y respaldar equipos.' },
+      { term: 'PPPoE', desc: 'Tipo de conexión frecuente donde el cliente se autentica con usuario y contraseña en el router.' },
+      { term: 'Hotspot', desc: 'Acceso WiFi temporal o de zona pública, gestionado con fichas (usuario/PIN).' },
+      { term: 'Ficha Hotspot', desc: 'Ticket de acceso WiFi generado en lotes: usuario, PIN, perfil de tiempo/velocidad.' },
+      { term: 'Radius', desc: 'Servidor de autenticación que valida el acceso de usuarios PPPoE/Hotspot a la red.' },
+      { term: 'OLT', desc: 'Equipo de fibra óptica central (AdminOLT o Smart OLT) que controla las ONUs de los clientes.' },
+      { term: 'ONU / ONT', desc: 'Equipo de fibra instalado en el hogar del cliente y autorizado desde la OLT o la ficha.' },
+      { term: 'NAP', desc: 'Caja de distribución de fibra en calle: puertos, ubicación y clientes conectados.' },
+      { term: 'Emisor', desc: 'Equipo de transmisión inalámbrica monitoreado en Gestión de Red → Monitoreo.' },
+      { term: 'Pool / Red IP', desc: 'Rango de direcciones IPv4 o IPv6 disponibles para asignar a clientes.' },
+      { term: 'BlackList', desc: 'Lista de IPs o dominios bloqueados o monitoreados en la red.' },
+    ],
+  },
+  {
+    title: 'Facturación y cobros',
+    terms: [
+      { term: 'Factura', desc: 'Comprobante de cobro generado automática o manualmente. Puede estar pagada, pendiente, vencida o anulada.' },
+      { term: 'Prepago', desc: 'El cliente paga antes de usar el servicio durante el periodo contratado.' },
+      { term: 'Postpago', desc: 'El cliente usa el servicio y paga al final del periodo de facturación.' },
+      { term: 'Día de pago', desc: 'Día del mes en que se espera el cobro según la configuración del cliente.' },
+      { term: 'Corte', desc: 'Suspensión automática del servicio cuando el cliente no paga a tiempo (según día de corte).' },
+      { term: 'Mora / Moroso', desc: 'Cliente con facturas vencidas o deuda pendiente de cobro.' },
+      { term: 'Registrar pago', desc: 'Módulo de caja para cobrar facturas en mostrador (también desde el icono $ de la barra).' },
+      { term: 'Pasarela', desc: 'Integración con banco o procesador en línea (Place To Pay, Cashea, pago móvil, etc.).' },
+      { term: 'Pago móvil', desc: 'Cobro recibido desde banca móvil; Nexo puede listarlo y conciliarlo con una factura.' },
+      { term: 'Cashea', desc: 'Pasarela de financiamiento por cuotas. Las órdenes se gestionan en Finanzas.' },
+      { term: 'Tasa / Dólar Price', desc: 'Tipo de cambio usado para facturar en USD y convertir a moneda local (Bs, etc.).' },
+      { term: 'Promoción', desc: 'Descuento, meses gratis o precio especial temporal aplicable al alta o a un servicio.' },
+      { term: 'Portal del cliente', desc: 'Sitio del abonado (/cliente/) para ver deuda, pagar, abrir tickets e informar pagos.' },
+      { term: 'Informar pago', desc: 'El cliente reporta una transferencia o pago móvil desde el portal para que caja lo valide.' },
+    ],
+  },
+  {
+    title: 'Inventario y otros',
+    terms: [
+      { term: 'Almacén', desc: 'Inventario de equipos y materiales (routers, ONUs, cables, etc.).' },
+      { term: 'Producto', desc: 'Ítem de inventario con serial/MAC, categoría, proveedor y estado (disponible, asignado, etc.).' },
+      { term: 'Comodato', desc: 'Equipo entregado al cliente en préstamo, sin venta definitiva.' },
+      { term: 'Categoría', desc: 'Tipo de producto en almacén (ONU, cable, antena, accesorio, etc.).' },
+      { term: 'Proveedor', desc: 'Empresa que suministra equipos o materiales al ISP.' },
+      { term: 'SPA', desc: 'El panel admin no recarga toda la página: el menú cambia a #ajax/módulo de forma dinámica.' },
+    ],
+  },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 2</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 2</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Conceptos básicos y glosario</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">Antes de empezar, familiarícese con los términos clave que usará en Nexo.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">
+      Términos del sistema para que el personal del ISP entienda menús, red, cobros e inventario.
+    </p>
   </div>
 
-  <div class="doc-card overflow-hidden p-0">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead>
-          <tr class="bg-nexo-dark/[0.03]">
-            <th class="px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60 w-1/3">Término</th>
-            <th class="px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Significado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {terms.map((t, i) => (
-            <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-              <td class="px-6 py-4 font-bold text-nexo-dark text-sm">{t.term}</td>
-              <td class="px-6 py-4 text-nexo-dark/70 text-sm leading-relaxed">{t.desc}</td>
-            </tr>
+  <div class="space-y-8">
+    {groups.map(group => (
+      <div>
+        <h3 class="text-sm font-extrabold tracking-[0.12em] uppercase text-nexo-primary mb-3">{group.title}</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {group.terms.map(t => (
+            <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3.5">
+              <p class="font-bold text-nexo-dark text-sm">{t.term}</p>
+              <p class="text-nexo-dark/60 text-xs mt-1.5 leading-relaxed">{t.desc}</p>
+            </div>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </div>
+      </div>
+    ))}
   </div>
 </section>

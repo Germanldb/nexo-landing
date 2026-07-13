@@ -23,49 +23,101 @@ import Flujos from '../../components/doc/flujos.astro';
 import Permisos from '../../components/doc/permisos.astro';
 import FaqDoc from '../../components/doc/faq-doc.astro';
 
-const sections = [
-  { num: 1, title: 'Introducción', id: 'intro' },
-  { num: 2, title: 'Conceptos básicos', id: 'glosario' },
-  { num: 3, title: 'Acceso al sistema', id: 'acceso' },
-  { num: 4, title: 'Barra superior', id: 'barra-superior' },
-  { num: 5, title: 'Dashboard', id: 'dashboard' },
-  { num: 6, title: 'Gestión de Red', id: 'gestion-red' },
-  { num: 7, title: 'Servicios y perfiles', id: 'servicios' },
-  { num: 8, title: 'Promociones', id: 'promociones' },
-  { num: 9, title: 'Clientes', id: 'clientes' },
-  { num: 10, title: 'Ficha del cliente', id: 'ficha-cliente' },
-  { num: 11, title: 'Fichas Hotspot', id: 'fichas-hotspot' },
-  { num: 12, title: 'Tareas y planificación', id: 'tareas' },
-  { num: 13, title: 'Finanzas', id: 'finanzas' },
-  { num: 14, title: 'Almacén', id: 'almacen' },
-  { num: 15, title: 'Reportes', id: 'reportes' },
-  { num: 16, title: 'Soporte y tickets', id: 'soporte' },
-  { num: 17, title: 'Mensajería', id: 'mensajeria' },
-  { num: 18, title: 'Ajustes generales', id: 'ajustes' },
-  { num: 19, title: 'Portal del cliente', id: 'portal-cliente' },
-  { num: 20, title: 'Flujos de trabajo', id: 'flujos' },
-  { num: 21, title: 'Permisos y roles', id: 'permisos' },
-  { num: 22, title: 'Preguntas frecuentes', id: 'faq-doc' },
+const navGroups = [
+  {
+    label: 'Introducción',
+    items: [
+      { title: 'Introducción', id: 'intro' },
+      { title: 'Conceptos básicos', id: 'glosario' },
+    ],
+  },
+  {
+    label: 'Primeros pasos',
+    items: [
+      { title: 'Acceso al sistema', id: 'acceso' },
+      { title: 'Barra superior', id: 'barra-superior' },
+      { title: 'Dashboard', id: 'dashboard' },
+    ],
+  },
+  {
+    label: 'Módulos del panel',
+    items: [
+      { title: 'Gestión de Red', id: 'gestion-red' },
+      { title: 'Servicios y perfiles', id: 'servicios' },
+      { title: 'Promociones', id: 'promociones' },
+      { title: 'Clientes', id: 'clientes' },
+      { title: 'Ficha del cliente', id: 'ficha-cliente' },
+      { title: 'Fichas Hotspot', id: 'fichas-hotspot' },
+      { title: 'Tareas y planificación', id: 'tareas' },
+      { title: 'Finanzas', id: 'finanzas' },
+      { title: 'Almacén', id: 'almacen' },
+    ],
+  },
+  {
+    label: 'Análisis y soporte',
+    items: [
+      { title: 'Reportes', id: 'reportes' },
+      { title: 'Soporte y tickets', id: 'soporte' },
+      { title: 'Mensajería', id: 'mensajeria' },
+    ],
+  },
+  {
+    label: 'Configuración',
+    items: [
+      { title: 'Ajustes generales', id: 'ajustes' },
+      { title: 'Permisos y roles', id: 'permisos' },
+    ],
+  },
+  {
+    label: 'Portal y flujos',
+    items: [
+      { title: 'Portal del cliente', id: 'portal-cliente' },
+      { title: 'Flujos de trabajo', id: 'flujos' },
+    ],
+  },
+  {
+    label: 'Referencia',
+    items: [
+      { title: 'Preguntas frecuentes', id: 'faq-doc' },
+    ],
+  },
 ];
 ---
 
 <BaseLayout title="Documentación — Nexo" description="Manual completo de usuario para la plataforma Nexo.">
   <div class="doc-page flex min-h-screen">
     <!-- Sidebar -->
-    <aside id="doc-sidebar" class="doc-sidebar w-72 xl:w-80 shrink-0 fixed top-24 left-0 h-[calc(100vh-6rem)] overflow-y-auto px-5 py-8 z-40 hidden lg:block transition-transform duration-300">
-      <div class="mb-8">
+    <aside id="doc-sidebar" class="doc-sidebar w-72 xl:w-80 shrink-0 fixed top-0 left-0 h-screen overflow-y-auto px-4 pt-4 pb-4 z-40 hidden lg:block transition-transform duration-300">
+      <div class="mb-2 px-1">
         <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary">Manual de usuario</span>
-        <h2 class="text-lg font-extrabold text-nexo-dark mt-1">Nexo v1.0</h2>
+        <h2 class="text-lg font-extrabold text-nexo-dark mt-0.5">Nexo v1.0</h2>
       </div>
-      <nav class="space-y-0.5">
-        {sections.map(s => (
-          <a
-            href={`#${s.id}`}
-            class="doc-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-nexo-dark/50 hover:text-nexo-dark hover:bg-nexo-dark/5 transition-all duration-200"
-          >
-            <span class="w-6 h-6 rounded-lg bg-nexo-dark/5 flex items-center justify-center text-[10px] font-bold text-nexo-dark/40 shrink-0">{s.num}</span>
-            <span>{s.title}</span>
-          </a>
+      <nav class="doc-nav" aria-label="Contenido del manual">
+        {navGroups.map((group, groupIndex) => (
+          <div class="doc-nav-group is-collapsed" data-nav-group={groupIndex}>
+            <button
+              type="button"
+              class="doc-nav-group-toggle"
+              aria-expanded="false"
+              aria-controls={`doc-nav-group-${groupIndex}`}
+            >
+              <span>{group.label}</span>
+              <svg class="doc-nav-group-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div id={`doc-nav-group-${groupIndex}`} class="doc-nav-group-items" role="region">
+              {group.items.map(item => (
+                <a
+                  href={`#${item.id}`}
+                  class="doc-nav-link"
+                  data-section-id={item.id}
+                >
+                  {item.title}
+                </a>
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
     </aside>
@@ -84,7 +136,7 @@ const sections = [
 
     <!-- Content -->
     <main class="flex-1 lg:ml-72 xl:ml-80 min-w-0">
-      <div class="px-6 sm:px-10 lg:px-16 xl:px-20 py-12 lg:py-16">
+      <div class="px-6 sm:px-10 lg:px-16 xl:px-20 pt-4 pb-12 lg:pt-4 lg:pb-16">
         <Intro id="intro" />
         <Glosario id="glosario" />
         <Acceso id="acceso" />
@@ -108,10 +160,9 @@ const sections = [
         <Permisos id="permisos" />
         <FaqDoc id="faq-doc" />
 
-        <!-- Back to top -->
-        <div class="mt-16 pt-8 border-t border-nexo-dark/10 text-center">
-          <a href="#intro" class="inline-flex items-center gap-2 text-sm font-semibold text-nexo-dark/40 hover:text-nexo-primary transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+        <div class="mt-8 pt-6 border-t border-nexo-dark/10 text-center">
+          <a href="#intro" class="inline-flex items-center gap-2 text-xs font-semibold text-nexo-dark/35 hover:text-nexo-primary transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
             Volver al inicio
           </a>
         </div>
@@ -120,32 +171,8 @@ const sections = [
   </div>
 
   <style>
-    .doc-sidebar {
-      background: var(--nexo-bg-elevated);
-      border-right: 1px solid var(--nexo-border);
-    }
-    .doc-nav-link.active {
-      color: var(--nexo-text);
-      background: color-mix(in srgb, var(--nexo-primary) 10%, transparent);
-    }
-    .doc-nav-link.active span:first-child {
-      background: var(--nexo-primary);
-      color: #0D2E34;
-    }
     .doc-section-divider {
       border-top: 1px solid var(--nexo-border);
-    }
-    @media (min-width: 1024px) {
-      .doc-sidebar::-webkit-scrollbar {
-        width: 4px;
-      }
-      .doc-sidebar::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .doc-sidebar::-webkit-scrollbar-thumb {
-        background: var(--nexo-border);
-        border-radius: 4px;
-      }
     }
   </style>
 
@@ -155,14 +182,51 @@ const sections = [
     const sidebar = document.getElementById('doc-sidebar');
     const toggle = document.getElementById('doc-sidebar-toggle');
     const overlay = document.getElementById('doc-sidebar-overlay');
+    const navGroups = document.querySelectorAll('.doc-nav-group');
+
+    function setGroupExpanded(group, expanded) {
+      const btn = group.querySelector('.doc-nav-group-toggle');
+      if (!btn) return;
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      group.classList.toggle('is-collapsed', !expanded);
+    }
+
+    function openOnlyGroup(targetGroup) {
+      navGroups.forEach(group => {
+        setGroupExpanded(group, group === targetGroup);
+      });
+    }
+
+    function setActiveLink(sectionId) {
+      links.forEach(l => l.classList.remove('active'));
+      navGroups.forEach(g => g.classList.remove('is-active-group'));
+
+      const active = document.querySelector(`.doc-nav-link[data-section-id="${sectionId}"]`);
+      const group = active?.closest('.doc-nav-group');
+      active?.classList.add('active');
+      if (group) {
+        group.classList.add('is-active-group');
+        openOnlyGroup(group);
+      }
+      active?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    navGroups.forEach(group => {
+      const btn = group.querySelector('.doc-nav-group-toggle');
+      btn?.addEventListener('click', () => {
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          setGroupExpanded(group, false);
+        } else {
+          openOnlyGroup(group);
+        }
+      });
+    });
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          links.forEach(l => l.classList.remove('active'));
-          const id = entry.target.id;
-          const active = document.querySelector(`.doc-nav-link[href="#${id}"]`);
-          active?.classList.add('active');
+          setActiveLink(entry.target.id);
         }
       });
     }, { rootMargin: '-80px 0px -70% 0px' });
@@ -174,14 +238,18 @@ const sections = [
         if (window.innerWidth < 1024) {
           sidebar?.classList.add('hidden');
           overlay?.classList.add('hidden');
+          overlay?.classList.remove('opacity-100');
+          overlay?.classList.add('opacity-0');
+          setTimeout(() => overlay?.classList.add('hidden'), 300);
         }
       });
     });
 
     toggle?.addEventListener('click', () => {
+      const isHidden = sidebar?.classList.contains('hidden');
       sidebar?.classList.toggle('hidden');
       overlay?.classList.toggle('hidden');
-      if (!overlay?.classList.contains('hidden')) {
+      if (isHidden) {
         requestAnimationFrame(() => {
           overlay?.classList.remove('opacity-0');
           overlay?.classList.add('opacity-100');
@@ -198,5 +266,10 @@ const sections = [
       overlay?.classList.add('opacity-0');
       setTimeout(() => overlay?.classList.add('hidden'), 300);
     });
+
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      if (document.getElementById(id)) setActiveLink(id);
+    }
   </script>
 </BaseLayout>

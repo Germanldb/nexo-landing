@@ -1,4 +1,13 @@
 ---
+import DocImage from './DocImage.astro';
+import imgUsuarios from '../../assets/img-docs/doc-14.png';
+import imgMapa from '../../assets/img-docs/doc-17.png';
+import imgAnuncios from '../../assets/img-docs/doc-29.png';
+import imgPush from '../../assets/img-docs/doc-22.png';
+import imgInstalaciones from '../../assets/img-docs/doc-20.png';
+import imgContratos from '../../assets/img-docs/doc-12.png';
+import imgCorreos from '../../assets/img-docs/doc-13.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
@@ -6,130 +15,116 @@ const wizardSteps = [
   {
     num: 1,
     title: 'Datos personales',
-    fields: ['Nombre completo o razón social.', 'Cédula / RIF / documento (validación automática según país).', 'Dirección, teléfono, email.', 'Coordenadas GPS (opcional).'],
+    fields: ['Nombre o razón social', 'Cédula / RIF (validación por país)', 'Dirección, teléfono, email', 'GPS opcional'],
   },
   {
     num: 2,
-    title: 'Facturación y notificaciones',
-    fields: ['Tipo: Prepago o Postpago.', 'Día de pago (1-28).', 'Día de corte automático.', 'Activar/desactivar avisos por SMS, email y push.', 'Configuración de mora.'],
+    title: 'Facturación',
+    fields: ['Prepago o postpago', 'Día de pago (1–28) y día de corte', 'Avisos SMS / email / push', 'Configuración de mora'],
   },
   {
     num: 3,
     title: 'Servicios',
-    fields: ['Seleccione router/nodo.', 'Elija perfil de servicio.', 'Configure tipo de conexión (PPPoE, Hotspot, etc.).', 'Asigne IP (automática o estática).', 'Configure IPv6 si aplica.', 'Seleccione ubicación/NAP si es fibra.'],
-  },
-];
-
-const clientSubsections = [
-  {
-    title: 'Mapa de Clientes',
-    menu: 'Clientes → Mapa Clientes',
-    what: 'Visualizar geográficamente la ubicación de todos los clientes en un mapa interactivo. Requiere coordenadas GPS en las fichas.',
-    steps: ['Vaya a Clientes → Mapa Clientes.', 'El mapa muestra marcadores por cliente.', 'Haga clic en un marcador para ver datos básicos.', 'Use los filtros para mostrar solo activos, suspendidos, etc.'],
-  },
-  {
-    title: 'Anuncios',
-    menu: 'Clientes → Anuncios',
-    what: 'Publicar avisos visibles en el portal del cliente: mantenimientos, promociones, comunicados oficiales.',
-    steps: ['Vaya a Clientes → Anuncios.', 'Haga clic en Nuevo.', 'Escriba título y contenido del anuncio.', 'Configure vigencia (fecha inicio/fin).', 'Seleccione si aplica a todos los clientes o a un grupo específico.', 'Publique.'],
-  },
-  {
-    title: 'Notificaciones Push',
-    menu: 'Clientes → Notificaciones push',
-    what: 'Enviar notificaciones push a la app móvil o navegador del cliente.',
-    steps: [],
-  },
-  {
-    title: 'Instalaciones',
-    menu: 'Clientes → Instalaciones',
-    what: 'Gestionar el ciclo completo de instalaciones: pre-registro de prospectos, órdenes de instalación, materiales y alta final del cliente.',
-    steps: [
-      'Crear pre-registro: Vaya a Clientes → Instalaciones → Registro → Nuevo. Ingrese cédula, nombre, teléfono, dirección y plan deseado. Guarde (estado: Pendiente).',
-      'Aceptar instalación: En la pestaña Instalaciones, localice la orden y haga clic en Aceptar instalación. Asigne técnico y fecha.',
-      'Agregar materiales: Haga clic en Materiales, seleccione productos del almacén (ONU, cable, conectores). El inventario se descuenta automáticamente.',
-      'Imprimir hoja: Haga clic en Imprimir para generar PDF con datos del cliente, materiales y plan.',
-      'Dar de alta: Haga clic en Dar de alta. Se abre el wizard de alta de cliente con datos pre-cargados.',
-    ],
-  },
-  {
-    title: 'Contratos',
-    menu: 'Clientes → Contratos',
-    what: 'Generar, enviar y administrar contratos formales con clientes en formato PDF.',
-    steps: ['Vaya a Clientes → Contratos o desde la ficha del cliente.', 'Haga clic en Nuevo contrato.', 'Seleccione plantilla.', 'Revise datos pre-cargados del cliente.', 'Genere PDF y envíe por correo o imprima para firma física.'],
-  },
-  {
-    title: 'Correos',
-    menu: 'Clientes → Correos',
-    what: 'Bandeja de correos enviados/recibidos relacionados con clientes: facturas, avisos y respuestas.',
-    steps: [],
+    fields: ['Router/nodo y perfil', 'Tipo de conexión (PPPoE, Hotspot…)', 'IP automática o estática / IPv6', 'Ubicación / NAP si es fibra'],
   },
 ];
 
 const toolButtons = [
-  { btn: 'Nuevo', permiso: 'Usuarios → Nuevo', desc: 'Alta de cliente' },
-  { btn: 'Filtrar', permiso: 'Todos', desc: 'Filtro avanzado colapsable' },
-  { btn: 'Estado', permiso: 'Todos', desc: 'TODOS / ACTIVOS / SUSPENDIDOS / RETIRADOS / ONLINE' },
-  { btn: 'Suspender masivo', permiso: 'Activar', desc: 'Suspender seleccionados' },
-  { btn: 'Activar masivo', permiso: 'Activar', desc: 'Activar seleccionados' },
-  { btn: 'Retirar masivo', permiso: 'Retirar', desc: 'Retirar seleccionados' },
-  { btn: 'Eliminar masivo', permiso: 'Eliminar', desc: 'Eliminar seleccionados' },
+  { btn: 'Nuevo', desc: 'Alta de cliente' },
+  { btn: 'Filtrar', desc: 'Filtro avanzado colapsable' },
+  { btn: 'Estado', desc: 'Todos / Activos / Suspendidos / Retirados / Online' },
+  { btn: 'Suspender', desc: 'Suspender selección (permiso Activar)' },
+  { btn: 'Activar', desc: 'Activar selección' },
+  { btn: 'Retirar', desc: 'Retirar selección' },
+  { btn: 'Eliminar', desc: 'Eliminar selección' },
+];
+
+const withSteps = [
+  {
+    title: 'Mapa de Clientes',
+    what: 'Ubicación geográfica de los abonados. Requiere coordenadas GPS en las fichas.',
+    steps: [
+      'El mapa muestra un marcador por cliente; clic para ver datos básicos.',
+      'Filtre por activos, suspendidos u otros estados.',
+    ],
+    image: { src: imgMapa, alt: 'Mapa de clientes', caption: 'Ubicación GPS y filtros por estado.' },
+  },
+  {
+    title: 'Anuncios',
+    what: 'Avisos visibles en el portal: mantenimientos, promociones, comunicados oficiales.',
+    steps: [
+      'Nuevo → título y contenido.',
+      'Vigencia (inicio/fin) y alcance: todos los clientes o un grupo → publique.',
+    ],
+    image: { src: imgAnuncios, alt: 'Anuncios del portal', caption: 'Avisos visibles para abonados.' },
+  },
+  {
+    title: 'Instalaciones',
+    what: 'Ciclo completo: pre-registro de prospectos, orden, materiales y alta del cliente.',
+    steps: [
+      'Registro → Nuevo: cédula, nombre, teléfono, dirección y plan → Pendiente.',
+      'En Instalaciones → Aceptar instalación: asigne técnico y fecha.',
+      'Materiales: productos del almacén (ONU, cable…). El inventario se descuenta solo.',
+      'Imprimir genera PDF con datos, materiales y plan.',
+      'Dar de alta abre el wizard de usuarios con datos precargados.',
+    ],
+    image: { src: imgInstalaciones, alt: 'Instalaciones', caption: 'Pre-registro de prospectos.' },
+  },
+  {
+    title: 'Contratos',
+    what: 'Contratos formales en PDF desde Clientes → Contratos o desde la ficha.',
+    steps: [
+      'Nuevo contrato → elija plantilla → revise datos precargados.',
+      'Genere PDF y envíelo por correo o imprímalo para firma física.',
+    ],
+    image: { src: imgContratos, alt: 'Contratos', caption: 'Resumen por estado.' },
+  },
+];
+
+const simple = [
+  { title: 'Notificaciones Push', what: 'Envío push a la app móvil o al navegador del cliente.', image: { src: imgPush, alt: 'Push', caption: 'Envío a dispositivos.' } },
+  { title: 'Correos', what: 'Bandeja de facturas, avisos y respuestas relacionados con clientes.', image: { src: imgCorreos, alt: 'Correos', caption: 'Historial de comunicaciones.' } },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 9</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 9</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Clientes</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Clientes (menú expandible) · Gestión completa del ciclo de vida de cada cliente.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Ciclo de vida del abonado: listado, alta, instalaciones, contratos y comunicaciones.</p>
   </div>
 
-  <div class="space-y-12">
-    <!-- Listado de usuarios -->
+  <div class="space-y-8">
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-2">Usuarios (Listado de clientes)</h3>
-      <p class="text-nexo-dark/40 text-sm mb-4">
-        <strong class="text-nexo-dark/60">Menú:</strong> Clientes → Usuarios
-      </p>
-      <p class="text-nexo-dark/70 text-base leading-relaxed mb-6">
-        Listar, buscar, filtrar y gestionar todos los clientes del ISP. La barra de herramientas ofrece acciones rápidas sobre la selección actual.
-      </p>
-
-      <div class="doc-card overflow-hidden p-0 mb-6">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-nexo-dark/[0.03]">
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Botón</th>
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Permiso</th>
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {toolButtons.map((b, i) => (
-              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{b.btn}</td>
-                <td class="px-5 py-3 text-nexo-dark/60 text-sm"><code class="doc-code-inline text-xs">{b.permiso}</code></td>
-                <td class="px-5 py-3 text-nexo-dark/60 text-sm">{b.desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Usuarios</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">Listar, buscar, filtrar y actuar sobre la selección actual.</p>
+      <DocImage
+        src={imgUsuarios}
+        alt="Listado de usuarios clientes"
+        caption="Listado con deuda, estado y acciones masivas."
+      />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+        {toolButtons.map(b => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2">
+            <p class="font-bold text-nexo-dark text-xs">{b.btn}</p>
+            <p class="text-nexo-dark/50 text-[11px] leading-snug">{b.desc}</p>
+          </div>
+        ))}
       </div>
 
-      <!-- Wizard de alta -->
-      <h4 class="text-lg font-bold text-nexo-dark mb-4">Alta de nuevo cliente (Wizard 3 pasos)</h4>
-      <div class="space-y-4">
+      <h4 class="text-base font-bold text-nexo-dark mb-2">Alta de cliente (wizard 3 pasos)</h4>
+      <p class="text-nexo-dark/55 text-xs mb-3">Si viene de una instalación, use Dar de alta en Instalaciones para precargar datos.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         {wizardSteps.map(step => (
-          <div class="doc-card">
-            <div class="flex items-center gap-3 mb-4">
-              <span class="w-8 h-8 rounded-xl bg-nexo-primary text-nexo-dark flex items-center justify-center text-sm font-bold">{step.num}</span>
-              <h5 class="font-bold text-nexo-dark">{step.title}</h5>
+          <div class="doc-card !py-3 !px-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold">{step.num}</span>
+              <p class="font-bold text-nexo-dark text-sm">{step.title}</p>
             </div>
-            <ul class="space-y-2 ml-11">
+            <ul class="space-y-1">
               {step.fields.map(f => (
-                <li class="flex items-start gap-2 text-sm text-nexo-dark/70">
-                  <span class="w-1.5 h-1.5 rounded-full bg-nexo-primary mt-2 shrink-0"></span>
+                <li class="flex items-start gap-1.5 text-[11px] text-nexo-dark/60">
+                  <span class="w-1 h-1 rounded-full bg-nexo-primary mt-1.5 shrink-0"></span>
                   {f}
                 </li>
               ))}
@@ -137,36 +132,34 @@ const toolButtons = [
           </div>
         ))}
       </div>
-
-      <div class="mt-4 bg-nexo-primary/10 border border-nexo-primary/30 rounded-xl px-5 py-4 text-sm text-nexo-dark/70">
-        <strong class="text-nexo-dark">Consejo:</strong> Si el cliente viene de una instalación, use el botón Dar de alta desde el módulo Instalaciones para pre-cargar los datos.
-      </div>
     </div>
 
-    <div class="doc-section-divider"></div>
-
-    <!-- Sub-secciones -->
-    {clientSubsections.map(sub => (
+    {withSteps.map(sub => (
       <div>
-        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
-        <p class="text-nexo-dark/40 text-sm mb-4">
-          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
-        </p>
-        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
-        {sub.steps.length > 0 && (
-          <div class="doc-card">
-            <ol class="space-y-3">
-              {sub.steps.map((step, i) => (
-                <li class="flex items-start gap-3">
-                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-        <div class="doc-section-divider mt-10"></div>
+        <h3 class="text-lg font-bold text-nexo-dark mb-1">{sub.title}</h3>
+        <p class="text-nexo-dark/60 text-sm mb-3">{sub.what}</p>
+        <DocImage src={sub.image.src} alt={sub.image.alt} caption={sub.image.caption} />
+        <div class="doc-card !py-4 !px-5">
+          <ol class="space-y-2">
+            {sub.steps.map((step, i) => (
+              <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70">
+                <span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     ))}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {simple.map(sub => (
+        <div>
+          <h3 class="text-base font-bold text-nexo-dark mb-1">{sub.title}</h3>
+          <p class="text-nexo-dark/55 text-xs mb-2">{sub.what}</p>
+          <DocImage src={sub.image.src} alt={sub.image.alt} caption={sub.image.caption} />
+        </div>
+      ))}
+    </div>
   </div>
 </section>

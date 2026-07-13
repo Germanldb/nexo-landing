@@ -1,171 +1,106 @@
 ---
+import DocImage from './DocImage.astro';
+import imgPortal from '../../assets/img-docs/doc-54.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
 const portalMenu = [
-  { section: 'Inicio (Dashboard)', desc: 'Resumen: deuda, estado, consumo.', configurable: 'Siempre visible' },
-  { section: 'Mis comprobantes', desc: 'Facturas y recibos en PDF.', configurable: 'Sí' },
-  { section: 'Mis métodos de pago', desc: 'Tarjetas y cuentas bancarias guardadas.', configurable: 'Sí' },
-  { section: 'Soporte técnico', desc: 'Abrir y consultar tickets.', configurable: 'Sí' },
-  { section: 'Documentos', desc: 'Contratos, reglamentos.', configurable: 'Sí' },
-  { section: 'Informar pago', desc: 'Reportar transferencia o pago móvil.', configurable: 'Sí' },
-  { section: 'Utilidades', desc: 'Test de velocidad, tráfico actual, actualizar datos.', configurable: 'Parcial' },
-  { section: 'Mi Wifi', desc: 'Gestión de red doméstica.', configurable: 'Si módulo activo' },
-  { section: 'Salir', desc: 'Cerrar sesión.', configurable: 'Siempre' },
+  { section: 'Inicio', desc: 'Deuda, estado y consumo.', note: 'Siempre visible' },
+  { section: 'Mis comprobantes', desc: 'Facturas y recibos en PDF.', note: 'Configurable' },
+  { section: 'Métodos de pago', desc: 'Tarjetas y cuentas guardadas.', note: 'Configurable' },
+  { section: 'Soporte técnico', desc: 'Abrir y consultar tickets.', note: 'Configurable' },
+  { section: 'Documentos', desc: 'Contratos y reglamentos.', note: 'Configurable' },
+  { section: 'Informar pago', desc: 'Reportar transferencia o pago móvil.', note: 'Configurable' },
+  { section: 'Utilidades', desc: 'Speedtest, tráfico, actualizar datos.', note: 'Parcial' },
+  { section: 'Mi Wifi', desc: 'Red doméstica.', note: 'Si el módulo está activo' },
 ];
 
 const dashboardWidgets = [
   { widget: 'Deuda actual', desc: 'Monto pendiente con enlace a comprobantes.' },
   { widget: 'Tickets abiertos', desc: 'Soporte pendiente.' },
-  { widget: 'Consumo del mes', desc: 'Tráfico utilizado en el periodo.' },
+  { widget: 'Consumo del mes', desc: 'Tráfico del periodo.' },
   { widget: 'Estado del servicio', desc: 'Activo o Suspendido.' },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 19</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 19</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Portal del cliente</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">URL:</strong> <code class="doc-code-inline">/cliente/</code> · Para los abonados del ISP.
+    <p class="text-nexo-dark/50 text-sm mt-2">
+      URL: <code class="doc-code-inline">/cliente/</code> · Autogestión del abonado (secciones visibles se configuran en Ajustes → Portal cliente).
     </p>
   </div>
 
-  <div class="space-y-10">
+  <div class="space-y-6">
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-2">Inicio de sesión</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">El cliente accede a <code class="doc-code-inline text-xs">https://su-servidor/cliente/</code>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Ingresa usuario (cédula o email) y contraseña.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Si el operador le envió un enlace con token, accede automáticamente.</span>
-          </li>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Inicio de sesión</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Accede a <code class="doc-code-inline text-xs">https://su-servidor/cliente/</code></li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Usuario (cédula o email) y contraseña</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Si el operador envió un enlace con token, entra automáticamente</li>
         </ol>
       </div>
     </div>
 
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Menú del portal</h3>
-      <div class="doc-card overflow-hidden p-0">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-nexo-dark/[0.03]">
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Sección</th>
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Configurable</th>
-            </tr>
-          </thead>
-          <tbody>
-            {portalMenu.map((item, i) => (
-              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{item.section}</td>
-                <td class="px-5 py-3 text-nexo-dark/60 text-sm">{item.desc}</td>
-                <td class="px-5 py-3 text-xs text-nexo-dark/40">{item.configurable}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <DocImage
+      src={imgPortal}
+      alt="Dashboard del portal del cliente"
+      caption="Inicio: deuda, tickets, consumo y estado del servicio."
+    />
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      {dashboardWidgets.map(w => (
+        <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+          <p class="font-bold text-nexo-dark text-xs">{w.widget}</p>
+          <p class="text-nexo-dark/50 text-[11px] mt-0.5 leading-snug">{w.desc}</p>
+        </div>
+      ))}
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Dashboard del cliente</h3>
-      <p class="text-nexo-dark/70 text-base leading-relaxed mb-4">Al iniciar sesión, el cliente ve:</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {dashboardWidgets.map(w => (
-          <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-5 py-4">
-            <span class="w-2 h-2 rounded-full bg-nexo-primary mt-2 shrink-0"></span>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Menú del portal</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {portalMenu.map(item => (
+          <div class="flex items-start justify-between gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
             <div>
-              <p class="font-bold text-nexo-dark text-sm">{w.widget}</p>
-              <p class="text-nexo-dark/50 text-xs mt-0.5">{w.desc}</p>
+              <p class="font-bold text-nexo-dark text-xs">{item.section}</p>
+              <p class="text-nexo-dark/50 text-[11px] mt-0.5">{item.desc}</p>
             </div>
+            <span class="text-[10px] text-nexo-dark/35 shrink-0">{item.note}</span>
           </div>
         ))}
       </div>
     </div>
 
-    <div class="doc-section-divider"></div>
-
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cliente paga su factura</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Cliente inicia sesión en el portal.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Vaya a <strong class="text-nexo-dark">Mis comprobantes</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Localice la factura pendiente y haga clic en <strong class="text-nexo-dark">Pagar</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">Seleccione método de pago (botón de pago, transferencia, pago móvil) y confirme.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
-            <span class="text-nexo-dark/70 text-sm">Si paga por transferencia manual, vaya a <strong class="text-nexo-dark">Informar pago</strong> y suba comprobante.</span>
-          </li>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Pagar factura</h3>
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Mis comprobantes → factura pendiente → <strong class="text-nexo-dark">Pagar</strong></li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Método: botón de pago, transferencia o pago móvil → confirme</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Si es transferencia manual, use también <strong class="text-nexo-dark">Informar pago</strong></li>
+        </ol>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Abrir ticket</h3>
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Soporte técnico → Nuevo ticket → departamento</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Asunto, descripción y fotos si ayudan</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Al responder el operador, llega email o push</li>
         </ol>
       </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cliente abre ticket de soporte</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Vaya a <strong class="text-nexo-dark">Soporte técnico</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Nuevo ticket</strong>, seleccione departamento.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Escriba asunto, describa el problema y adjunte fotos si es necesario.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">Envíe. Recibirá respuesta por email o push cuando el operador responda.</span>
-          </li>
-        </ol>
-      </div>
-    </div>
-
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cliente informa un pago</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Vaya a <strong class="text-nexo-dark">Informar pago</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Complete: monto, fecha, banco y número de referencia.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Adjunte foto del comprobante de transferencia y envíe.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">El operador verifica en Finanzas → Reportes de Pagos (Portal Cliente) y aprueba.</span>
-          </li>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Informar un pago (transferencia)</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Informar pago → monto, fecha, banco y número de referencia</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Adjunte foto del comprobante y envíe</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> El operador aprueba o rechaza en Finanzas → Reportes de Pagos (Portal Cliente)</li>
         </ol>
       </div>
     </div>

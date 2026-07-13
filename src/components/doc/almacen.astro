@@ -1,105 +1,60 @@
 ---
+import DocImage from './DocImage.astro';
+import imgCategorias from '../../assets/img-docs/doc-43.png';
+import imgProveedores from '../../assets/img-docs/doc-42.png';
+import imgProductos from '../../assets/img-docs/doc-41.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
-
-const categories = [
-  { title: 'Tipos de productos (Categorías)', menu: 'Almacén → Tipos de productos', desc: 'Categorías de inventario: ONUs, cables, conectores, antenas, etc.' },
-  { title: 'Proveedores', menu: 'Almacén → Proveedores', desc: 'Registro de proveedores de equipos y materiales.' },
-];
-
-const productTabs = ['Productos (equipos e inventario principal)', 'Accesorios (materiales menores)'];
-const filters = ['Estado: Disponible, No disponible, Comodato', 'Categoría'];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 14</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 14</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Almacén</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Almacén (menú expandible) · Control de inventario de equipos y materiales.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Control de inventario de equipos y materiales del ISP.</p>
   </div>
 
-  <div class="space-y-10">
-    {categories.map(cat => (
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
-        <h3 class="text-xl font-bold text-nexo-dark mb-2">{cat.title}</h3>
-        <p class="text-nexo-dark/40 text-sm mb-3"><strong class="text-nexo-dark/60">Menú:</strong> {cat.menu}</p>
-        <p class="text-nexo-dark/70 text-base leading-relaxed">{cat.desc}</p>
-        <div class="doc-section-divider mt-8"></div>
+        <h3 class="text-base font-bold text-nexo-dark mb-1">Tipos de productos</h3>
+        <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">
+          Categorías del inventario: ONUs, cables, conectores, antenas, etc., y servicios de instalación asociados.
+        </p>
+        <DocImage src={imgCategorias} alt="Categorías de almacén" caption="Categorías y servicios." />
       </div>
-    ))}
+      <div>
+        <h3 class="text-base font-bold text-nexo-dark mb-1">Proveedores</h3>
+        <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">
+          Registro de proveedores de equipos y materiales, con contacto y sucursal.
+        </p>
+        <DocImage src={imgProveedores} alt="Proveedores" caption="Listado de proveedores." />
+      </div>
+    </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-2">Productos</h3>
-      <p class="text-nexo-dark/40 text-sm mb-4"><strong class="text-nexo-dark/60">Menú:</strong> Almacén → Productos</p>
-
-      <div class="flex flex-wrap gap-2 mb-5">
-        {productTabs.map(tab => (
-          <span class="px-3 py-1.5 bg-nexo-dark/5 border border-nexo-dark/10 rounded-lg text-xs font-semibold text-nexo-dark/60">{tab}</span>
-        ))}
-      </div>
-
-      <h4 class="text-lg font-bold text-nexo-dark mb-4">Ingresar producto al almacén</h4>
-      <div class="doc-card mb-6">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Vaya a Almacén → Productos.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Nuevo Producto</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <div class="text-nexo-dark/70 text-sm">
-              <span class="block mb-2">Complete:</span>
-              <ul class="list-disc list-inside space-y-1 ml-4 text-xs">
-                <li><strong class="text-nexo-dark">Categoría</strong> (tipo de producto).</li>
-                <li><strong class="text-nexo-dark">Nombre / descripción.</strong></li>
-                <li><strong class="text-nexo-dark">Serial / MAC</strong> (si aplica).</li>
-                <li><strong class="text-nexo-dark">Proveedor.</strong></li>
-                <li><strong class="text-nexo-dark">Condición:</strong> Nuevo, Comodato o Vendido.</li>
-                <li><strong class="text-nexo-dark">Precio de costo</strong> (opcional).</li>
-              </ul>
-            </div>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">Guarde. El producto queda en estado <strong class="text-nexo-dark">Disponible</strong>.</span>
-          </li>
-        </ol>
-      </div>
-
-      <h4 class="text-lg font-bold text-nexo-dark mb-4">Asignar producto a instalación</h4>
-      <div class="doc-card mb-6">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Desde Clientes → Instalaciones, abra la orden.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Haga clic en <strong class="text-nexo-dark">Materiales</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">Busque el producto por serial o categoría, asigne cantidad y confirme.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">El producto pasa a estado <strong class="text-nexo-dark">Asignado/Vendido</strong>.</span>
-          </li>
-        </ol>
-      </div>
-
-      <div>
-        <h4 class="text-sm font-bold text-nexo-dark mb-3">Filtros disponibles</h4>
-        <div class="flex flex-wrap gap-2">
-          {filters.map(f => (
-            <span class="px-3 py-1.5 bg-nexo-primary/10 border border-nexo-primary/30 rounded-lg text-xs font-semibold text-nexo-dark/70">{f}</span>
-          ))}
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Productos</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Inventario principal y accesorios. Filtre por estado (Disponible, No disponible, Comodato) y categoría.
+      </p>
+      <DocImage src={imgProductos} alt="Productos en almacén" caption="Inventario por almacén, categoría y estado." />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Ingresar producto</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Nuevo producto</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Categoría, nombre, serial/MAC, proveedor, condición (Nuevo, Comodato, Vendido) y costo opcional</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Guardar → queda en estado <strong class="text-nexo-dark">Disponible</strong></li>
+          </ol>
+        </div>
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Asignar a instalación</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Clientes → Instalaciones → abra la orden → Materiales</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Busque por serial o categoría, asigne cantidad y confirme</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> El producto pasa a <strong class="text-nexo-dark">Asignado/Vendido</strong></li>
+          </ol>
         </div>
       </div>
     </div>

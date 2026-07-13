@@ -1,137 +1,137 @@
 ---
+import DocImage from './DocImage.astro';
+import imgFacturas from '../../assets/img-docs/doc-46.png';
+import imgPagoMovil from '../../assets/img-docs/doc-32.png';
+import imgCashea from '../../assets/img-docs/doc-47.png';
+import imgIngresosEgresos from '../../assets/img-docs/doc-48.png';
+import imgReportesPortal from '../../assets/img-docs/doc-45.png';
+import imgFacturacionSyh from '../../assets/img-docs/doc-44.png';
+import imgEstadisticas from '../../assets/img-docs/doc-36.png';
+import imgRegistrarPagos from '../../assets/img-docs/doc-53.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
-const subsections = [
+const detailed = [
   {
     title: 'Facturas',
-    menu: 'Finanzas → Facturas',
     what: 'Consultar, generar, cobrar y administrar todas las facturas del ISP.',
     steps: [
-      'Vaya a Finanzas → Facturas.',
-      'Use los filtros: Tipo de fecha (emisión/vencimiento), Estado (pendiente, pagada, anulada, vencida), Rango de fechas y Router/nodo.',
-      'Para cobrar: localice la factura, clic en Agregar pago (✓), complete monto y forma de pago, confirme.',
+      'Filtre por tipo de fecha (emisión/vencimiento), estado (pendiente, pagada, anulada, vencida), rango y router/nodo.',
+      'Para cobrar: localice la factura → Agregar pago (✓) → monto y forma de pago → confirme.',
     ],
+    image: { src: imgFacturas, alt: 'Listado de facturas del ISP', caption: 'Filtros por estado, fechas y totales.' },
   },
   {
     title: 'Registrar Pagos',
-    menu: 'Finanzas → Registrar Pagos',
-    what: 'Módulo optimizado para caja: registrar pagos de forma rápida en mostrador.',
-    tabs: ['Registrar pago (formulario activo)', 'Pagos registrados hoy', 'Promesas de pago'],
+    what: 'Módulo de caja para cobro rápido en mostrador. También se abre desde el icono $ de la barra superior.',
+    tabs: ['Registrar pago', 'Pagos registrados hoy', 'Promesas de pago'],
     steps: [
-      'Vaya a Finanzas → Registrar Pagos (o clic en $ de la barra superior).',
       'Busque al cliente por nombre/cédula o escanee el código de barras de la factura.',
-      'Se despliega panel con facturas pendientes del cliente.',
-      'Seleccione la factura a pagar.',
-      'Configure forma de pago (efectivo, transferencia, pago móvil), monto y referencia.',
-      'Elija impresión: Recibo / Factura / POS / Ninguna.',
-      'Haga clic en Registrar pago.',
-      'Si hay saldo pendiente, el sistema pregunta si desea registrar pago parcial.',
+      'Se muestran las facturas pendientes: seleccione la que va a cobrar.',
+      'Forma de pago (efectivo, transferencia, pago móvil), monto y referencia.',
+      'Elija impresión: Recibo / Factura / POS / Ninguna → Registrar pago.',
+      'Si queda saldo, el sistema ofrece registrar un pago parcial.',
     ],
-  },
-  {
-    title: 'Pagos Masivos',
-    menu: 'Finanzas → Registrar Pagos Masivos',
-    what: 'Importar archivo (Excel/CSV) con múltiples pagos para procesarlos de una sola vez.',
-    steps: [],
-  },
-  {
-    title: 'Transacciones',
-    menu: 'Finanzas → Transacciones',
-    what: 'Listado de todas las transacciones financieras: pagos, notas de crédito y ajustes de saldo.',
-    steps: [],
+    image: { src: imgRegistrarPagos, alt: 'Formulario de registrar pagos en caja', caption: 'Cobro rápido con forma de pago e impresión.' },
   },
   {
     title: 'Pago móvil recibidos',
-    menu: 'Finanzas → Pago móvil recibidos',
-    what: 'Ver pagos móviles recibidos automáticamente desde el banco y conciliarlos con facturas de clientes.',
+    what: 'Pagos móviles que llegan automáticamente del banco. Concilie los que no empataron solos con una factura.',
     steps: [
-      'Vaya a Finanzas → Pago móvil recibidos.',
-      'Revise la lista de pagos recibidos (fecha, monto, referencia, banco).',
-      'Para pagos no conciliados automáticamente: clic en Conciliar, busque al cliente y asigne a la factura correspondiente.',
-      'Confirme. El pago se aplica y el servicio se activa si corresponde.',
+      'Revise la lista: fecha, monto, referencia y banco.',
+      'Si no se concilió solo: Conciliar → busque al cliente → asigne la factura → confirme.',
+      'El pago se aplica y, si corresponde, el servicio se activa.',
     ],
+    image: { src: imgPagoMovil, alt: 'Registro de pagos móviles recibidos', caption: 'Conciliación con facturas de clientes.' },
   },
+];
+
+const withImage = [
   {
     title: 'Pasarelas de pago',
-    menu: 'Finanzas → [pasarela]',
-    what: 'Consulte pagos procesados por pasarelas en línea: Evertec (Place To Pay), Banco Provincial y Cashea. Verifique estados y gestione devoluciones.',
-    steps: [],
-  },
-  {
-    title: 'Dólar Price / Casa de cambio',
-    menu: 'Finanzas → Dolar price',
-    what: 'Gestión de tasa de cambio para facturación en moneda extranjera (USD) con conversión a moneda local (Bs, ARS, etc.).',
-    steps: [],
+    what: 'Pagos en línea: Evertec (Place To Pay), Banco Provincial y Cashea. Consulte estados y gestione devoluciones.',
+    image: { src: imgCashea, alt: 'Órdenes Cashea', caption: 'Cashea: financiamiento y autorización.' },
   },
   {
     title: 'Otros Ingresos & Egresos',
-    menu: 'Finanzas → Otros Ingresos & Egresos',
-    what: 'Registrar movimientos financieros no relacionados con clientes: gastos operativos, ingresos extraordinarios.',
-    steps: [],
+    what: 'Movimientos no ligados a clientes: gastos operativos e ingresos extraordinarios.',
+    image: { src: imgIngresosEgresos, alt: 'Ingresos y egresos', caption: 'Movimientos operativos del ISP.' },
   },
   {
-    title: 'Reportes de Pagos (Portal Cliente)',
-    menu: 'Finanzas → Reportes de Pagos (Portal Cliente)',
-    what: 'Pagos reportados por clientes desde el portal. El operador verifica y aprueba o rechaza.',
-    steps: [],
+    title: 'Reportes Portal Cliente',
+    what: 'Transferencias que el abonado reportó desde el portal. El operador verifica y aprueba o rechaza.',
+    image: { src: imgReportesPortal, alt: 'Reportes del portal', caption: 'Pagos informados por abonados.' },
   },
   {
     title: 'Facturación SyH',
-    menu: 'Finanzas → Facturación SyH',
-    what: 'Facturación electrónica integrada con sistema SyH (Venezuela). Solo disponible si el módulo SyH está activo.',
-    steps: [],
+    what: 'Facturación electrónica SyH (Venezuela). Solo aparece si el módulo SyH está activo.',
+    image: { src: imgFacturacionSyh, alt: 'Facturación SyH', caption: 'Productos, grupos y zonas.' },
   },
   {
-    title: 'Estadísticas de pagos',
-    menu: 'Finanzas → Estadísticas',
-    what: 'Gráficos y reportes de ingresos por periodo, forma de pago, operador y sucursal.',
-    steps: [],
+    title: 'Estadísticas',
+    what: 'Ingresos por periodo, forma de pago, operador y sucursal.',
+    image: { src: imgEstadisticas, alt: 'Estadísticas de pagos', caption: 'Resumen mensual de cobros.' },
   },
+];
+
+const compact = [
+  { title: 'Pagos Masivos', what: 'Importar Excel/CSV con varios pagos y procesarlos de una vez.' },
+  { title: 'Transacciones', what: 'Historial de pagos, notas de crédito y ajustes de saldo.' },
+  { title: 'Dólar Price / Casa de cambio', what: 'Tasa de cambio para facturar en USD con conversión a moneda local (Bs, ARS, etc.).' },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 13</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 13</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Finanzas</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Finanzas (menú expandible) · Centro de control financiero del ISP.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Centro financiero del ISP: facturas, caja, conciliación y pasarelas.</p>
   </div>
 
-  <div class="space-y-12">
-    {subsections.map(sub => (
+  <div class="space-y-8">
+    {detailed.map(sub => (
       <div>
-        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
-        <p class="text-nexo-dark/40 text-sm mb-4">
-          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
-        </p>
-        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
-
+        <h3 class="text-lg font-bold text-nexo-dark mb-1">{sub.title}</h3>
+        <p class="text-nexo-dark/60 text-sm mb-3">{sub.what}</p>
+        {sub.image && <DocImage src={sub.image.src} alt={sub.image.alt} caption={sub.image.caption} />}
         {sub.tabs && (
-          <div class="flex flex-wrap gap-2 mb-5">
+          <div class="flex flex-wrap gap-1.5 mb-3">
             {sub.tabs.map(tab => (
-              <span class="px-3 py-1.5 bg-nexo-dark/5 border border-nexo-dark/10 rounded-lg text-xs font-semibold text-nexo-dark/60">{tab}</span>
+              <span class="px-2.5 py-1 bg-nexo-dark/5 border border-nexo-dark/10 rounded-md text-[11px] font-semibold text-nexo-dark/60">{tab}</span>
             ))}
           </div>
         )}
-
-        {sub.steps.length > 0 && (
-          <div class="doc-card">
-            <ol class="space-y-3">
-              {sub.steps.map((step, i) => (
-                <li class="flex items-start gap-3">
-                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        <div class="doc-section-divider mt-10"></div>
+        <div class="doc-card !py-4 !px-5">
+          <ol class="space-y-2">
+            {sub.steps.map((step, i) => (
+              <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70">
+                <span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     ))}
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {compact.map(item => (
+        <div class="doc-card !py-3 !px-4">
+          <p class="font-bold text-nexo-dark text-sm mb-1">{item.title}</p>
+          <p class="text-nexo-dark/55 text-xs leading-relaxed">{item.what}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {withImage.map(sub => (
+        <div>
+          <h3 class="text-base font-bold text-nexo-dark mb-1">{sub.title}</h3>
+          <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">{sub.what}</p>
+          <DocImage src={sub.image.src} alt={sub.image.alt} caption={sub.image.caption} />
+        </div>
+      ))}
+    </div>
   </div>
 </section>

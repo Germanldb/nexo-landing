@@ -1,4 +1,7 @@
 ---
+import DocImage from './DocImage.astro';
+import imgAjustes from '../../assets/img-docs/doc-39.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
@@ -9,168 +12,111 @@ const configSections = [
       { name: 'General', desc: 'Nombre empresa, logo, moneda, zona horaria, datos fiscales.' },
       { name: 'Ubicaciones', desc: 'Zonas geográficas de operación.' },
       { name: 'Sucursales', desc: 'Sedes o puntos de venta.' },
-      { name: 'Cloud', desc: 'Integración con servicios en la nube.' },
-      { name: 'Google', desc: 'Integración con Google Maps, Calendar.' },
-      { name: 'Calendario', desc: 'Sincronización de calendario de técnicos.' },
+      { name: 'Cloud / Google / Calendario', desc: 'Servicios en la nube, Maps y sync de técnicos.' },
     ],
   },
   {
     title: 'Administración',
     items: [
       { name: 'Gestión personal', desc: 'Operadores, roles y permisos.' },
-      { name: 'Portal cliente', desc: 'Configuración del portal de abonados.' },
-      { name: 'Importar clientes', desc: 'Importación masiva desde Excel/CSV.' },
-      { name: 'Cambios masivos', desc: 'Modificar configuración de facturación en lote.' },
-      { name: 'Login RADIUS', desc: 'Equipos NAS autorizados.' },
-      { name: 'Backups Mikrotik', desc: 'Configuración de respaldos automáticos.' },
+      { name: 'Portal cliente', desc: 'Qué ve y puede hacer el abonado.' },
+      { name: 'Importar clientes', desc: 'Carga masiva desde Excel/CSV.' },
+      { name: 'Cambios masivos', desc: 'Modificar facturación u otros datos en lote.' },
+      { name: 'Login RADIUS / Backups', desc: 'NAS autorizados y respaldos MikroTik.' },
     ],
   },
   {
-    title: 'Facturación',
+    title: 'Facturación y mensajes',
     items: [
       { name: 'Facturación', desc: 'Día de facturación, corte, mora, impuestos, numeración.' },
-      { name: 'Pasarelas de pago', desc: 'Configuración de bancos y procesadores.' },
+      { name: 'Pasarelas de pago', desc: 'Bancos y procesadores (API y métodos).' },
+      { name: 'Servidor de correo', desc: 'SMTP para emails.' },
+      { name: 'Tickets / Zendesk', desc: 'Departamentos e integración externa.' },
+      { name: 'Mensajería SMS', desc: 'Proveedor SMS, plantillas y WhatsApp.' },
     ],
   },
   {
-    title: 'Soporte y mensajes',
+    title: 'Herramientas y sistema',
     items: [
-      { name: 'Servidor de correo', desc: 'SMTP para envío de emails.' },
-      { name: 'Tickets', desc: 'Departamentos de soporte.' },
-      { name: 'Zendesk', desc: 'Integración con Zendesk.' },
-      { name: 'Mensajería (SMS)', desc: 'Proveedor SMS, plantillas, WhatsApp.' },
-    ],
-  },
-  {
-    title: 'Herramientas',
-    items: [
-      { name: 'Editor plantillas', desc: 'PDF, correos, avisos.' },
-      { name: 'Configuración plantillas', desc: 'Valores predeterminados al registrar clientes.' },
-      { name: 'Mensajes facturas', desc: 'Textos en facturas y recibos.' },
-      { name: 'Campos personalizados', desc: 'Campos extra en ficha de cliente.' },
-      { name: 'Configuración VPN', desc: 'Servidor OpenVPN para operadores.' },
-    ],
-  },
-  {
-    title: 'Sistema',
-    items: [
-      { name: 'Base de datos', desc: 'Backup y restauración.' },
-      { name: 'Crontab', desc: 'Tareas programadas.' },
-      { name: 'Logs', desc: 'Registros del sistema y accesos.' },
-      { name: 'Servidor', desc: 'Estado de servicios (MySQL, Radius, VPN).' },
+      { name: 'Plantillas y mensajes', desc: 'PDF, correos, avisos, textos de facturas.' },
+      { name: 'Campos personalizados / VPN', desc: 'Campos extra en ficha y OpenVPN.' },
+      { name: 'Base de datos / Crontab / Logs', desc: 'Backup, tareas programadas y auditoría.' },
+      { name: 'Servidor / Freeradius / Licencia', desc: 'Estado de servicios, Radius, token y límites.' },
       { name: 'Migrar sistema', desc: 'Migración desde Mikrowisp 5.' },
-      { name: 'Freeradius', desc: 'Logs y estado del servidor Radius.' },
-      { name: 'Licencia', desc: 'Token de licencia, límites, actualizaciones.' },
     ],
   },
 ];
 
-const adminSteps = [
-  'Vaya a Ajustes → Gestión personal.',
-  'Pestaña Operadores.',
-  'Haga clic en Nuevo operador.',
-  'Complete: nombre, usuario, contraseña, email, sucursal.',
-  'Asigne plantilla de rol o configure permisos manualmente en el árbol de permisos.',
-  'Guarde.',
-];
-
-const portalSteps = [
-  'Vaya a Ajustes → Portal cliente.',
-  'Pestañas: General, Reporte pago, Banners.',
-  'Active/desactive secciones visibles para el abonado.',
-  'Configure textos, logos y colores del portal.',
-  'Guarde.',
-];
-
-const paymentSteps = [
-  'Vaya a Ajustes → Pasarelas de pago.',
-  'Localice el banco deseado (Banesco, Mercantil, BDV, Bancaribe, etc.).',
-  'Active la pasarela con el switch.',
-  'Complete credenciales API del banco.',
-  'Configure método: Botón de pago, C2P, Pago móvil, Transferencia o Debin.',
-  'Guarde y pruebe con un pago de prueba.',
+const procedures = [
+  {
+    title: 'Crear operador',
+    steps: [
+      'Gestión personal → Operadores → Nuevo operador',
+      'Nombre, usuario, contraseña, email y sucursal',
+      'Asigne plantilla de rol o configure el árbol de permisos → Guardar',
+    ],
+  },
+  {
+    title: 'Configurar portal',
+    steps: [
+      'Portal cliente → pestañas General, Reporte pago, Banners',
+      'Active/desactive secciones visibles para el abonado',
+      'Ajuste textos, logos y colores → Guardar',
+    ],
+  },
+  {
+    title: 'Pasarela de pago',
+    steps: [
+      'Pasarelas → localice el banco (Banesco, Mercantil, BDV, etc.)',
+      'Active el switch, complete credenciales API',
+      'Método: botón de pago, C2P, pago móvil, transferencia o Debin → pruebe',
+    ],
+  },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 18</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 18</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Ajustes generales</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Ajustes Generales · Pantalla de configuración del sistema.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Configuración del sistema, operadores, portal y pasarelas.</p>
   </div>
 
-  <div class="space-y-12">
+  <DocImage
+    src={imgAjustes}
+    alt="Hub de ajustes generales"
+    caption="Entrada a configuración, administración, facturación y sistema."
+  />
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mb-6">
     {configSections.map(section => (
-      <div>
-        <h3 class="text-xl font-bold text-nexo-dark mb-4">{section.title}</h3>
-        <div class="doc-card overflow-hidden p-0">
-          <table class="w-full text-left">
-            <thead>
-              <tr class="bg-nexo-dark/[0.03]">
-                <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Sección</th>
-                <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {section.items.map((item, i) => (
-                <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                  <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{item.name}</td>
-                  <td class="px-5 py-3 text-nexo-dark/60 text-sm">{item.desc}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-3">{section.title}</h3>
+        <ul class="space-y-2">
+          {section.items.map(item => (
+            <li class="flex items-start gap-2">
+              <span class="w-1 h-1 rounded-full bg-nexo-primary mt-1.5 shrink-0"></span>
+              <span class="text-xs text-nexo-dark/60 leading-relaxed"><strong class="text-nexo-dark font-semibold">{item.name}.</strong> {item.desc}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     ))}
+  </div>
 
-    <div class="doc-section-divider"></div>
-
-    <!-- Crear operador -->
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Crear operador con permisos</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          {adminSteps.map((step, i) => (
-            <li class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    {procedures.map(proc => (
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">{proc.title}</h3>
+        <ol class="space-y-2">
+          {proc.steps.map((step, i) => (
+            <li class="flex items-start gap-2 text-xs text-nexo-dark/65 leading-relaxed">
+              <span class="w-4 h-4 rounded bg-nexo-primary text-nexo-dark flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">{i + 1}</span>
+              {step}
             </li>
           ))}
         </ol>
       </div>
-    </div>
-
-    <!-- Configurar portal -->
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Configurar portal del cliente</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          {portalSteps.map((step, i) => (
-            <li class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
-
-    <!-- Configurar pasarela -->
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Configurar pasarela de pago</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          {paymentSteps.map((step, i) => (
-            <li class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-              <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+    ))}
   </div>
 </section>

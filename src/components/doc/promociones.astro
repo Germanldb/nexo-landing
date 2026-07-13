@@ -1,59 +1,52 @@
 ---
+import DocImage from './DocImage.astro';
+import imgPromociones from '../../assets/img-docs/doc-24.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
+
+const fields = [
+  'Nombre de la promoción',
+  'Tipo: % descuento, monto fijo o meses gratis',
+  'Perfiles / planes aplicables',
+  'Vigencia (inicio y fin)',
+  'Condiciones: nuevos, existentes, etc.',
+];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 8</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 8</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Promociones</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Promociones · Crear ofertas especiales para atraer o retener clientes.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Menú: Promociones · Ofertas temporales para atraer o retener clientes.</p>
   </div>
 
-  <div class="space-y-8">
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-2">¿Para qué sirve?</h3>
-      <p class="text-nexo-dark/70 text-lg leading-relaxed">
-        Las promociones le permiten crear descuentos, meses gratis o precios especiales temporales. Se aplican al registrar un nuevo cliente o al modificar un servicio existente.
-      </p>
-    </div>
+  <div class="space-y-6">
+    <p class="text-nexo-dark/70 text-sm leading-relaxed">
+      Descuentos, meses gratis o precios especiales. Se aplican al alta o al editar un servicio.
+    </p>
+    <DocImage
+      src={imgPromociones}
+      alt="Listado de paquetes promocionales en Nexo"
+      caption="Promociones: vigencia, cupo y perfiles."
+    />
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Crear una promoción</h3>
-      <div class="doc-card">
-        <ol class="space-y-4">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-base">Vaya a <strong class="text-nexo-dark">Promociones</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-base">Haga clic en <strong class="text-nexo-dark">Nueva promoción</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <div class="text-nexo-dark/70 text-base">
-              <span class="block mb-2">Configure los siguientes campos:</span>
-              <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
-                <li><strong class="text-nexo-dark">Nombre</strong> de la promoción.</li>
-                <li><strong class="text-nexo-dark">Tipo:</strong> Descuento porcentual, monto fijo o meses gratis.</li>
-                <li><strong class="text-nexo-dark">Perfiles aplicables:</strong> Qué planes incluye.</li>
-                <li><strong class="text-nexo-dark">Vigencia:</strong> Fecha de inicio y fin.</li>
-                <li><strong class="text-nexo-dark">Condiciones:</strong> Nuevos clientes, existentes, etc.</li>
-              </ul>
-            </div>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-base">Guarde y active la promoción.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
-            <span class="text-nexo-dark/70 text-base">Al registrar un cliente o servicio, seleccione la promoción aplicable.</span>
-          </li>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Crear una promoción</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2.5 mb-4">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Promociones → Nueva promoción</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Complete los campos y guarde</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Al dar de alta un cliente/servicio, selecciónela</li>
         </ol>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-nexo-dark/5">
+          {fields.map(f => (
+            <div class="flex items-start gap-2 text-xs text-nexo-dark/60">
+              <span class="w-1 h-1 rounded-full bg-nexo-primary mt-1.5 shrink-0"></span>
+              {f}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </div>

@@ -1,4 +1,8 @@
 ---
+import DocImage from './DocImage.astro';
+import imgBarra from '../../assets/img-docs/doc-55.png';
+import imgMenuUsuario from '../../assets/img-docs/doc-56.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
@@ -6,80 +10,76 @@ const features = [
   {
     icon: '🔍',
     title: 'Buscar cliente',
-    desc: 'El acceso más rápido para atender a un cliente. Escriba al menos 3 caracteres del nombre, cédula o código y seleccione de la lista desplegable. Se abrirá directamente su ficha.',
-    tip: 'Este es el acceso más rápido para atender a un cliente en mostrador o por teléfono.',
+    desc: 'Escriba ≥3 caracteres (nombre, cédula o código) y abra la ficha desde la lista.',
   },
   {
     icon: '💲',
-    title: 'Registrar pago rápido',
-    desc: 'El icono de dólar ($) en la barra redirige directamente al módulo de Registrar Pagos sin pasar por el menú lateral. Ideal para caja.',
-    permission: 'Widget de pago activo.',
+    title: 'Pago rápido',
+    desc: 'El icono $ abre Registrar Pagos directo. Requiere widget de pago activo.',
   },
   {
     icon: '🔔',
     title: 'Notificaciones',
-    desc: 'El icono de campana muestra alertas del sistema: pagos recibidos, tickets pendientes, avisos de red, etc. Haga clic para ver el detalle y marcar como leídas.',
+    desc: 'Campana: pagos, tickets y avisos. Clic para ver detalle y marcar como leídas.',
   },
   {
     icon: '🌙',
-    title: 'Modo oscuro y personalización',
-    desc: 'Alterne entre tema claro y oscuro con el botón luna/sol. También puede personalizar los colores de acento del panel desde el panel de configuración.',
+    title: 'Tema',
+    desc: 'Alterna claro/oscuro (luna/sol). Colores de acento desde configuración.',
   },
 ];
 
 const userMenu = [
-  { option: 'Asistencia', desc: 'Registro de asistencia del operador' },
-  { option: 'Mi Perfil', desc: 'Datos del operador logueado' },
-  { option: 'Cambiar Contraseña', desc: 'Actualizar credenciales de acceso' },
+  { option: 'Asistencia', desc: 'Registro de asistencia' },
+  { option: 'Mi Perfil', desc: 'Datos del operador' },
+  { option: 'Cambiar Contraseña', desc: 'Actualizar acceso' },
   { option: 'Cerrar Sesión', desc: 'Salir del sistema' },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 4</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 4</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Barra superior</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">La barra superior está siempre visible y ofrece accesos rápidos a las funciones más usadas.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Accesos rápidos siempre visibles.</p>
   </div>
 
   <div class="space-y-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <DocImage
+      src={imgBarra}
+      alt="Barra superior de Nexo con buscador e iconos de acceso rápido"
+      caption="Barra superior: logo, buscar cliente e iconos de acciones."
+    />
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
       {features.map(f => (
-        <div class="doc-card">
-          <div class="text-2xl mb-4">{f.icon}</div>
-          <h3 class="font-bold text-nexo-dark mb-2">{f.title}</h3>
-          <p class="text-nexo-dark/60 text-sm leading-relaxed">{f.desc}</p>
-          {f.tip && (
-            <div class="mt-4 bg-nexo-primary/10 border border-nexo-primary/30 rounded-xl px-4 py-3 text-sm text-nexo-dark/70">
-              <strong class="text-nexo-dark">Consejo:</strong> {f.tip}
-            </div>
-          )}
-          {f.permission && (
-            <p class="mt-3 text-xs text-nexo-dark/40">Permiso requerido: {f.permission}</p>
-          )}
+        <div class="doc-card !p-4">
+          <div class="text-xl mb-2">{f.icon}</div>
+          <h3 class="font-bold text-nexo-dark text-sm mb-1.5">{f.title}</h3>
+          <p class="text-nexo-dark/55 text-xs leading-relaxed">{f.desc}</p>
         </div>
       ))}
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Menú de usuario</h3>
-      <div class="doc-card overflow-hidden p-0">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-nexo-dark/[0.03]">
-              <th class="px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Opción</th>
-              <th class="px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Descripción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userMenu.map((item, i) => (
-              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                <td class="px-6 py-4 font-bold text-nexo-dark text-sm">{item.option}</td>
-                <td class="px-6 py-4 text-nexo-dark/60 text-sm">{item.desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h3 class="text-lg font-bold text-nexo-dark mb-4">Menú de usuario</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <DocImage
+          src={imgMenuUsuario}
+          alt="Menú desplegable del avatar de usuario en Nexo"
+          caption="Clic en el avatar: Asistencia, Perfil, Contraseña y Cerrar sesión."
+        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+          {userMenu.map(item => (
+            <div class="flex items-center gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-nexo-primary shrink-0"></span>
+              <div class="min-w-0">
+                <p class="font-bold text-nexo-dark text-sm">{item.option}</p>
+                <p class="text-nexo-dark/50 text-xs">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </div>

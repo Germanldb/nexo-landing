@@ -4,94 +4,61 @@ const { id } = Astro.props;
 
 const permissionAreas = [
   { area: 'Widget barra', perms: 'Pago, Telegram, Notificaciones, Soporte.' },
-  { area: 'Gestión de Red', perms: 'Router (menu, nuevo, editar, eliminar), IPv4, Monitoreo, NAP, Tráfico.' },
-  { area: 'Servicios', perms: 'Internet, Voz, CATV, Personalizado (menu).' },
-  { area: 'Clientes', perms: 'Usuarios (menu, nuevo, editar, eliminar, activar, retirar, herramientas), Mapa, Anuncios, Instalaciones, Contratos, Correo.' },
-  { area: 'Fichas Hotspot', perms: 'Fichas (menu, nuevo, eliminar, imprimir), Router, Plantillas, Ventas.' },
+  { area: 'Gestión de Red', perms: 'Router, IPv4, Monitoreo, NAP, Tráfico.' },
+  { area: 'Servicios', perms: 'Internet, Voz, CATV, Personalizado.' },
+  { area: 'Clientes', perms: 'Usuarios, Mapa, Anuncios, Instalaciones, Contratos.' },
+  { area: 'Fichas Hotspot', perms: 'Fichas, Router, Plantillas, Ventas.' },
   { area: 'Tareas', perms: 'Nuevo, Editar, Eliminar.' },
-  { area: 'Finanzas', perms: 'Facturas (menu, pagar, editar, eliminar, anular), Registrar pago, Transacciones, Reporte, etc.' },
-  { area: 'Almacén', perms: 'Categorías, Productos (menu, editar, eliminar).' },
+  { area: 'Finanzas', perms: 'Facturas, Pagos, Transacciones, Reportes.' },
+  { area: 'Almacén', perms: 'Categorías, Productos.' },
   { area: 'Reportes', perms: 'Administración.' },
-  { area: 'Soporte', perms: 'Menu, Nuevo, Listar, Editar, Eliminar, Cerrar.' },
+  { area: 'Soporte', perms: 'Menu, Nuevo, Editar, Cerrar.' },
   { area: 'SMS', perms: 'Menu, Nuevo.' },
-  { area: 'Ajustes', perms: 'General, Gestión, Facturación, Portal, Importar, Pasarela, Plantillas, Base de datos, Licencia, etc.' },
+  { area: 'Ajustes', perms: 'General, Gestión, Facturación, Portal, Licencia.' },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 21</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 21</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Permisos y roles</h2>
   </div>
 
-  <div class="space-y-10">
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-2">¿Cómo funciona?</h3>
-      <p class="text-nexo-dark/70 text-lg leading-relaxed">
-        Cada operador tiene un <strong class="text-nexo-dark">rol</strong> con permisos granulares. Los permisos determinan qué módulos del menú lateral son visibles y qué acciones puede ejecutar cada usuario.
-      </p>
-    </div>
+  <div class="space-y-6">
+    <p class="text-nexo-dark/70 text-sm leading-relaxed">
+      Cada operador tiene un <strong class="text-nexo-dark">rol</strong> con permisos. Definen qué ve en el menú y qué acciones puede ejecutar.
+    </p>
 
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Niveles de acceso</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="doc-card border-nexo-primary/30">
-          <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Administrador</span>
-          <p class="text-nexo-dark/70 text-sm">Acceso total a todos los módulos. Nivel 0 en el sistema.</p>
-        </div>
-        <div class="doc-card">
-          <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/40 mb-2 block">Operador</span>
-          <p class="text-nexo-dark/70 text-sm">Acceso según permisos asignados por el administrador.</p>
-        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="doc-card !p-4 border-nexo-primary/30">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-1.5 block">Administrador</span>
+        <p class="text-nexo-dark/65 text-xs">Acceso total. Nivel 0.</p>
+      </div>
+      <div class="doc-card !p-4">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/40 mb-1.5 block">Operador</span>
+        <p class="text-nexo-dark/65 text-xs">Solo lo que le asigne el administrador.</p>
       </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Áreas de permisos principales</h3>
-      <div class="doc-card overflow-hidden p-0">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-nexo-dark/[0.03]">
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Área</th>
-              <th class="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-dark/60">Ejemplos de permisos</th>
-            </tr>
-          </thead>
-          <tbody>
-            {permissionAreas.map((p, i) => (
-              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                <td class="px-5 py-3 font-bold text-nexo-dark text-sm">{p.area}</td>
-                <td class="px-5 py-3 text-nexo-dark/60 text-sm">{p.perms}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Áreas de permisos</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {permissionAreas.map(p => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3">
+            <p class="font-bold text-nexo-dark text-sm">{p.area}</p>
+            <p class="text-nexo-dark/50 text-xs mt-1 leading-relaxed">{p.perms}</p>
+          </div>
+        ))}
       </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Solicitar acceso a un módulo</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-sm">Identifique qué módulo necesita y no ve en su menú.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-sm">Contacte al administrador del sistema.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-sm">El administrador debe ir a <strong class="text-nexo-dark">Ajustes → Gestión personal → [su usuario] → Permisos</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-            <span class="text-nexo-dark/70 text-sm">Activar el permiso correspondiente en el árbol.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
-            <span class="text-nexo-dark/70 text-sm">Cierre sesión y vuelva a entrar para ver los cambios.</span>
-          </li>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Solicitar acceso</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Indique al admin el módulo que no ve.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Admin: <strong class="text-nexo-dark">Ajustes → Gestión personal → Permisos</strong>.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Active el permiso y cierre/abra sesión.</li>
         </ol>
       </div>
     </div>

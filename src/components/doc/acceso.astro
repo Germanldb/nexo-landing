@@ -3,57 +3,62 @@ interface Props { id?: string; }
 const { id } = Astro.props;
 
 const loginSteps = [
-  'Abra su navegador web (Chrome, Firefox o Edge recomendados).',
-  'Ingrese la URL del panel: https://su-servidor/admin/',
-  'Se mostrará la pantalla de login.',
-  'Ingrese su usuario y contraseña asignados por el administrador.',
-  'Si tiene autenticación de dos factores (2FA) activa, complete el código.',
-  'Presione Iniciar sesión.',
-  'Será redirigido al Dashboard (pantalla de inicio).',
+  'Abra el navegador e ingrese la URL: https://su-servidor/admin/',
+  'Ingrese usuario y contraseña (y código 2FA si está activo).',
+  'Presione Iniciar sesión → será redirigido al Dashboard.',
 ];
 
 const problems = [
-  { problem: 'Usuario o contraseña incorrectos', solution: 'Verifique mayúsculas y minúsculas. Si el problema persiste, contacte al administrador para restablecer sus credenciales.' },
-  { problem: 'Sesión expirada', solution: 'Vuelva a iniciar sesión. Nexo cierra la sesión automáticamente después de un periodo de inactividad por seguridad.' },
-  { problem: 'No veo ciertos módulos en el menú', solution: 'Su rol no tiene permisos para esos módulos. Solicite acceso al administrador del sistema.' },
+  { problem: 'Usuario o contraseña incorrectos', solution: 'Revise mayúsculas/minúsculas. Si persiste, pida restablecer credenciales al administrador.' },
+  { problem: 'Sesión expirada', solution: 'Vuelva a iniciar sesión. Se cierra sola tras inactividad.' },
+  { problem: 'No veo ciertos módulos', solution: 'Su rol no tiene esos permisos. Solicítelos al administrador.' },
+];
+
+const sessionActions = [
+  {
+    title: 'Cerrar sesión',
+    steps: ['Avatar (arriba a la derecha)', 'Cerrar Sesión', 'Vuelve a la pantalla de login'],
+  },
+  {
+    title: 'Cambiar contraseña',
+    steps: ['Avatar → Cambiar Contraseña', 'Contraseña actual + nueva (dos veces)', 'Guardar'],
+  },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 3</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 3</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Acceso al sistema</h2>
   </div>
 
-  <div class="space-y-12">
-    <!-- Login -->
+  <div class="space-y-8">
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Iniciar sesión en el panel admin</h3>
-      <div class="doc-card">
-        <ol class="space-y-4">
+      <h3 class="text-lg font-bold text-nexo-dark mb-4">Iniciar sesión</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2.5">
           {loginSteps.map((step, i) => (
-            <li class="flex items-start gap-4">
-              <span class="w-8 h-8 rounded-xl bg-nexo-primary text-nexo-dark flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">{i + 1}</span>
-              <span class="text-nexo-dark/70 text-lg leading-relaxed pt-1">{step}</span>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</span>
+              <span class="text-nexo-dark/70 text-sm leading-relaxed pt-0.5">{step}</span>
             </li>
           ))}
         </ol>
       </div>
     </div>
 
-    <!-- Problemas comunes -->
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Problemas comunes</h3>
-      <div class="space-y-4">
+      <h3 class="text-lg font-bold text-nexo-dark mb-4">Problemas comunes</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         {problems.map(p => (
-          <div class="doc-card !p-0 overflow-hidden">
-            <div class="flex items-start gap-4 p-6">
-              <div class="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+          <div class="doc-card !p-4">
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
               </div>
-              <div>
-                <p class="font-bold text-nexo-dark text-sm">{p.problem}</p>
-                <p class="text-nexo-dark/60 text-sm mt-1 leading-relaxed">{p.solution}</p>
+              <div class="min-w-0">
+                <p class="font-bold text-nexo-dark text-sm leading-snug">{p.problem}</p>
+                <p class="text-nexo-dark/55 text-xs mt-1.5 leading-relaxed">{p.solution}</p>
               </div>
             </div>
           </div>
@@ -61,45 +66,22 @@ const problems = [
       </div>
     </div>
 
-    <!-- Cerrar sesión -->
     <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cerrar sesión</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-base">Haga clic en su avatar o nombre en la esquina superior derecha.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-base">Seleccione Cerrar Sesión.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-base">Será redirigido a la pantalla de login.</span>
-          </li>
-        </ol>
-      </div>
-    </div>
-
-    <!-- Cambiar contraseña -->
-    <div>
-      <h3 class="text-xl font-bold text-nexo-dark mb-6">Cambiar contraseña</h3>
-      <div class="doc-card">
-        <ol class="space-y-3">
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-            <span class="text-nexo-dark/70 text-base">Haga clic en su avatar → <strong class="text-nexo-dark">Cambiar Contraseña</strong>.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-            <span class="text-nexo-dark/70 text-base">Ingrese su contraseña actual y la nueva (dos veces para confirmar).</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-            <span class="text-nexo-dark/70 text-base">Presione <strong class="text-nexo-dark">Guardar</strong>.</span>
-          </li>
-        </ol>
+      <h3 class="text-lg font-bold text-nexo-dark mb-4">Sesión y cuenta</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {sessionActions.map(block => (
+          <div class="doc-card !p-4">
+            <p class="font-bold text-nexo-dark text-sm mb-3">{block.title}</p>
+            <ol class="space-y-2">
+              {block.steps.map((step, i) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+                  <span class="text-nexo-dark/65 text-xs leading-relaxed pt-0.5">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
       </div>
     </div>
   </div>

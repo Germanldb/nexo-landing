@@ -1,103 +1,62 @@
 ---
+import DocImage from './DocImage.astro';
+import imgInternet from '../../assets/img-docs/doc-21.png';
+import imgVoz from '../../assets/img-docs/doc-23.png';
+import imgCatv from '../../assets/img-docs/doc-06.png';
+import imgPersonalizado from '../../assets/img-docs/doc-25.png';
+import imgIptv from '../../assets/img-docs/doc-10.png';
+
 interface Props { id?: string; }
 const { id } = Astro.props;
 
-const profiles = [
-  {
-    title: 'Perfiles de Internet',
-    menu: 'Servicios → Internet',
-    what: 'Crear y administrar planes de internet: velocidad de bajada/subida, precio, tipo de conexión (PPPoE, Hotspot, DHCP), límites de tráfico.',
-    steps: [
-      'Vaya a Servicios → Internet.',
-      'Haga clic en Nuevo.',
-      'Complete: Nombre del perfil (ej. "Plan 50 Mbps"), Velocidad bajada/subida, Precio mensual, Tipo de conexión (PPPoE, Hotspot, DHCP, IP estática), Router asociado y Límite de tráfico (opcional).',
-      'Configure colas y reglas de MikroTik si aplica.',
-      'Presione Guardar.',
-    ],
-    note: 'Cambiar el precio de un perfil no modifica automáticamente el precio de clientes ya contratados. Debe actualizar cada servicio individualmente o usar Cambios Masivos en Ajustes.',
-  },
-  {
-    title: 'Perfiles de Voz (VoIP)',
-    menu: 'Servicios → Voz',
-    what: 'Misma lógica que Internet pero para servicios de telefonía IP. Configure extensiones, minutos incluidos y tarifas.',
-    steps: [],
-  },
-  {
-    title: 'Perfiles CATV',
-    menu: 'Servicios → Catv',
-    what: 'Planes de televisión por cable analógico o digital.',
-    steps: [],
-  },
-  {
-    title: 'Perfiles Personalizados',
-    menu: 'Servicios → Personalizado',
-    what: 'Servicios no estándar definidos por el ISP: cámaras de vigilancia, enlaces dedicados, servicios especiales.',
-    steps: [],
-  },
-  {
-    title: 'IPTV',
-    menu: 'Servicios → IPTV',
-    what: 'Gestionar servicios de televisión por protocolo IP, incluyendo integración con plataformas como Setplex/Nora.',
-    steps: [
-      'Vaya a Servicios → IPTV.',
-      'Revise el listado de suscriptores activos.',
-      'Use los filtros para buscar por nombre, plan o estado.',
-      'Acciones disponibles: Activar/Suspender suscripción, Editar datos, Actualizar plan.',
-      'Para vincular IPTV a un cliente del ISP, hágalo desde la ficha del cliente en la pestaña Servicios.',
-    ],
-  },
-];
-
-const toolbarButtons = [
-  { btn: 'Nuevo', desc: 'Alta de nuevo cliente' },
-  { btn: 'Filtrar', desc: 'Filtro avanzado colapsable' },
-  { btn: 'Estado', desc: 'TODOS / ACTIVOS / SUSPENDIDOS / RETIRADOS / ONLINE' },
-  { btn: 'Suspender masivo', desc: 'Suspender clientes seleccionados' },
-  { btn: 'Activar masivo', desc: 'Activar clientes seleccionados' },
-  { btn: 'Retirar masivo', desc: 'Retirar clientes seleccionados' },
-  { btn: 'Eliminar masivo', desc: 'Eliminar clientes seleccionados' },
+const others = [
+  { title: 'Voz (VoIP)', what: 'Misma lógica que Internet, para telefonía IP: extensiones, minutos incluidos y tarifas.', image: { src: imgVoz, alt: 'Servicios de voz', caption: 'Perfiles de telefonía IP.' } },
+  { title: 'CATV', what: 'Planes de televisión por cable analógico o digital.', image: { src: imgCatv, alt: 'Servicios CATV', caption: 'Planes de TV por cable.' } },
+  { title: 'Personalizado', what: 'Servicios no estándar del ISP: cámaras, enlaces dedicados u otros.', image: { src: imgPersonalizado, alt: 'Servicios personalizados', caption: 'Planes a medida.' } },
 ];
 ---
 
-<section id={id} class="doc-section mb-20">
-  <div class="mb-10">
-    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-3 block">Sección 7</span>
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 7</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Servicios y perfiles</h2>
-    <p class="text-nexo-dark/50 text-lg mt-4">
-      <strong class="text-nexo-dark">Menú:</strong> Servicios (menú expandible) · Los perfiles definen los planes de servicio que se ofrecen a los clientes.
-    </p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Los perfiles definen los planes que se ofrecen y se asignan a los clientes.</p>
   </div>
 
-  <div class="space-y-10">
-    {profiles.map(sub => (
-      <div>
-        <h3 class="text-xl font-bold text-nexo-dark mb-2">{sub.title}</h3>
-        <p class="text-nexo-dark/40 text-sm mb-4">
-          <strong class="text-nexo-dark/60">Menú:</strong> {sub.menu}
+  <div class="space-y-6">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Internet</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Planes de internet: velocidad bajada/subida, precio, tipo de conexión (PPPoE, Hotspot, DHCP, IP estática), router asociado y límite de tráfico opcional.
+      </p>
+      <DocImage src={imgInternet} alt="Perfiles de internet" caption="Planes con velocidad, precio y clientes activos." />
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2 mb-3">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Nuevo → nombre (ej. “Plan 50 Mbps”), velocidad, precio mensual, tipo de conexión y router</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Configure colas/reglas MikroTik si aplica → Guardar</li>
+        </ol>
+        <p class="text-xs text-amber-900/80 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5">
+          <strong class="text-nexo-dark">Importante:</strong> cambiar el precio del perfil no actualiza clientes ya contratados. Debe editar cada servicio o usar Cambios masivos en Ajustes.
         </p>
-        <p class="text-nexo-dark/70 text-base leading-relaxed mb-5">{sub.what}</p>
-
-        {sub.steps.length > 0 && (
-          <div class="doc-card">
-            <ol class="space-y-3">
-              {sub.steps.map((step, i) => (
-                <li class="flex items-start gap-3">
-                  <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-                  <span class="text-nexo-dark/70 text-sm leading-relaxed">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        {sub.note && (
-          <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-sm text-nexo-dark/70">
-            <strong class="text-nexo-dark">Importante:</strong> {sub.note}
-          </div>
-        )}
-
-        <div class="doc-section-divider mt-10"></div>
       </div>
-    ))}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {others.map(sub => (
+        <div>
+          <h3 class="text-base font-bold text-nexo-dark mb-1">{sub.title}</h3>
+          <p class="text-nexo-dark/55 text-xs mb-2 leading-relaxed">{sub.what}</p>
+          <DocImage src={sub.image.src} alt={sub.image.alt} caption={sub.image.caption} />
+        </div>
+      ))}
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">IPTV</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Televisión por IP e integración Setplex/Nora. Filtre por nombre, plan o estado. Acciones: activar/suspender, editar y actualizar plan. Vincule IPTV a un cliente desde su ficha → Servicios.
+      </p>
+      <DocImage src={imgIptv} alt="IPTV Setplex" caption="Planes y suscriptores IPTV." />
+    </div>
   </div>
 </section>
