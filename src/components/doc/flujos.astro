@@ -7,48 +7,64 @@ const flows = [
     title: 'Alta sin instalación',
     steps: [
       'Clientes → Usuarios → Nuevo',
-      'Paso 1: datos personales → Paso 2: facturación → Paso 3: servicios',
-      'Registrar cliente → factura generada y servicio activo en router',
+      'Datos → Facturación → Servicios',
+      'Registrar → factura y servicio activos',
     ],
   },
   {
     title: 'Alta con instalación',
     steps: [
-      'Instalaciones → Nuevo registro → Aceptar (técnico) → materiales',
-      'Imprimir hoja → técnico instala → Tareas: En curso → Finalizar',
-      'Dar de alta → wizard precargado → cliente activo',
+      'Instalaciones → registro → técnico y materiales',
+      'Tarea: En curso → Finalizar',
+      'Dar de alta (wizard precargado)',
     ],
   },
   {
     title: 'Cobro en caja',
     steps: [
-      'Barra superior → $ (Registrar pago) → buscar cliente',
-      'Seleccionar factura → forma de pago + monto → Registrar',
-      'Si estaba suspendido, el servicio se reactiva → imprimir recibo',
+      'Barra → $ → cliente y factura',
+      'Forma de pago + monto → registrar',
+      'Reactiva si estaba suspendido',
     ],
   },
   {
-    title: 'Ciclo de morosidad',
+    title: 'Morosidad',
     steps: [
-      'Cron: factura el día configurado → avisos SMS/email',
-      'Corte el día de corte → cliente suspendido en router/OLT',
-      'Cliente paga (caja o portal) → servicio reactivado',
+      'Sistema: factura → avisos → corte',
+      'Cliente paga (caja o portal)',
+      'Servicio reactivado',
     ],
   },
   {
-    title: 'Venta de ficha hotspot',
+    title: 'Ficha hotspot',
     steps: [
-      'Fichas Hotspot → Nuevo lote → imprimir',
-      'Entregar → marcar vendida (al usar o manual)',
-      'Consultar en Fichas Hotspot → Ventas',
+      'Nuevo lote → imprimir',
+      'Entregar / marcar vendida',
+      'Consultar en Ventas',
     ],
   },
   {
-    title: 'Atención de soporte',
+    title: 'Soporte',
     steps: [
-      'Cliente abre ticket (portal) u operador lo crea',
-      'Aparece en Esperando respuesta → operador responde',
-      'Cliente recibe notificación → operador cierra al resolver',
+      'Ticket (portal u operador)',
+      'Respuesta en Esperando',
+      'Cerrar al resolver',
+    ],
+  },
+  {
+    title: 'Facturación fiscal Serdimpre',
+    steps: [
+      'Se genera la factura → documento pendiente en Serdimpre (USD)',
+      'Ficha → columna Facturación (estado en vivo)',
+      'Si falla: reenvío desde el badge; al borrar, sync y bloqueo si ya facturó',
+    ],
+  },
+  {
+    title: 'Entrega y asignación de unidad',
+    steps: [
+      'Devolución: técnico solicita → toast al jefe → acepta (evidencia opcional)',
+      'Asignación: jefe asigna unidad → toast al técnico → acepta inventario',
+      'Inventario vuelve a bodega o queda a cargo del técnico',
     ],
   },
 ];
@@ -58,7 +74,7 @@ const flows = [
   <div class="mb-6">
     <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 20</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Flujos de trabajo</h2>
-    <p class="text-nexo-dark/50 text-sm mt-2">Procesos clave de punta a punta, incluyendo lo que hace el sistema en automático.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Procesos clave de punta a punta, incluyendo lo automático del sistema.</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

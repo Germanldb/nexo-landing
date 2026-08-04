@@ -10,11 +10,41 @@ interface Props { id?: string; }
 const { id } = Astro.props;
 
 const reportTypes = [
-  { type: 'Administración', desc: 'Clientes, morosos, crecimiento.', image: imgAdmin, caption: 'Reportes → Administración.' },
-  { type: 'Ventas', desc: 'Ingresos por periodo, plan u operador.', image: imgVentas, caption: 'Reportes → Ventas.' },
-  { type: 'Almacén', desc: 'Inventario y movimientos.', image: imgAlmacen, caption: 'Reportes → Almacén.' },
-  { type: 'Red', desc: 'Mapa NAP y clientes online.', image: imgRed, caption: 'Reportes → Red.' },
-  { type: 'Soporte', desc: 'Tickets y tiempos de respuesta.', image: imgSoporte, caption: 'Reportes → Soporte.' },
+  {
+    type: 'Administración',
+    desc: 'Facturación, cobrado Bs/USD, SyH, formas de pago y egresos.',
+    detail: 'Por defecto muestra el mes anterior. Ajuste fechas y sucursal, luego Actualizar.',
+    image: imgAdmin,
+    caption: 'Facturación y cobros del periodo.',
+  },
+  {
+    type: 'Ventas',
+    desc: 'Clientes e instalaciones, vendedores, técnicos y zonas.',
+    detail: 'Enfocado en altas e instalaciones (no en montos de facturación).',
+    image: imgVentas,
+    caption: 'Clientes, instalaciones y vendedores.',
+  },
+  {
+    type: 'Almacén',
+    desc: 'Inventario por estado y bodegas de la sucursal.',
+    detail: 'Útil para ver stock disponible, comodato e instalado.',
+    image: imgAlmacen,
+    caption: 'Inventario por estado.',
+  },
+  {
+    type: 'Red',
+    desc: 'Mapa de NAP/clientes y consumo de la red.',
+    detail: 'Visión geográfica y de uso de abonados.',
+    image: imgRed,
+    caption: 'Mapa de red y consumo.',
+  },
+  {
+    type: 'Soporte',
+    desc: 'Tickets por departamento y tiempos de cierre.',
+    detail: 'Mide volumen y promedio de atención.',
+    image: imgSoporte,
+    caption: 'Tickets y tiempos de cierre.',
+  },
 ];
 ---
 
@@ -22,29 +52,32 @@ const reportTypes = [
   <div class="mb-6">
     <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 15</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Reportes</h2>
-    <p class="text-nexo-dark/50 text-sm mt-2">Menú: Reportes · Análisis por área del ISP.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">
+      Pantallas con gráficos por área. Elija fechas (y sucursal) y pulse Actualizar.
+    </p>
   </div>
 
-  <div class="space-y-8">
-    <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-3">Tipos disponibles</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-        {reportTypes.map((r, i) => (
-          <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3">
-            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
-            <div>
-              <p class="font-bold text-nexo-dark text-sm">{r.type}</p>
-              <p class="text-nexo-dark/55 text-xs mt-0.5">{r.desc}</p>
-            </div>
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {reportTypes.map((r, i) => (
+        <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-xl px-4 py-3">
+          <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+          <div>
+            <p class="font-bold text-nexo-dark text-sm">{r.type}</p>
+            <p class="text-nexo-dark/55 text-xs mt-0.5 leading-snug">{r.desc}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
-      <div class="space-y-6">
-        {reportTypes.map(r => (
-          <DocImage src={r.image} alt={`Reporte de ${r.type} en Nexo`} caption={r.caption} />
-        ))}
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {reportTypes.map(r => (
+        <div>
+          <h3 class="text-base font-bold text-nexo-dark mb-1">{r.type}</h3>
+          <p class="text-nexo-dark/55 text-xs mb-2 leading-relaxed">{r.detail}</p>
+          <DocImage src={r.image} alt={`Reporte de ${r.type}`} caption={r.caption} />
+        </div>
+      ))}
     </div>
 
     <div>
@@ -52,9 +85,9 @@ const reportTypes = [
       <div class="doc-card !py-4 !px-5">
         <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Reportes → tipo deseado</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Filtros: fechas, sucursal, etc.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Generar / Buscar</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Exportar Excel o PDF</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Fechas y sucursal</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Pulse Actualizar</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Revise gráficos y totales</li>
         </ol>
       </div>
     </div>

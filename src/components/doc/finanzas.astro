@@ -65,7 +65,7 @@ const withImage = [
   },
   {
     title: 'Facturación SyH',
-    what: 'Facturación electrónica SyH (Venezuela). Solo aparece si el módulo SyH está activo.',
+    what: 'Facturación electrónica SyH (Venezuela). Solo aparece si el administrador activó el módulo.',
     image: { src: imgFacturacionSyh, alt: 'Facturación SyH', caption: 'Productos, grupos y zonas.' },
   },
   {
@@ -80,13 +80,23 @@ const compact = [
   { title: 'Transacciones', what: 'Historial de pagos, notas de crédito y ajustes de saldo.' },
   { title: 'Dólar Price / Casa de cambio', what: 'Tasa de cambio para facturar en USD con conversión a moneda local (Bs, ARS, etc.).' },
 ];
+
+const serdimpreTabs = [
+  'Detalles (conexión y modo)',
+  'Clientes facturando',
+  'Categorías',
+  'Facturaciones',
+  'Bancos',
+  'Métodos de pago',
+  'Monedas',
+];
 ---
 
 <section id={id} class="doc-section mb-16">
   <div class="mb-6">
     <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 13</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Finanzas</h2>
-    <p class="text-nexo-dark/50 text-sm mt-2">Centro financiero del ISP: facturas, caja, conciliación y pasarelas.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">Centro financiero del ISP: facturas, caja, conciliación, pasarelas y facturación fiscal.</p>
   </div>
 
   <div class="space-y-8">
@@ -122,6 +132,43 @@ const compact = [
           <p class="text-nexo-dark/55 text-xs leading-relaxed">{item.what}</p>
         </div>
       ))}
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Serdimpre (facturación fiscal)</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Envía facturas de Nexo al sistema fiscal Serdimpre (Venezuela). Solo aparece si el administrador lo activó en <strong class="text-nexo-dark">Ajustes → Facturación Serdimpre</strong>.
+      </p>
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        {serdimpreTabs.map(tab => (
+          <span class="px-2.5 py-1 bg-nexo-dark/5 border border-nexo-dark/10 rounded-md text-[11px] font-semibold text-nexo-dark/60">{tab}</span>
+        ))}
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Modo Al generar</h4>
+          <p class="text-nexo-dark/60 text-xs leading-relaxed">
+            Al crear la factura, se envía un documento pendiente en USD (contado, sin pagos). Queda Pendiente en Serdimpre hasta completar el pago allá.
+          </p>
+        </div>
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Modo Al pagar</h4>
+          <p class="text-nexo-dark/60 text-xs leading-relaxed">
+            Se envía al registrar el pago (flujo en bolívares con el pago adjunto).
+          </p>
+        </div>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Configurar</h4>
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Ajustes → Facturación Serdimpre → active el módulo</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Token, URL, serie, sucursal y tipo de documento</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Elija Al generar o Al pagar → moneda y mapeo de pasarelas → Guardar</li>
+        </ol>
+        <p class="text-nexo-dark/45 text-xs mt-3 pt-3 border-t border-nexo-dark/5">
+          El estado en vivo se ve en la ficha del cliente → columna Facturación. Si ya está facturada en Serdimpre, Nexo bloquea el borrado.
+        </p>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

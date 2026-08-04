@@ -8,15 +8,15 @@ const faqGroups = [
     questions: [
       {
         q: '¿Por qué no veo un módulo en el menú?',
-        a: 'Su rol no tiene permiso para ese módulo. Pida al administrador que lo asigne en Ajustes → Gestión personal.',
+        a: 'Su rol no tiene permiso. Pida al administrador que lo asigne en Ajustes → Gestión personal.',
       },
       {
         q: '¿Puedo usar Nexo desde el celular?',
-        a: 'Sí, el panel funciona desde el navegador del celular. Para tareas complejas (alta de clientes, facturación, red) conviene escritorio.',
+        a: 'Sí, desde el navegador. Para alta de clientes, facturación o red conviene escritorio.',
       },
       {
         q: '¿Cómo busco un cliente rápidamente?',
-        a: 'Buscador de la barra superior: al menos 3 caracteres de nombre, cédula o código, y seleccione de la lista.',
+        a: 'Buscador de la barra superior: al menos 3 caracteres de nombre, cédula o código.',
       },
     ],
   },
@@ -25,15 +25,36 @@ const faqGroups = [
     questions: [
       {
         q: '¿Cómo genero una factura manual?',
-        a: 'Ficha del cliente → Facturación → Nueva factura. O espere la generación automática del cron según la configuración de facturación.',
+        a: 'Ficha del cliente → Facturación → Nueva factura. También puede esperar la facturación automática.',
       },
       {
         q: 'El cliente pagó pero sigue suspendido.',
-        a: 'Verifique que el pago se aplicó a la factura correcta y cubre el monto. Revise Finanzas → Transacciones.',
+        a: 'Confirme que el pago cubre la factura correcta. Revise Finanzas → Transacciones.',
       },
       {
-        q: '¿Cómo anulo una factura?',
-        a: 'Finanzas → Facturas → ubique la factura → Anular. Requiere permiso de anular facturas.',
+        q: '¿Qué significa la columna Facturación en la ficha?',
+        a: 'Es el estado fiscal en Serdimpre (Pendiente, En cola, Fallido, Facturado, No fiscal, No enviada). Solo aparece si Serdimpre está activo.',
+      },
+      {
+        q: '¿Por qué no puedo eliminar una factura?',
+        a: 'Si ya está facturada en Serdimpre, Nexo bloquea el borrado para no desincronizar ambos sistemas.',
+      },
+    ],
+  },
+  {
+    category: 'Almacén',
+    questions: [
+      {
+        q: 'Me aparece un aviso naranja “Entrega a almacén pendiente”.',
+        a: 'Es el toast de almacén. Debe aceptar o rechazar la entrega (jefe). No se cierra solo ni con “Eliminar todo” de la campanita.',
+      },
+      {
+        q: 'Soy técnico y me sale “Unidad por confirmar”.',
+        a: 'El jefe le asignó un vehículo. Abra Revisar, verifique el inventario y acepte o rechace.',
+      },
+      {
+        q: '¿Dónde veo los vehículos / GPS?',
+        a: 'Almacén → Vehiculos (ya no está bajo Tareas).',
       },
     ],
   },
@@ -41,11 +62,11 @@ const faqGroups = [
     category: 'Red',
     questions: [
       {
-        q: 'Un cliente no tiene internet pero aparece activo en Nexo.',
-        a: 'Revise: 1) estado en el router, 2) ONU autorizada en la OLT, 3) colas MikroTik activas, 4) que no haya corte por mora.',
+        q: 'Un cliente no tiene internet pero aparece activo.',
+        a: 'Revise: conexión en el router, ONU autorizada, colas activas y que no haya corte por mora.',
       },
       {
-        q: '¿Cómo reinicio la ONU de un cliente?',
+        q: '¿Cómo reinicio la ONU?',
         a: 'Ficha → Servicios → AdminOLT/SmartOLT → Reiniciar ONT.',
       },
     ],
@@ -55,7 +76,7 @@ const faqGroups = [
     questions: [
       {
         q: '¿Cómo vendo una ficha hotspot?',
-        a: 'Fichas Hotspot → Fichas → Nuevo lote → Imprimir y entregar. Se marca vendida al usarse o de forma manual.',
+        a: 'Fichas Hotspot → Nuevo lote → imprimir y entregar. Se marca vendida al usarse o de forma manual.',
       },
     ],
   },
@@ -63,8 +84,12 @@ const faqGroups = [
     category: 'Soporte',
     questions: [
       {
-        q: '¿El cliente puede ver las notas internas de un ticket?',
-        a: 'No. Las notas internas solo las ve el ISP. El cliente solo ve las respuestas públicas.',
+        q: '¿El cliente ve las notas internas?',
+        a: 'No. Solo el ISP ve notas internas; el cliente ve respuestas públicas.',
+      },
+      {
+        q: '¿Se envía correo al crear un ticket?',
+        a: 'Depende del departamento (Ajustes → Tickets) y de la casilla del formulario del ticket.',
       },
     ],
   },

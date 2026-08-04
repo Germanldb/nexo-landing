@@ -3,59 +3,186 @@ import DocImage from './DocImage.astro';
 import imgCategorias from '../../assets/img-docs/doc-43.png';
 import imgProveedores from '../../assets/img-docs/doc-42.png';
 import imgProductos from '../../assets/img-docs/doc-41.png';
+import imgVehiculos from '../../assets/img-docs/doc-11.png';
 
 interface Props { id?: string; }
 const { id } = Astro.props;
+
+const subModules = [
+  { name: 'Tipos de productos', desc: 'Categorías (ONU, cable, herramientas…).' },
+  { name: 'Proveedores', desc: 'Quién suministra los equipos.' },
+  { name: 'Productos', desc: 'Bodegas, equipos, herramientas y materiales.' },
+  { name: 'Cuadrillas', desc: 'Inventario que lleva cada equipo de técnicos.' },
+  { name: 'Vehículos', desc: 'Flota y ubicación GPS.' },
+];
+
+const homeTabs = [
+  { name: 'Almacen', desc: 'Bodegas, productos, herramientas y materiales.' },
+  { name: 'Cuadrillas', desc: 'Unidades de campo y su inventario.' },
+  { name: 'Instalados', desc: 'Productos ya instalados en clientes.' },
+];
+
+const homeCards = [
+  { name: 'Almacenes', desc: 'Ver bodegas, crear una nueva, hacer traslados.' },
+  { name: 'Productos', desc: 'Equipos e inventario principal por bodega.' },
+  { name: 'Herramientas', desc: 'Herramientas de campo e instalación.' },
+  { name: 'Materiales', desc: 'Materiales y accesorios.' },
+];
+
+const entregaPerms = [
+  { name: 'Ver cuadrillas', who: 'Menú / pestaña Cuadrillas' },
+  { name: 'Asignar a vehículo', who: 'Mover inventario a unidad' },
+  { name: 'Jefe de almacén', who: 'Aceptar entregas / devoluciones' },
+  { name: 'Ver entregas pendientes', who: 'Botón y modal de entregas' },
+  { name: 'Solicitar entrega', who: 'Iniciar devolución desde unidad' },
+  { name: 'Notificaciones', who: 'Toast + campanita de entregas' },
+  { name: 'Traslados', who: 'Movimientos entre bodegas' },
+];
 ---
 
 <section id={id} class="doc-section mb-16">
   <div class="mb-6">
     <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 14</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Almacén</h2>
-    <p class="text-nexo-dark/50 text-sm mt-2">Control de inventario de equipos y materiales del ISP.</p>
+    <p class="text-nexo-dark/50 text-sm mt-2">
+      Inventario físico, cuadrillas de campo, entregas a bodega y flota de vehículos.
+    </p>
   </div>
 
   <div class="space-y-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+      {subModules.map(m => (
+        <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+          <p class="font-bold text-nexo-dark text-xs">{m.name}</p>
+          <p class="text-nexo-dark/50 text-[11px] mt-0.5 leading-snug">{m.desc}</p>
+        </div>
+      ))}
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
         <h3 class="text-base font-bold text-nexo-dark mb-1">Tipos de productos</h3>
         <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">
-          Categorías del inventario: ONUs, cables, conectores, antenas, etc., y servicios de instalación asociados.
+          Categorías: ONUs, cables, conectores, antenas, herramientas, etc.
         </p>
-        <DocImage src={imgCategorias} alt="Categorías de almacén" caption="Categorías y servicios." />
+        <DocImage src={imgCategorias} alt="Categorías de almacén" caption="Categorías y tipos de producto." />
       </div>
       <div>
         <h3 class="text-base font-bold text-nexo-dark mb-1">Proveedores</h3>
         <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">
-          Registro de proveedores de equipos y materiales, con contacto y sucursal.
+          Registro de proveedores (contacto y sucursal).
         </p>
         <DocImage src={imgProveedores} alt="Proveedores" caption="Listado de proveedores." />
       </div>
     </div>
 
     <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-1">Productos</h3>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Productos (pantalla principal)</h3>
       <p class="text-nexo-dark/60 text-sm mb-3">
-        Inventario principal y accesorios. Filtre por estado (Disponible, No disponible, Comodato) y categoría.
+        Al entrar verá tarjetas y tres pestañas. Desde aquí gestiona bodegas, stock e instalados.
       </p>
-      <DocImage src={imgProductos} alt="Productos en almacén" caption="Inventario por almacén, categoría y estado." />
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <DocImage src={imgProductos} alt="Productos en almacén" caption="Inventario por bodega, categoría y estado." />
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+        {homeTabs.map(t => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+            <p class="font-bold text-nexo-dark text-xs">{t.name}</p>
+            <p class="text-nexo-dark/50 text-[11px] mt-0.5">{t.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-xs font-semibold text-nexo-dark/50 mb-2 uppercase tracking-wide">Pestaña Almacen — accesos</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+        {homeCards.map(c => (
+          <div class="doc-card !py-3 !px-3">
+            <p class="font-bold text-nexo-dark text-xs mb-0.5">{c.name}</p>
+            <p class="text-nexo-dark/55 text-[11px] leading-snug">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Crear bodega</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacenes → Nuevo Almacén</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Nombre, sucursal/ubicación → Guardar</li>
+          </ol>
+        </div>
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Trasladar entre bodegas</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacenes → Traslados</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Origen, destino y cantidades → Confirme</li>
+          </ol>
+        </div>
         <div class="doc-card !py-4 !px-5">
           <h4 class="font-bold text-nexo-dark text-sm mb-2">Ingresar producto</h4>
           <ol class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Nuevo producto</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Categoría, nombre, serial/MAC, proveedor, condición (Nuevo, Comodato, Vendido) y costo opcional</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Guardar → queda en estado <strong class="text-nexo-dark">Disponible</strong></li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Productos → Nuevo</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Categoría, serial/MAC, proveedor, condición → Disponible</li>
+          </ol>
+        </div>
+      </div>
+
+      <p class="text-nexo-dark/55 text-xs mt-3 leading-relaxed">
+        Para asignar a una instalación: <strong class="text-nexo-dark">Clientes → Instalaciones → Materiales</strong> → busque por serial o categoría y confirme.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Cuadrillas</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Equipos de técnicos y el material que llevan en el vehículo. Cada tarjeta es una cuadrilla.
+        Use <strong class="text-nexo-dark">Entregas</strong> (devoluciones) e <strong class="text-nexo-dark">Historial</strong> (ya aceptadas).
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Entrega a almacén (devolución)</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> El técnico solicita la devolución desde la unidad</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> El jefe recibe toast naranja + campanita</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Cuadrillas → Entregas (o Revisar en el toast) → acepte o rechace</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Opcional: evidencia (estado del vehículo, comentario, fotos)</li>
           </ol>
         </div>
         <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Asignar a instalación</h4>
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Asignación de unidad</h4>
           <ol class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Clientes → Instalaciones → abra la orden → Materiales</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Busque por serial o categoría, asigne cantidad y confirme</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> El producto pasa a <strong class="text-nexo-dark">Asignado/Vendido</strong></li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Jefe asigna vehículo + inventario al técnico</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> El técnico recibe toast “Unidad por confirmar”</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Revisar → verifica inventario → acepta o rechaza</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Al aceptar, la unidad queda a su cargo en campo</li>
           </ol>
+          <p class="text-nexo-dark/45 text-[11px] mt-2">Si fue autoasignación, el técnico no recibe toast.</p>
         </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+        {entregaPerms.map(p => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2">
+            <p class="font-bold text-nexo-dark text-xs">{p.name}</p>
+            <p class="text-nexo-dark/50 text-[11px]">{p.who}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-nexo-dark/40 text-[11px] mt-2">
+        Existe la plantilla de sistema <strong class="text-nexo-dark/55">Jefe de almacén</strong> con estos permisos prearmados.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Vehículos</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Flota con GPS: listado, ubicación, historial y datos del dispositivo. Ya no está bajo el menú Tareas.
+      </p>
+      <DocImage src={imgVehiculos} alt="Vehículos del ISP" caption="Flota con piloto y dispositivo GPS." />
+      <div class="doc-card !py-4 !px-5 mt-3">
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacén → Vehiculos</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Abra un vehículo para ver detalle y ubicación reciente</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Use el mapa cuando el GPS esté activo</li>
+        </ol>
       </div>
     </div>
   </div>

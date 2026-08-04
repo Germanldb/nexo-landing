@@ -8,24 +8,20 @@ const { id } = Astro.props;
 
 const features = [
   {
-    icon: '🔍',
     title: 'Buscar cliente',
-    desc: 'Escriba ≥3 caracteres (nombre, cédula o código) y abra la ficha desde la lista.',
+    desc: 'Escriba al menos 3 caracteres (nombre, cédula o código) y abra la ficha desde la lista.',
   },
   {
-    icon: '💲',
     title: 'Pago rápido',
-    desc: 'El icono $ abre Registrar Pagos directo. Requiere widget de pago activo.',
+    desc: 'El icono $ abre Registrar Pagos directo. Requiere acceso de pago activo.',
   },
   {
-    icon: '🔔',
-    title: 'Notificaciones',
-    desc: 'Campana: pagos, tickets y avisos. Clic para ver detalle y marcar como leídas.',
+    title: 'Capturar pantalla',
+    desc: 'Genera una captura del panel actual (útil para reportar incidencias). Sin permiso especial.',
   },
   {
-    icon: '🌙',
     title: 'Tema',
-    desc: 'Alterna claro/oscuro (luna/sol). Colores de acento desde configuración.',
+    desc: 'Alterna claro/oscuro (luna/sol). Puede guardar su estilo de colores.',
   },
 ];
 
@@ -44,21 +40,47 @@ const userMenu = [
     <p class="text-nexo-dark/50 text-sm mt-2">Accesos rápidos siempre visibles.</p>
   </div>
 
-  <div class="space-y-8">
+  <div class="space-y-6">
     <DocImage
       src={imgBarra}
       alt="Barra superior de Nexo con buscador e iconos de acceso rápido"
-      caption="Barra superior: logo, buscar cliente e iconos de acciones."
+      caption="Barra superior: buscar cliente e iconos de acciones."
     />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
       {features.map(f => (
         <div class="doc-card !p-4">
-          <div class="text-xl mb-2">{f.icon}</div>
           <h3 class="font-bold text-nexo-dark text-sm mb-1.5">{f.title}</h3>
           <p class="text-nexo-dark/55 text-xs leading-relaxed">{f.desc}</p>
         </div>
       ))}
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Notificaciones: campanita y toast de almacén</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">Hay dos canales distintos; no los confunda.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Campanita</h4>
+          <p class="text-nexo-dark/60 text-xs leading-relaxed mb-2">
+            Lista de alertas: pagos, tickets, red y entregas de almacén. Marque como leídas al revisarlas.
+          </p>
+          <p class="text-nexo-dark/55 text-xs leading-relaxed">
+            Las de <strong class="text-nexo-dark">entrega a almacén</strong> no se pueden descartar hasta aceptar o rechazar. “Eliminar todo” las omite.
+          </p>
+        </div>
+        <div class="doc-card !py-4 !px-5 border-amber-200/80">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Toast naranja de almacén</h4>
+          <p class="text-nexo-dark/60 text-xs leading-relaxed mb-2">
+            Tarjeta arriba a la derecha con botón <strong class="text-nexo-dark">Revisar</strong>. No se cierra sola.
+          </p>
+          <ul class="space-y-1.5 text-xs text-nexo-dark/60">
+            <li><strong class="text-nexo-dark">Entrega pendiente:</strong> jefe de almacén → abre entregas.</li>
+            <li><strong class="text-nexo-dark">Unidad por confirmar:</strong> técnico → confirma inventario asignado.</li>
+          </ul>
+          <p class="text-nexo-dark/45 text-[11px] mt-2">Si el técnico se autoasignó la unidad, no recibe toast.</p>
+        </div>
+      </div>
     </div>
 
     <div>
@@ -67,7 +89,7 @@ const userMenu = [
         <DocImage
           src={imgMenuUsuario}
           alt="Menú desplegable del avatar de usuario en Nexo"
-          caption="Clic en el avatar: Asistencia, Perfil, Contraseña y Cerrar sesión."
+          caption="Avatar: Asistencia, Perfil, Contraseña y Cerrar sesión."
         />
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
           {userMenu.map(item => (

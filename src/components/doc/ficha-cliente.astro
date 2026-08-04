@@ -8,7 +8,7 @@ const { id } = Astro.props;
 const tabs = [
   { name: 'Resumen', desc: 'Datos generales, estado del servicio, saldo y accesos rápidos.' },
   { name: 'Servicios', desc: 'Planes contratados, config técnica, OLT/ONU.' },
-  { name: 'Facturación', desc: 'Facturas, pagos, saldos y config de cobro.' },
+  { name: 'Facturación', desc: 'Facturas, pagos, saldos y estado fiscal (Serdimpre).' },
   { name: 'Tickets', desc: 'Historial de soporte del cliente.' },
   { name: 'Email & SMS', desc: 'Comunicaciones enviadas al cliente.' },
   { name: 'Documentos', desc: 'Adjuntos: contratos, cédulas, etc.' },
@@ -16,12 +16,21 @@ const tabs = [
   { name: 'Log', desc: 'Auditoría de acciones sobre el cliente.' },
 ];
 
+const fiscalBadges = [
+  { name: 'Pendiente', desc: 'Documento pendiente en Serdimpre (solo consulta).', tone: 'amarillo' },
+  { name: 'En cola', desc: 'En procesamiento (solo consulta).', tone: 'celeste' },
+  { name: 'Fallido', desc: 'Error al enviar; revise el detalle.', tone: 'rojo' },
+  { name: 'Facturado', desc: 'Ya facturado fiscalmente.', tone: 'verde' },
+  { name: 'No fiscal', desc: 'Aún no enviada; clic para envío manual si está sin pagar.', tone: '' },
+  { name: 'No enviada', desc: 'Estaba marcada fiscal pero ya no está en Serdimpre; clic para reenviar.', tone: '' },
+];
+
 const tools = [
   { tool: 'Ver antena', desc: 'Estado de conexión inalámbrica.' },
   { tool: 'Tráfico Mikrotik', desc: 'Consumo en tiempo real.' },
   { tool: 'Ping', desc: 'Prueba de conectividad.' },
   { tool: 'Gráficos', desc: 'Histórico de tráfico.' },
-  { tool: 'Portal cliente', desc: 'Abrir el portal como el abonado (enmascarado).' },
+  { tool: 'Portal cliente', desc: 'Abrir el portal como el abonado.' },
   { tool: 'Enviar correo/SMS', desc: 'Comunicación directa.' },
   { tool: 'Activar/Suspender', desc: 'Control del servicio en router/OLT.' },
 ];
@@ -32,14 +41,14 @@ const tools = [
     <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Sección 10</span>
     <h2 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight">Ficha del cliente</h2>
     <p class="text-nexo-dark/50 text-sm mt-2">
-      Acceso: buscador de la barra superior o clic en el nombre desde cualquier listado. Es el centro de operaciones del abonado: servicios, facturación, pagos, tickets, documentos y estadísticas.
+      Acceso: buscador de la barra superior o clic en el nombre desde cualquier listado. Centro de operaciones del abonado.
     </p>
   </div>
 
   <div class="space-y-6">
     <DocImage
       src={imgFicha}
-      alt="Ficha del cliente ViewUser con pestaña Resumen"
+      alt="Ficha del cliente con pestaña Resumen"
       caption="Resumen: datos, estado del servicio y notificaciones."
     />
 
@@ -58,83 +67,84 @@ const tools = [
       </div>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Consultar estado</h3>
+        <p class="text-nexo-dark/60 text-sm leading-relaxed">
+          En <strong class="text-nexo-dark">Resumen</strong>: Activo / Suspendido / Retirado, saldo, servicios y última conexión. La deuda detallada está en <strong class="text-nexo-dark">Facturación</strong>.
+        </p>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Suspender / Activar</h3>
+        <p class="text-nexo-dark/60 text-sm leading-relaxed">
+          Botón Suspender o Activar en la ficha: corta o restaura el servicio en router/OLT.
+        </p>
+      </div>
+    </div>
+
     <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-2">Consultar estado</h3>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Registrar pago</h3>
       <div class="doc-card !py-4 !px-5">
         <ol class="space-y-2">
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Busque al cliente (barra superior o listado) y abra la ficha.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> En <strong class="text-nexo-dark">Resumen</strong> revise: estado (Activo / Suspendido / Retirado), saldo pendiente, servicios activos y última conexión.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> La deuda detallada está en <strong class="text-nexo-dark">Facturación</strong>.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Facturación → Facturas → factura pendiente → Agregar pago</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Monto, forma de pago y referencia → confirme</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Si cubre la deuda, el servicio se reactiva solo</li>
         </ol>
       </div>
     </div>
 
     <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-3">Suspender / Activar</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Suspender</h4>
-          <ol class="space-y-1.5 text-sm text-nexo-dark/70">
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">1.</span> Botón Suspender en la ficha.</li>
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">2.</span> Confirme la acción.</li>
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">3.</span> El servicio se corta automáticamente en router/OLT.</li>
-          </ol>
-        </div>
-        <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Activar</h4>
-          <ol class="space-y-1.5 text-sm text-nexo-dark/70">
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">1.</span> En un cliente suspendido, botón Activar.</li>
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">2.</span> Confirme.</li>
-            <li class="flex gap-2"><span class="text-nexo-primary font-bold">3.</span> El servicio se restaura en router/OLT.</li>
-          </ol>
-        </div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Columna Facturación (Serdimpre)</h3>
+      <p class="text-nexo-dark/55 text-xs mb-3">
+        Solo aparece si el administrador activó Serdimpre. Muestra el estado fiscal de cada factura.
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+        {fiscalBadges.map(b => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2">
+            <p class="font-bold text-nexo-dark text-xs">{b.name}</p>
+            <p class="text-nexo-dark/50 text-[11px] leading-snug mt-0.5">{b.desc}</p>
+          </div>
+        ))}
       </div>
-    </div>
-
-    <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-2">Registrar pago desde la ficha</h3>
       <div class="doc-card !py-4 !px-5">
         <ol class="space-y-2">
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Pestaña <strong class="text-nexo-dark">Facturación</strong> → sub-pestaña Facturas.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Factura pendiente → <strong class="text-nexo-dark">Agregar pago</strong> (✓).</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Monto, forma de pago y referencia bancaria → confirme.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Si el pago cubre la deuda, el servicio se reactiva solo.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Facturación → Facturas → revise la columna Facturación</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> En <strong class="text-nexo-dark">No fiscal</strong> o <strong class="text-nexo-dark">No enviada</strong>: clic → confirme el envío (permiso de editar factura)</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Si ya está facturada en Serdimpre, Nexo <strong class="text-nexo-dark">bloquea</strong> el borrado para no desincronizar</li>
         </ol>
       </div>
     </div>
 
-    <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-2">Configurar ONU (AdminOLT / SmartOLT)</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Vincular equipo de almacén</h3>
+        <p class="text-nexo-dark/60 text-sm leading-relaxed mb-2">
+          Al crear o editar un servicio, si la MAC o el serial de la ONU coinciden con el inventario, Nexo puede vincular el equipo solo.
+        </p>
+        <p class="text-nexo-dark/55 text-xs leading-relaxed">
+          También a mano: equipos/materiales del servicio → vincular por serial → queda en Instalados del almacén.
+        </p>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h3 class="font-bold text-nexo-dark text-sm mb-2">Configurar ONU</h3>
         <ol class="space-y-2">
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Pestaña <strong class="text-nexo-dark">Servicios</strong> → botón AdminOLT o SmartOLT junto al servicio de fibra.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Elija la ONU (por serial) de las no autorizadas → Autorizar.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Configure WAN (VLAN, credenciales PPPoE) si aplica.</li>
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Autorizar y Continuar → Concluir configuración WAN. La ONU queda operativa.</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Servicios → AdminOLT / SmartOLT</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Elija ONU por serial → Autorizar</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> WAN si aplica → concluir configuración</li>
         </ol>
       </div>
     </div>
 
     <div>
       <h3 class="text-lg font-bold text-nexo-dark mb-1">Herramientas (llave inglesa)</h3>
-      <p class="text-nexo-dark/50 text-xs mb-3">Panel de acceso directo desde la ficha. Permiso: Clientes → Usuarios → Herramientas.</p>
-      <div class="doc-card overflow-hidden p-0">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-nexo-dark/[0.03]">
-              <th class="px-4 py-2.5 text-[10px] font-bold tracking-[0.15em] uppercase text-nexo-dark/60">Herramienta</th>
-              <th class="px-4 py-2.5 text-[10px] font-bold tracking-[0.15em] uppercase text-nexo-dark/60">Para qué sirve</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tools.map((t, i) => (
-              <tr class:list={['border-t border-nexo-dark/5', i % 2 === 0 ? 'bg-white' : 'bg-nexo-dark/[0.015]']}>
-                <td class="px-4 py-2.5 font-bold text-nexo-dark text-sm">{t.tool}</td>
-                <td class="px-4 py-2.5 text-nexo-dark/60 text-sm">{t.desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <p class="text-nexo-dark/50 text-xs mb-3">Acceso directo desde la ficha. Permiso: Clientes → Usuarios → Herramientas.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {tools.map(t => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2">
+            <p class="font-bold text-nexo-dark text-xs">{t.tool}</p>
+            <p class="text-nexo-dark/50 text-[11px]">{t.desc}</p>
+          </div>
+        ))}
       </div>
     </div>
   </div>

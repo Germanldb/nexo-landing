@@ -1,7 +1,7 @@
 # Nexo — Manual de Usuario Completo
 
-**Versión del documento:** 1.0  
-**Fecha:** Julio 2026  
+**Versión del documento:** 1.2  
+**Fecha:** 4 de agosto de 2026  
 **Sistema:** Nexo (Mikrowisp 6) — Plataforma de gestión para proveedores de internet (ISP)
 
 ---
@@ -75,6 +75,15 @@ El panel admin funciona como una aplicación de una sola página (SPA). Al hacer
 | **Pasarela** | Integración con banco o procesador de pagos en línea |
 | **Sucursal** | Sede o punto de operación del ISP |
 | **Ticket** | Solicitud de soporte técnico del cliente |
+| **Cuadrilla** | Equipo de técnicos/instaladores que lleva inventario en campo (vehículo o unidad) |
+| **Bodega / Almacén** | Depósito físico de inventario (productos, herramientas, materiales) |
+| **Entrega a almacén** | Devolución de material desde una unidad/vehículo hacia una bodega |
+| **Traslado** | Movimiento de inventario entre bodegas |
+| **Plantilla de rol** | Conjunto de permisos reutilizable al crear o editar operadores |
+| **Serdimpre** | Gateway de facturación electrónica fiscal (Venezuela) integrado con Nexo |
+| **Factura fiscal** | Factura enviada/aceptada por Serdimpre (`factura_fiscal = 1`) |
+| **Asignación de unidad** | Proceso en el que se asigna un vehículo/cuadrilla a un técnico y este confirma o rechaza el inventario |
+| **Toast de almacén** | Aviso flotante naranja (arriba a la derecha) por entregas o asignaciones pendientes; distinto de la campanita |
 
 ---
 
@@ -138,18 +147,44 @@ La barra superior está siempre visible y ofrece accesos rápidos.
 
 Redirige directamente al módulo **Registrar Pagos** sin pasar por el menú lateral.
 
-### 4.3 Notificaciones
+### 4.3 Capturar pantalla
 
-**Ubicación:** Icono de campana.
+**Ubicación:** Icono de captura en la barra superior.
 
-Muestra alertas del sistema: pagos recibidos, tickets pendientes, avisos de red, etc. Haga clic para ver el detalle y marcar como leídas.
+Genera una captura de la pantalla actual del panel (útil para reportar incidencias o dejar evidencia). No requiere permiso especial.
 
-### 4.4 Modo oscuro y personalización
+### 4.4 Notificaciones (campanita y toast de almacén)
+
+Hay **dos canales** distintos; no los confunda:
+
+| Canal | Qué es | Cómo se usa |
+|-------|--------|-------------|
+| **Campanita** | Lista de alertas del sistema en el header | Pagos, tickets, avisos de red, entregas sticky de almacén, etc. |
+| **Toast de almacén** | Tarjeta naranja arriba a la derecha con botón **Revisar** | Solo pendientes de almacén (entrega a bodega o asignación de unidad). No se autocierra |
+
+#### Campanita
+
+1. Haga clic en el icono de campana.
+2. Revise alertas y márquelas como leídas.
+3. Las notificaciones de **entrega a almacén** son *sticky*: no se pueden descartar hasta aceptar o rechazar la entrega. “Eliminar todo” las omite.
+
+#### Toast flotante de almacén
+
+El sistema consulta pendientes cada ~8 segundos (y al volver a la pestaña):
+
+| Aviso | Quién lo ve | Acción |
+|-------|-------------|--------|
+| **Entrega a almacén pendiente** | Jefe de almacén / quien tenga permiso de notificar o aceptar entregas | **Revisar** abre el modal de entregas pendientes |
+| **Unidad por confirmar** | Técnico destinatario de la asignación | **Revisar** abre el modal de confirmación de inventario |
+
+> Si el técnico se **autoasignó** la unidad (`modo = auto`), no recibe toast: él ya sabe de la asignación.
+
+### 4.5 Modo oscuro y personalización
 
 - **Modo oscuro:** Botón luna/sol para alternar tema claro/oscuro.
 - **Personalización:** Panel de colores para ajustar acentos primario y secundario del panel. Los cambios se guardan por usuario con **Guardar mi estilo**.
 
-### 4.5 Menú de usuario
+### 4.6 Menú de usuario
 
 | Opción | Descripción |
 |--------|-------------|
@@ -719,6 +754,36 @@ Es el **centro de operaciones** de cada cliente. Desde aquí se gestiona todo: s
 4. Complete: monto, forma de pago, referencia bancaria.
 5. Confirme. Si el pago cubre la deuda, el servicio se activa automáticamente (si estaba suspendido por mora).
 
+### Paso a paso — Columna Facturación (Serdimpre)
+
+> Solo visible si el módulo Serdimpre está activo (`isserdimpre=on`) y hay token configurado.
+
+En la tabla de facturas aparece la columna **Facturación** con el estado fiscal:
+
+| Badge | Significado | Acción |
+|-------|-------------|--------|
+| **Pendiente** (amarillo) | Documento pendiente en Serdimpre | Solo consulta |
+| **En cola** (celeste) | En cola de procesamiento | Solo consulta |
+| **Fallido** (rojo) | Error en el gateway | Revisar detalle (tooltip) |
+| **Facturado** (verde) | Ya facturado fiscalmente | Irreversible por este flujo |
+| **No fiscal** | Aún no enviada a Serdimpre | Clic → modal para envío manual (solo si está *No pagado*) |
+| **No enviada** | Estaba marcada fiscal pero Serdimpre ya no la tiene | Clic → reenviar |
+
+1. Abra la ficha → **Facturación → Facturas**.
+2. Revise la columna **Facturación** (el estado en vivo se consulta al cargar la tabla).
+3. Para enviar o reenviar: clic en el badge **No fiscal** / **No enviada** → confirme en el modal.
+4. Requiere permiso de editar factura.
+
+> **Eliminar factura fiscal:** si ya está marcada como fiscal, Nexo intenta borrarla primero en Serdimpre. Si allá ya fue facturada (conflicto), **también se bloquea** el borrado en Nexo.
+
+### Paso a paso — Vincular equipo de almacén al servicio
+
+Al crear o editar un servicio, Nexo puede **vincular automáticamente** el inventario con el cliente si coincide la MAC o el serial de la ONU. También puede hacerlo a mano:
+
+1. En la ficha, pestaña de equipos / materiales del servicio.
+2. Use la acción de **vincular equipo** (por serial o ID de depósito).
+3. Confirme. El producto queda asociado al cliente (pestaña **Instalados** del almacén).
+
 ### Paso a paso — Configurar ONU (AdminOLT / SmartOLT)
 
 1. Pestaña **Servicios**.
@@ -906,14 +971,7 @@ Organizar trabajo diario: instalaciones programadas, visitas técnicas, tareas l
 
 Vista de calendario mensual/semanal con todas las tareas programadas. Permite arrastrar tareas para reprogramar.
 
----
-
-### 12.3 Monitoreo Vehicular
-
-**Menú:** Tareas → Monitoreo Vehicular  
-**Permiso:** Admin o Vehículos → Monitoreo → Menú
-
-Seguimiento GPS de vehículos de la empresa en mapa en tiempo real.
+> **Vehículos / GPS:** la flota y el monitoreo vehicular están en **Almacén → Vehiculos** (ver sección 14.5), no bajo Tareas.
 
 ---
 
@@ -1081,13 +1139,74 @@ Pagos reportados por clientes desde el portal (informar pago). El operador verif
 ### 13.10 Facturación SyH
 
 **Menú:** Finanzas → Facturación SyH  
-**Condición:** Módulo SyH activo (`issyh=on`)
+**Condición:** Módulo SyH activo (`issyh=on`)  
+**Permiso:** Finanzas → SyH → Menú
 
 Facturación electrónica integrada con sistema SyH (Venezuela).
 
 ---
 
-### 13.11 Estadísticas de pagos
+### 13.11 Serdimpre (facturación electrónica fiscal)
+
+**Menú:** Finanzas → Serdimpre  
+**Condición:** Módulo activo (`isserdimpre=on`)  
+**Permiso:** Finanzas → Serdimpre → Menú  
+**Configuración:** Ajustes → Facturación Serdimpre (token, URL, serie, sucursal, modo de emisión)
+
+#### ¿Para qué sirve?
+
+Enviar las facturas de servicios de Nexo al gateway fiscal **Serdimpre** (Venezuela), monitorear su estado y mantener sincronizada la eliminación de documentos entre ambos sistemas.
+
+La clave cruzada es el **IdPersonalizado** de Serdimpre = `id` de la factura en Nexo.
+
+#### Panel Finanzas → Serdimpre
+
+| Pestaña / sección | Contenido |
+|-------------------|-----------|
+| **Detalles** | Estado de licencia / conexión y modo de emisión |
+| **Clientes facturando** | Catálogo de clientes sincronizados con Serdimpre |
+| **Categorías** | Categorías fiscales vinculadas (`external_id`) |
+| **Facturaciones** | Listado de facturas ya marcadas como fiscales |
+| **Bancos** | Cuentas bancarias locales para el gateway |
+| **Métodos de pago** | Métodos disponibles en Serdimpre |
+| **Monedas** | Catálogo de monedas (define `serdimpre_moneda`, normalmente USD) |
+
+#### Modos de emisión
+
+| Ajuste | Comportamiento |
+|--------|----------------|
+| **Al generar** (`serdimpre_facturar_al_generar=on`, default) | Al crear la factura (cron), se envía un **documento pendiente** en **USD, contado y sin pagos**. Queda Pendiente en Serdimpre hasta que se complete el pago allá. |
+| **Al pagar** (`=off`) | Se envía al registrar el pago (flujo en bolívares con pago adjunto; distinto del modo “al generar”). |
+
+> El gateway solo acepta, al generar, la combinación **moneda extranjera (USD) + contado + sin pagos**. Otras combinaciones (crédito o pagos en USD) son rechazadas.
+
+#### Flujo operativo resumido
+
+```
+[Cron] Genera factura de servicios
+  → Si Serdimpre activo: envía documento pendiente (USD)
+  → Marca factura_fiscal = 1 si Serdimpre acepta
+  → En ficha del cliente → columna Facturación (estado en vivo)
+  → Operador puede reenviar manualmente si quedó "No fiscal" / "No enviada"
+  → Al eliminar: primero intenta borrar en Serdimpre; bloquea si ya fue facturada (409)
+```
+
+#### Paso a paso — Configurar Serdimpre
+
+1. Vaya a **Ajustes → Facturación Serdimpre**.
+2. Active el módulo (`isserdimpre`).
+3. Complete: token API, URL del gateway, serie, sucursal, tipo de documento.
+4. Elija modo **Al generar** o **Al pagar**.
+5. Configure moneda (desde el panel Serdimpre → Monedas) y mapeo de pasarelas si aplica.
+6. Guarde. El menú **Finanzas → Serdimpre** quedará visible para quien tenga permiso.
+
+#### Paso a paso — Revisar / reenviar desde la ficha
+
+Ver sección **10 — Columna Facturación (Serdimpre)**.
+
+---
+
+### 13.12 Estadísticas de pagos
 
 **Menú:** Finanzas → Estadísticas  
 **Permiso:** Finanzas → Transacciones → Estadísticas
@@ -1100,88 +1219,254 @@ Gráficos y reportes de ingresos por periodo, forma de pago, operador, sucursal.
 
 **Menú:** Almacén (menú expandible)
 
+Gestiona inventario físico, cuadrillas de campo, entregas a bodega, asignación de unidades y flota vehicular.
+
+| Sub-módulo | Ruta | Permiso |
+|------------|------|---------|
+| Tipos de productos | `#ajax/almacen?action=categorias` | Almacén → Categorías → Menú |
+| Proveedores | `#ajax/almacen?action=proveedores` | Almacén → Categorías → Menú |
+| Productos | `#ajax/almacen` | Almacén → Productos → Menú |
+| Cuadrillas | `#ajax/almacen-cuadrillas` | Almacén → Cuadrillas → Menú (o Productos → Menú según rol) |
+| Vehiculos | `#ajax/vehiculos` | Admin o Vehículos / Monitoreo |
+
 ---
 
 ### 14.1 Tipos de productos (Categorías)
 
-**Menú:** Almacén → Tipos de productos  
-**Permiso:** Almacén → Categorías → Menú
+**Menú:** Almacén → Tipos de productos
 
-Categorías de inventario: ONUs, cables, conectores, antenas, etc.
+Categorías de inventario: ONUs, cables, conectores, antenas, herramientas, etc.
 
 ---
 
 ### 14.2 Proveedores
 
-**Menú:** Almacén → Proveedores  
-**Permiso:** Almacén → Categorías → Menú
+**Menú:** Almacén → Proveedores
 
 Registro de proveedores de equipos y materiales.
 
 ---
 
-### 14.3 Productos
+### 14.3 Productos (hub de inventario)
 
 **Menú:** Almacén → Productos  
 **Permiso:** Almacén → Productos → Menú
 
-#### Pestañas
+Pantalla tipo **hub** (tarjetas) con tres pestañas principales (cada una puede estar restringida por permiso):
 
-| Pestaña | Contenido |
-|---------|-----------|
-| Productos | Equipos e inventario principal |
-| Accesorios | Materiales menores |
+| Pestaña | Contenido | Permiso extra |
+|---------|-----------|---------------|
+| **Almacen** | Acceso a Almacenes (bodegas), Productos, Herramientas y Materiales | Pestaña Almacén (bodegas) |
+| **Cuadrillas** | Vista de unidades/cuadrillas y su inventario en campo (también hay ítem de menú dedicado) | Ver cuadrillas |
+| **Instalados** | Productos ya instalados en clientes | Pestaña Instalados |
 
-#### Paso a paso — Ingresar producto al almacén
+#### Home de Almacén (pestaña Almacen)
 
-1. Vaya a **Almacén → Productos**.
-2. Clic en **Nuevo Producto**.
-3. Complete:
-   - **Categoría** (tipo de producto).
-   - **Nombre / descripción.**
-   - **Serial / MAC** (si aplica).
-   - **Proveedor.**
-   - **Condición:** Nuevo, Comodato, Vendido.
-   - **Precio de costo** (opcional).
-4. Guarde. El producto queda en estado **Disponible**.
+Al entrar verá cuatro accesos:
+
+| Tarjeta | Para qué sirve |
+|---------|----------------|
+| **Almacenes** | Listar bodegas, crear almacén, traslados entre bodegas |
+| **Productos** | Equipos e inventario principal por bodega |
+| **Herramientas** | Herramientas de campo e instalación |
+| **Materiales** | Materiales y accesorios |
+
+#### Paso a paso — Crear una bodega
+
+1. Vaya a **Almacén → Productos** → tarjeta **Almacenes**.
+2. Clic en **Nuevo Almacén**.
+3. Complete nombre, sucursal/ubicación y datos requeridos.
+4. Guarde. La bodega aparece en el hub de almacenes.
+
+#### Paso a paso — Traslado entre almacenes
+
+1. En el hub de Almacenes, clic en **Traslados**.
+2. Indique bodega origen, destino y productos/cantidades.
+3. Confirme. El inventario se mueve entre bodegas (requiere permiso de traslados).
+
+#### Paso a paso — Ingresar / consultar producto
+
+1. Desde el home, abra **Productos** (o entre a una bodega concreta).
+2. Use el listado filtrable por estado, categoría y bodega.
+3. Para alta: **Nuevo** → categoría, nombre, serial/MAC, proveedor, condición, costo.
+4. Guarde. El ítem queda **Disponible** en la bodega.
 
 #### Paso a paso — Asignar producto a instalación
 
 1. Desde **Clientes → Instalaciones**, abra la orden.
 2. Clic en **Materiales**.
 3. Busque el producto por serial o categoría.
-4. Asigne cantidad.
-5. Confirme. El producto pasa a estado **Asignado/Vendido**.
+4. Asigne cantidad y confirme. El producto pasa a asignado/vendido.
 
-#### Filtros
+> Al guardar un servicio en la ficha del cliente, si la MAC o el serial ONU coinciden con un ítem de inventario, Nexo puede **vincular automáticamente** el equipo al cliente (ver sección 10).
 
-- Estado: Disponible, No disponible, Comodato.
-- Categoría.
+---
+
+### 14.4 Cuadrillas
+
+**Menú:** Almacén → Cuadrillas  
+**Ruta:** `#ajax/almacen-cuadrillas`  
+**Permiso:** Almacén → Cuadrillas → Menú
+
+#### ¿Para qué sirve?
+
+Administrar las **cuadrillas** (equipos de técnicos) y el inventario que llevan en campo. Cada tarjeta del hub representa una unidad/cuadrilla.
+
+#### Acciones del hub
+
+| Acción | Descripción |
+|--------|-------------|
+| Clic en tarjeta | Abrir detalle / inventario de la cuadrilla |
+| **Entregas** | Modal de entregas pendientes hacia almacén (badge con cantidad) |
+| **Historial** | Historial de recepciones ya aceptadas |
+| Actualizar | Recargar el hub |
+
+#### Paso a paso — Entrega a almacén (devolver material)
+
+1. El técnico/instalador **solicita** la devolución desde la unidad (requiere permiso *Solicitar entrega*).
+2. El **jefe de almacén** recibe toast + campanita sticky.
+3. Vaya a **Almacén → Cuadrillas** → **Entregas** (o use **Revisar** en el toast).
+4. Revise unidad, productos y bodega destino.
+5. Con permiso **Jefe de almacén (aceptar)**, acepte o rechace.
+6. Al aceptar puede registrar **evidencia de recepción**: estado del vehículo, comentario y fotos.
+7. El material vuelve a la bodega destino. Consulte el **Historial** para auditar.
+
+#### Paso a paso — Asignación de unidad a técnico
+
+Flujo opuesto a la entrega: el jefe/admin entrega un vehículo al técnico y este confirma el inventario.
+
+1. Desde Almacén / Cuadrillas, abra el formulario de **asignación de unidad**.
+2. Seleccione unidad (vehículo), técnico destinatario e inventario asociado.
+3. Confirme la asignación.
+4. El técnico recibe el toast **Unidad por confirmar** (salvo si fue autoasignación).
+5. El técnico abre **Revisar**, verifica el inventario y **acepta** o **rechaza**.
+6. Tras aceptar, la unidad queda a su cargo en campo.
+
+#### Permisos granulares de almacén
+
+En **Ajustes → Gestión personal → Permisos** (bloque Almacén):
+
+| Grupo | Permiso | Uso |
+|-------|---------|-----|
+| Pestañas | Pestaña Almacén (bodegas) | Ver hub de bodegas en Productos |
+| Pestañas | Pestaña Instalados | Ver productos instalados en clientes |
+| Flota | Ver cuadrillas | Menú / pestaña Cuadrillas |
+| Flota | Asignar a vehículo / cuadrilla | Mover inventario a unidad |
+| Flota | Devoluciones al almacén | Acceso a flujo de devoluciones |
+| Flota | **Jefe de almacén** (aceptar) | Autorizar entregas / devoluciones |
+| Entregas | Ver entregas pendientes | Botón/modal de entregas |
+| Entregas | Solicitar entrega de vehículo | Iniciar devolución desde unidad |
+| Entregas | Notificaciones de entregas | Toast + campanita de entregas |
+| Traslados | Menú / crear / recibir | Movimientos entre bodegas |
+
+> Existe la plantilla de sistema **Jefe de almacén** con estos permisos prearmados (más menús de clientes/tareas/servicios). Incluye el widget de notificaciones para la campanita.
+
+---
+
+### 14.5 Vehículos
+
+**Menú:** Almacén → Vehiculos  
+**Ruta:** `#ajax/vehiculos`  
+**Permiso:** Admin o permisos de monitoreo/red según instalación
+
+#### ¿Para qué sirve?
+
+Registrar y monitorear la flota (vehículos con sensor/GPS): listado, ubicación, historial de posiciones, piloto por sucursal, zonas y datos del dispositivo.
+
+#### Paso a paso — Consultar flota
+
+1. Vaya a **Almacén → Vehiculos**.
+2. Revise el listado de vehículos registrados.
+3. Abra un vehículo para ver detalle, código de dispositivo y ubicación reciente.
+4. Use el mapa/monitoreo cuando el sensor esté activo.
+
+> En **Productos**, la pestaña Cuadrillas también relaciona unidades vehiculares con inventario de campo.
 
 ---
 
 ## 15. Reportes
 
 **Menú:** Reportes (menú expandible)  
-**Permiso:** Reportes → Administración → Menú (o admin)
+**Permiso:** Reportes → Administración → Menú (o administrador)  
+**Rutas:** `#ajax/reportes-administracion`, `reportes-ventas`, `reportes-almacen`, `reportes-red`, `reportes-soporte`
 
-| Sub-módulo | Contenido |
-|------------|-----------|
-| **Administración** | Clientes activos/suspendidos, morosos, crecimiento |
-| **Ventas** | Ingresos por periodo, por plan, por operador |
-| **Almacén** | Inventario, movimientos, productos asignados |
-| **Red** | Tráfico, uptime de routers, clientes online |
-| **Soporte** | Tickets abiertos/cerrados, tiempos de respuesta |
+Los reportes son **dashboards interactivos** (gráficos ApexCharts). Filtre por fechas y, si aplica, por sucursal; luego pulse **Actualizar**.
 
-### Paso a paso — Generar un reporte
-
-1. Vaya a **Reportes → [tipo deseado]**.
-2. Configure filtros: fechas, sucursal, router, operador.
-3. Clic en **Generar** o **Buscar**.
-4. Revise la tabla/gráfico resultante.
-5. Exporte a Excel o PDF con el botón correspondiente.
+| Sub-módulo | Enfoque |
+|------------|---------|
+| **Administración** | Facturación, cobrado Bs/USD, SyH, distribución, egresos, categorías |
+| **Ventas** | Clientes e instalaciones, vendedores, técnicos y zonas |
+| **Almacén** | Inventario por estado / bodegas de la sucursal |
+| **Red** | Mapa NAP/clientes y consumo RADIUS |
+| **Soporte** | Tickets por departamento y tiempos de cierre |
 
 ---
+
+### 15.1 Administración
+
+**Menú:** Reportes → Administración  
+**Ruta:** `#ajax/reportes-administracion`
+
+Rango por defecto: **mes calendario anterior completo**. Los datos se acotan a la sucursal del operador (clientes con servicio en routers de esa sede).
+
+| Sección | Qué muestra |
+|---------|-------------|
+| **Rango de fechas** | Desde / hasta + sucursal + Actualizar |
+| **Facturación** | Gráfico de operaciones en USD + KPIs de facturas (emitidas, cobrado, etc.) |
+| **Cobrado y ganancia mensual** | Totales Bs y USD, desglose por forma de pago, gráfico de ganancia |
+| **Facturación S&H** | KPIs SyH (proyectado / facturado en el rango) |
+| **Distribución** | Donas: forma de pago, estado de facturas, operador |
+| **Egresos por mes** | Áreas de egresos en Bs y USD |
+| **Ingresos y Egresos por categoría** | KPIs + gráfico + donas; filtro de campo/categoría y moneda ($ / Bs) |
+
+#### Paso a paso
+
+1. Vaya a **Reportes → Administración**.
+2. Ajuste fechas y sucursal si corresponde.
+3. Pulse **Actualizar**.
+4. Desplácese por los paneles; use tooltips de ayuda en los títulos.
+
+---
+
+### 15.2 Ventas
+
+**Menú:** Reportes → Ventas  
+**Ruta:** `#ajax/reportes-ventas`  
+**Título en pantalla:** Reportes — Ventas — Clientes
+
+Enfocado en **altas/instalaciones**, no en montos de facturación (eso está en Administración).
+
+| Sección | Qué muestra |
+|---------|-------------|
+| **Gráfico de clientes e instalaciones** | Evolución + % ventas instaladas + KPI clientes instalados (panel superior ~último año) |
+| **Clientes por mes y vendedores** | Barras instalaciones vs retiros + dona mejor vendedor |
+| **Ventas instaladas: zona, técnico y vendedor** | Por zona; ventas y tiempo por técnico; ventas por vendedor |
+
+#### Paso a paso
+
+1. Vaya a **Reportes → Ventas**.
+2. Defina rango y sucursal → **Actualizar**.
+3. Analice paneles de clientes, barras mensuales y zona/técnico/vendedor.
+
+---
+
+### 15.3 Almacén / Red / Soporte
+
+| Reporte | Contenido principal |
+|---------|---------------------|
+| **Almacén** | Inventario por estado, acotado a bodegas de la sucursal |
+| **Red** | Mapa de red (NAP y clientes) + consumo de clientes (RADIUS / radacct) |
+| **Soporte** | Tickets cerrados por departamento y promedio de cierre |
+
+#### Paso a paso — Generar un reporte
+
+1. Vaya a **Reportes → [tipo deseado]**.
+2. Configure filtros: fechas y sucursal.
+3. Pulse **Actualizar**.
+4. Revise gráficos y KPIs del dashboard.
+
+---
+
 
 ## 16. Soporte y tickets
 
@@ -1222,7 +1507,12 @@ Registro de proveedores de equipos y materiales.
 4. Escriba asunto y descripción.
 5. Adjunte archivos si aplica.
 6. Asigne prioridad y técnico.
-7. Guarde.
+7. Opcional: marque **Enviar email al cliente** (también puede venir premarcado según el departamento; ver abajo).
+8. Guarde.
+
+#### Email al crear ticket (por departamento)
+
+En **Ajustes → Tickets → Departamentos**, cada departamento tiene el switch **Enviar email al cliente**. Si está activo, al crear un ticket en ese departamento se ofrece/envía correo al abonado automáticamente. Puede sobreescribirse por ticket en el formulario de alta.
 
 ---
 
@@ -1277,7 +1567,7 @@ Pantalla de configuración del sistema organizada en categorías.
 
 | Sección | Descripción |
 |---------|-------------|
-| **Gestión personal** | Operadores, roles y permisos |
+| **Gestión personal** | Operadores, roles, permisos y **plantillas de rol** |
 | **Portal cliente** | Configuración del portal de abonados |
 | **Importar clientes** | Importación masiva desde Excel/CSV |
 | **Cambios masivos** | Modificar configuración de facturación en lote |
@@ -1290,8 +1580,23 @@ Pantalla de configuración del sistema organizada en categorías.
 2. Pestaña **Operadores**.
 3. Clic en **Nuevo operador**.
 4. Complete: nombre, usuario, contraseña, email, sucursal.
-5. Asigne **plantilla de rol** o configure permisos manualmente en el árbol de permisos.
-6. Guarde.
+5. En **Tipo / plantilla de rol**, elija una **plantilla** (`login_role_templates`): el árbol de permisos se rellena automáticamente según la plantilla (o el preset del privilegio 0–3 si la plantilla no tiene hojas guardadas).
+6. Ajuste permisos finos en el acordeón si hace falta (incluye bloque Almacén: pestañas, flota, entregas y traslados).
+7. Guarde.
+
+#### Paso a paso — Gestionar plantillas de rol
+
+**Rutas:** `#ajax/ajustes?action=plantillas_rol` (listado) · `#ajax/ajustes?action=plantilla_rol` (nueva) · `…&id=` (editar)
+
+1. Desde **Gestión personal**, abra el listado de **Plantillas de rol** (también hay pestaña embebida junto a Operadores).
+2. Clic en **Nueva plantilla** o **Editar** una existente.
+3. Defina nombre y el árbol de permisos (mismo acordeón que al crear operadores).
+4. Guarde.
+5. Use **Sincronizar permisos** en una plantilla para empujar su árbol `acceso` a **todos** los operadores vinculados a esa plantilla (sin editarlos uno a uno).
+
+> Las plantillas de sistema (p. ej. privilege 0–3 y **Jefe de almacén**) están marcadas `is_system` y **no se pueden eliminar**. Sí puede sincronizarlas.
+
+> Al editar un operador, cambiar la plantilla vuelve a cargar esos permisos (salvo el momento inicial de carga del formulario de edición).
 
 #### Paso a paso — Configurar portal del cliente
 
@@ -1309,6 +1614,7 @@ Pantalla de configuración del sistema organizada en categorías.
 |---------|-------------|
 | **Facturación** | Día de facturación, corte, mora, impuestos, numeración |
 | **Pasarelas de pago** | Configuración de bancos y procesadores |
+| **Facturación Serdimpre** | Token, URL, serie, sucursal, modo al generar/al pagar, moneda (`isserdimpre`) |
 
 #### Paso a paso — Configurar pasarela de pago
 
@@ -1319,6 +1625,10 @@ Pantalla de configuración del sistema organizada en categorías.
 5. Configure método: Botón de pago, C2P, Pago móvil, Transferencia, Debin.
 6. Guarde y pruebe con un pago de prueba.
 
+#### Paso a paso — Configurar Facturación Serdimpre
+
+Ver sección **13.11 Serdimpre** (configuración y modos de emisión). Requiere permiso `ajustes.facturacionserdimpre`.
+
 ---
 
 ### 18.4 Soporte y mensajes
@@ -1326,7 +1636,7 @@ Pantalla de configuración del sistema organizada en categorías.
 | Sección | Descripción |
 |---------|-------------|
 | **Servidor de correo** | SMTP para envío de emails |
-| **Tickets** | Departamentos de soporte |
+| **Tickets** | Departamentos de soporte (incluye switch *Enviar email al cliente* por departamento) |
 | **Zendesk** | Integración Zendesk |
 | **Mensajería (SMS)** | Proveedor SMS, plantillas, WhatsApp |
 
@@ -1506,9 +1816,33 @@ Fichas Hotspot → Fichas → Nuevo (lote)
 ```
 Cliente abre ticket (portal) o operador crea ticket (admin)
   → Aparece en Tickets → Esperando Respuesta
+  → [Opcional] Email al cliente según departamento / switch del ticket
   → Operador responde
   → Cliente recibe notificación
   → Operador cierra ticket cuando resuelto
+```
+
+### 20.7 Facturación fiscal Serdimpre
+
+```
+[Cron] Genera factura
+  → Envía documento pendiente a Serdimpre (USD, contado, sin pagos)
+  → factura_fiscal = 1
+  → Ficha cliente → columna Facturación (estado en vivo)
+  → [Si falla / no enviada] Reenvío manual desde el badge
+  → [Al eliminar] Sync con Serdimpre; bloquea si ya fue facturada
+```
+
+### 20.8 Entrega a almacén y asignación de unidad
+
+```
+Entrega (devolución):
+  Técnico solicita devolución → Toast + campanita al jefe
+  → Jefe acepta (evidencia opcional) → Inventario vuelve a bodega
+
+Asignación:
+  Jefe asigna unidad al técnico → Toast "Unidad por confirmar"
+  → Técnico acepta/rechaza inventario → Unidad a cargo del técnico
 ```
 
 ---
@@ -1519,12 +1853,16 @@ Cliente abre ticket (portal) o operador crea ticket (admin)
 
 Cada operador tiene un **rol** con permisos granulares. Los permisos determinan qué módulos del menú lateral son visibles y qué acciones puede ejecutar.
 
+Además existen **plantillas de rol** (`login_role_templates`): conjuntos de permisos reutilizables. Al crear o editar un operador se selecciona una plantilla y el formulario carga el árbol de permisos asociado. Desde el listado de plantillas puede **sincronizar** esos permisos a todos los operadores vinculados.
+
 ### Niveles
 
 | Nivel | Descripción |
 |-------|-------------|
-| **Administrador** (`nivelusername = 0`) | Acceso total a todos los módulos |
-| **Operador** | Acceso según permisos asignados |
+| **Administrador** (`nivelusername = 0` / privilege 0) | Acceso total a todos los módulos |
+| **Operador** | Acceso según plantilla y permisos asignados (privilege 1–3 o plantilla personalizada) |
+
+Plantillas de sistema notables: presets 0–3 y **Jefe de almacén** (entregas, traslados, campanita, menús operativos).
 
 ### Áreas de permisos principales
 
@@ -1536,18 +1874,19 @@ Cada operador tiene un **rol** con permisos granulares. Los permisos determinan 
 | Clientes | Usuarios (menu, nuevo, editar, eliminar, activar, retirar, herramientas), Mapa, Anuncios, Instalaciones, Contratos, Correo |
 | Fichas Hotspot | Fichas (menu, nuevo, eliminar, imprimir), Router, Plantillas, Ventas |
 | Tareas | Nuevo, Editar, Eliminar |
-| Finanzas | Facturas (menu, pagar, editar, eliminar, anular), Registrar pago, Transacciones, Reporte, etc. |
-| Almacén | Categorías, Productos (menu, editar, eliminar) |
-| Reportes | Administración |
+| Finanzas | Facturas, Registrar pago, Transacciones, Pago móvil, Cashea, SyH, **Serdimpre**, Reporte, etc. |
+| Almacén | Categorías, Productos (menu, tabs bodega/instalados), **Cuadrillas**, Asignar, Devoluciones, **Entregas** (ver, solicitar, aceptar/jefe, notificar), **Traslados** (menu, crear, recibir) |
+| Vehículos | Visible bajo Almacén; acceso ligado a admin o monitoreo/red según instalación |
+| Reportes | Administración (menú; abre dashboards Admin/Ventas/Almacén/Red/Soporte) |
 | Soporte | Menu, Nuevo, Listar, Editar, Eliminar, Cerrar |
 | SMS | Menu, Nuevo |
-| Ajustes | General, Gestión, Facturación, Portal, Importar, Pasarela, Plantillas, Base de datos, Licencia, etc. |
+| Ajustes | General, Gestión, Facturación, **Facturación Serdimpre**, Portal, Importar, Pasarela, Plantillas de rol, Base de datos, Licencia, etc. |
 
 ### Paso a paso — Solicitar acceso a un módulo
 
 1. Identifique qué módulo necesita y no ve en su menú.
 2. Contacte al administrador del sistema.
-3. El administrador debe ir a **Ajustes → Gestión personal → [su usuario] → Permisos**.
+3. El administrador debe ir a **Ajustes → Gestión personal → [su usuario] → Permisos** (o cambiar/sincronizar la plantilla de rol).
 4. Activar el permiso correspondiente en el árbol.
 5. Cierre sesión y vuelva a entrar para ver los cambios.
 
@@ -1577,6 +1916,20 @@ R: Verifique que el pago se aplicó a la factura correcta y cubre el monto total
 **P: ¿Cómo anulo una factura?**  
 R: Finanzas → Facturas → botón Anular en la factura. Requiere permiso de anular.
 
+**P: ¿Qué significa la columna Facturación en la ficha del cliente?**  
+R: Es el estado fiscal en Serdimpre (Pendiente, En cola, Fallido, Facturado, No fiscal, No enviada). Solo aparece si Serdimpre está activo. Ver sección 10 y 13.11.
+
+**P: ¿Por qué no puedo eliminar una factura?**  
+R: Si está marcada como fiscal y Serdimpre indica que ya fue facturada, Nexo bloquea el borrado para no desincronizar.
+
+### Almacén
+
+**P: Me aparece un aviso naranja “Entrega a almacén pendiente” y no se cierra.**  
+R: Es el toast de almacén. Debe aceptar o rechazar la entrega (jefe). No se autocierra ni se elimina con “Eliminar todo” de la campanita.
+
+**P: Soy técnico y me sale “Unidad por confirmar”.**  
+R: El jefe le asignó un vehículo. Abra **Revisar**, verifique el inventario y acepte o rechace.
+
 ### Red
 
 **P: Un cliente no tiene internet pero aparece activo en Nexo.**  
@@ -1594,6 +1947,9 @@ R: Cree un lote en Fichas Hotspot → Fichas → Nuevo. Imprima y entregue. La f
 
 **P: ¿El cliente puede ver las notas internas de un ticket?**  
 R: No. Las notas internas solo son visibles para operadores.
+
+**P: ¿Se envía correo al crear un ticket?**  
+R: Depende del departamento (switch *Enviar email al cliente* en Ajustes → Tickets) y de la casilla del formulario del ticket.
 
 ---
 
@@ -1632,8 +1988,7 @@ Fichas Hotspot
   └── Ventas
 Tareas
   ├── Tareas
-  ├── Planificación
-  └── Monitoreo Vehicular
+  └── Planificación
 Finanzas
   ├── Facturas
   ├── Registrar Pagos
@@ -1648,11 +2003,14 @@ Finanzas
   ├── Otros Ingresos & Egresos
   ├── Reportes de Pagos (Portal Cliente)
   ├── Facturación SyH
+  ├── Serdimpre
   └── Estadísticas
 Almacén
   ├── Tipos de productos
   ├── Proveedores
-  └── Productos
+  ├── Productos
+  ├── Cuadrillas
+  └── Vehiculos
 Reportes
   ├── Administración
   ├── Ventas
@@ -1686,4 +2044,4 @@ Salir
 
 ---
 
-*Documento generado para Nexo (Mikrowisp 6). Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.*
+*Documento generado para Nexo Versión 1.2 (4 ago 2026): Serdimpre (panel, columna Facturación, factura_fiscal, modos de emisión), toast/campanita sticky de almacén, asignación de unidad, evidencia en entregas, permisos extra de almacén, plantillas de rol (CRUD + sincronizar), email por departamento en tickets, captura de pantalla. Versión 1.1 (23 jul 2026): Almacén hub/cuadrillas/entregas/vehículos, Reportes dashboards, plantillas de rol y mapa de menú. Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.*

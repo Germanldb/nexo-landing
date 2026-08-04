@@ -1,0 +1,2120 @@
+<!DOCTYPE html><meta charset="utf-8"><link rel="stylesheet" href="/_astro/page-ssr.B4PjIPTZ.css"><h1 id="nexo--manual-de-usuario-completo">Nexo — Manual de Usuario Completo</h1>
+<p><strong>Versión del documento:</strong> 1.0<br>
+<strong>Fecha:</strong> Julio 2026<br>
+<strong>Sistema:</strong> Nexo (Mikrowisp 6) — Plataforma de gestión para proveedores de internet (ISP)</p>
+<hr>
+<h2 id="tabla-de-contenidos">Tabla de contenidos</h2>
+<ol>
+<li><a href="#1-introducci%C3%B3n">Introducción</a></li>
+<li><a href="#2-conceptos-b%C3%A1sicos-y-glosario">Conceptos básicos y glosario</a></li>
+<li><a href="#3-acceso-al-sistema">Acceso al sistema</a></li>
+<li><a href="#4-panel-de-administraci%C3%B3n--barra-superior">Panel de administración — Barra superior</a></li>
+<li><a href="#5-dashboard">Dashboard</a></li>
+<li><a href="#6-gesti%C3%B3n-de-red">Gestión de Red</a></li>
+<li><a href="#7-servicios-y-perfiles">Servicios y perfiles</a></li>
+<li><a href="#8-promociones">Promociones</a></li>
+<li><a href="#9-clientes">Clientes</a></li>
+<li><a href="#10-ficha-del-cliente-viewuser">Ficha del cliente (ViewUser)</a></li>
+<li><a href="#11-fichas-hotspot">Fichas Hotspot</a></li>
+<li><a href="#12-tareas-y-planificaci%C3%B3n">Tareas y planificación</a></li>
+<li><a href="#13-finanzas">Finanzas</a></li>
+<li><a href="#14-almac%C3%A9n">Almacén</a></li>
+<li><a href="#15-reportes">Reportes</a></li>
+<li><a href="#16-soporte-y-tickets">Soporte y tickets</a></li>
+<li><a href="#17-mensajer%C3%ADa-sms--whatsapp">Mensajería (SMS / WhatsApp)</a></li>
+<li><a href="#18-ajustes-generales">Ajustes generales</a></li>
+<li><a href="#19-portal-del-cliente">Portal del cliente</a></li>
+<li><a href="#20-flujos-de-trabajo-integrados">Flujos de trabajo integrados</a></li>
+<li><a href="#21-permisos-y-roles">Permisos y roles</a></li>
+<li><a href="#22-preguntas-frecuentes">Preguntas frecuentes</a></li>
+</ol>
+<hr>
+<h2 id="1-introducción">1. Introducción</h2>
+<h3 id="qué-es-nexo">¿Qué es Nexo?</h3>
+<p>Nexo es una plataforma integral para la gestión de proveedores de servicios de internet (ISP). Permite administrar clientes, facturación, pagos, red, instalaciones, soporte técnico, hotspot, almacén y más, desde un único panel web.</p>
+<h3 id="para-quién-es-este-manual">¿Para quién es este manual?</h3>
+<p>Este documento está dirigido a <strong>operadores del ISP</strong>: personal de caja, soporte técnico, instaladores, administradores de red y gerentes. No requiere conocimientos de programación.</p>
+<h3 id="dos-portales-dos-audiencias">Dos portales, dos audiencias</h3>
+<table>
+<thead>
+<tr>
+<th>Portal</th>
+<th>URL</th>
+<th>Usuario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Panel Admin</strong></td>
+<td><code>/admin/</code></td>
+<td>Personal del ISP (operadores)</td>
+</tr>
+<tr>
+<td><strong>Portal Cliente</strong></td>
+<td><code>/cliente/</code></td>
+<td>Abonados / clientes finales</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cómo-navegar-el-panel-admin">Cómo navegar el panel admin</h3>
+<p>El panel admin funciona como una aplicación de una sola página (SPA). Al hacer clic en el menú lateral, la URL cambia con el formato <code>#ajax/nombre-modulo</code> pero la página no se recarga por completo. El contenido se carga dinámicamente en el área central.</p>
+<hr>
+<h2 id="2-conceptos-básicos-y-glosario">2. Conceptos básicos y glosario</h2>
+<table>
+<thead>
+<tr>
+<th>Término</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cliente / Usuario</strong></td>
+<td>Persona o empresa que contrata servicios del ISP</td>
+</tr>
+<tr>
+<td><strong>Servicio</strong></td>
+<td>Conexión activa (Internet, Voz, CATV, IPTV, etc.) asociada a un cliente</td>
+</tr>
+<tr>
+<td><strong>Perfil</strong></td>
+<td>Plan de servicio con velocidad, precio y reglas de facturación</td>
+</tr>
+<tr>
+<td><strong>Router / Nodo</strong></td>
+<td>Equipo MikroTik que gestiona la conexión del cliente</td>
+</tr>
+<tr>
+<td><strong>OLT</strong></td>
+<td>Equipo de fibra óptica (AdminOLT o SmartOLT) que gestiona ONUs</td>
+</tr>
+<tr>
+<td><strong>ONU / ONT</strong></td>
+<td>Equipo de fibra en casa del cliente</td>
+</tr>
+<tr>
+<td><strong>NAP</strong></td>
+<td>Caja de distribución de fibra en la calle</td>
+</tr>
+<tr>
+<td><strong>Radius</strong></td>
+<td>Servidor de autenticación de usuarios en la red</td>
+</tr>
+<tr>
+<td><strong>Corte</strong></td>
+<td>Suspensión automática del servicio por falta de pago</td>
+</tr>
+<tr>
+<td><strong>Prepago</strong></td>
+<td>El cliente paga antes de usar el servicio</td>
+</tr>
+<tr>
+<td><strong>Postpago</strong></td>
+<td>El cliente paga después de consumir el periodo</td>
+</tr>
+<tr>
+<td><strong>Ficha Hotspot</strong></td>
+<td>Ticket de acceso temporal a WiFi (PIN + usuario)</td>
+</tr>
+<tr>
+<td><strong>Pasarela</strong></td>
+<td>Integración con banco o procesador de pagos en línea</td>
+</tr>
+<tr>
+<td><strong>Sucursal</strong></td>
+<td>Sede o punto de operación del ISP</td>
+</tr>
+<tr>
+<td><strong>Ticket</strong></td>
+<td>Solicitud de soporte técnico del cliente</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-acceso-al-sistema">3. Acceso al sistema</h2>
+<h3 id="31-iniciar-sesión-en-el-panel-admin">3.1 Iniciar sesión en el panel admin</h3>
+<p><strong>Paso a paso:</strong></p>
+<ol>
+<li>Abra su navegador web (Chrome, Firefox o Edge recomendados).</li>
+<li>Ingrese la URL del panel: <code>https://su-servidor/admin/</code></li>
+<li>Se mostrará la pantalla de login.</li>
+<li>Ingrese su <strong>usuario</strong> y <strong>contraseña</strong> asignados por el administrador.</li>
+<li>Si el sistema tiene autenticación de dos factores (2FA) activa, complete el código SMS, email o app autenticadora.</li>
+<li>Presione <strong>Iniciar sesión</strong>.</li>
+<li>Será redirigido al <strong>Dashboard</strong> (pantalla de inicio).</li>
+</ol>
+<p><strong>Problemas comunes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Usuario o contraseña incorrectos</td>
+<td>Verifique mayúsculas/minúsculas. Contacte al administrador para restablecer.</td>
+</tr>
+<tr>
+<td>Sesión expirada</td>
+<td>Vuelva a iniciar sesión. El sistema cierra sesión automáticamente tras inactividad.</td>
+</tr>
+<tr>
+<td>No veo ciertos módulos en el menú</td>
+<td>Su rol no tiene permisos para esos módulos. Solicite acceso al administrador.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-cerrar-sesión">3.2 Cerrar sesión</h3>
+<ol>
+<li>Haga clic en su <strong>avatar o nombre</strong> en la esquina superior derecha.</li>
+<li>Seleccione <strong>Cerrar Sesión</strong>.</li>
+<li>Será redirigido a la pantalla de login.</li>
+</ol>
+<h3 id="33-cambiar-contraseña">3.3 Cambiar contraseña</h3>
+<ol>
+<li>Clic en avatar → <strong>Cambiar Contraseña</strong>.</li>
+<li>Ingrese contraseña actual y la nueva (dos veces).</li>
+<li>Confirme con <strong>Guardar</strong>.</li>
+</ol>
+<hr>
+<h2 id="4-panel-de-administración--barra-superior">4. Panel de administración — Barra superior</h2>
+<p>La barra superior está siempre visible y ofrece accesos rápidos.</p>
+<h3 id="41-buscar-cliente">4.1 Buscar cliente</h3>
+<p><strong>Ubicación:</strong> Campo de búsqueda con icono de lupa.</p>
+<p><strong>Paso a paso:</strong></p>
+<ol>
+<li>Escriba al menos 3 caracteres del nombre, cédula o código del cliente.</li>
+<li>Aparecerá una lista desplegable con coincidencias.</li>
+<li>Haga clic en el cliente deseado.</li>
+<li>Se abrirá directamente su <strong>ficha de cliente</strong> (ViewUser).</li>
+</ol>
+<blockquote>
+<p><strong>Consejo:</strong> Este es el acceso más rápido para atender a un cliente en mostrador o por teléfono.</p>
+</blockquote>
+<h3 id="42-registrar-pago-rápido">4.2 Registrar pago rápido</h3>
+<p><strong>Ubicación:</strong> Icono de dólar ($) en la barra superior.<br>
+<strong>Permiso requerido:</strong> Widget de pago activo.</p>
+<p>Redirige directamente al módulo <strong>Registrar Pagos</strong> sin pasar por el menú lateral.</p>
+<h3 id="43-notificaciones">4.3 Notificaciones</h3>
+<p><strong>Ubicación:</strong> Icono de campana.</p>
+<p>Muestra alertas del sistema: pagos recibidos, tickets pendientes, avisos de red, etc. Haga clic para ver el detalle y marcar como leídas.</p>
+<h3 id="44-modo-oscuro-y-personalización">4.4 Modo oscuro y personalización</h3>
+<ul>
+<li><strong>Modo oscuro:</strong> Botón luna/sol para alternar tema claro/oscuro.</li>
+<li><strong>Personalización:</strong> Panel de colores para ajustar acentos primario y secundario del panel. Los cambios se guardan por usuario con <strong>Guardar mi estilo</strong>.</li>
+</ul>
+<h3 id="45-menú-de-usuario">4.5 Menú de usuario</h3>
+<table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asistencia</td>
+<td>Registro de asistencia del operador</td>
+</tr>
+<tr>
+<td>Mi Perfil</td>
+<td>Datos del operador logueado</td>
+</tr>
+<tr>
+<td>Cambiar Contraseña</td>
+<td>Actualizar credenciales</td>
+</tr>
+<tr>
+<td>Cerrar Sesión</td>
+<td>Salir del sistema</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-dashboard">5. Dashboard</h2>
+<p><strong>Menú:</strong> Dashboard (primer ítem del menú lateral)<br>
+<strong>Ruta:</strong> <code>/admin/</code> o <code>#ajax/home</code></p>
+<h3 id="para-qué-sirve">¿Para qué sirve?</h3>
+<p>Pantalla de inicio con métricas y resumen operativo del ISP: clientes activos, ingresos, desconexiones, gráficos de tráfico y alertas.</p>
+<h3 id="elementos-principales">Elementos principales</h3>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Saludo personalizado</td>
+<td>Buenos días / tardes / noches según la hora</td>
+</tr>
+<tr>
+<td>Tarjetas de métricas</td>
+<td>Totales de clientes, facturación, pagos del periodo</td>
+</tr>
+<tr>
+<td>Gráficos</td>
+<td>Evolución de clientes, ingresos, tráfico</td>
+</tr>
+<tr>
+<td>Alertas</td>
+<td>Clientes desconectados, morosos, licencia</td>
+</tr>
+<tr>
+<td>Accesos rápidos</td>
+<td>Enlaces a módulos frecuentes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-a-paso--consultar-métricas">Paso a paso — Consultar métricas</h3>
+<ol>
+<li>Inicie sesión; el Dashboard se carga automáticamente.</li>
+<li>Revise las tarjetas superiores para obtener cifras del día/mes.</li>
+<li>Use los filtros de periodo (24h, 7 días, mes) en los gráficos si están disponibles.</li>
+<li>Haga clic en cualquier métrica para ir al módulo detallado (si el enlace está activo).</li>
+</ol>
+<hr>
+<h2 id="6-gestión-de-red">6. Gestión de Red</h2>
+<p><strong>Menú:</strong> Gestión de Red (menú expandible)</p>
+<p>Esta sección agrupa todo lo relacionado con la infraestructura de red del ISP.</p>
+<hr>
+<h3 id="61-routers">6.1 Routers</h3>
+<p><strong>Menú:</strong> Gestión de Red → Routers<br>
+<strong>Permiso:</strong> Gestión de Red → Router → Menú</p>
+<h4 id="para-qué-sirve-1">¿Para qué sirve?</h4>
+<p>Administrar los equipos MikroTik (routers) que dan servicio a los clientes: conexión, configuración, monitoreo y backups.</p>
+<h4 id="paso-a-paso--agregar-un-router">Paso a paso — Agregar un router</h4>
+<ol>
+<li>Vaya a <strong>Gestión de Red → Routers</strong>.</li>
+<li>Haga clic en <strong>Nuevo</strong>.</li>
+<li>Complete los campos:
+<ul>
+<li><strong>Nombre:</strong> Identificador descriptivo (ej. “Nodo Centro”).</li>
+<li><strong>IP:</strong> Dirección IP del MikroTik.</li>
+<li><strong>Usuario / Contraseña:</strong> Credenciales API del router.</li>
+<li><strong>Coordenadas:</strong> Ubicación GPS (opcional, para mapa).</li>
+</ul>
+</li>
+<li>Presione <strong>Guardar</strong>.</li>
+<li>El router aparecerá en la lista con indicador de estado (conectado/desconectado).</li>
+</ol>
+<h4 id="paso-a-paso--editar-un-router">Paso a paso — Editar un router</h4>
+<ol>
+<li>En la lista, haga clic en el router deseado o en el botón <strong>Editar</strong>.</li>
+<li>Se abrirá la ficha con pestañas:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Datos &amp; Configuración</td>
+<td>IP, credenciales, RADIUS, colas</td>
+</tr>
+<tr>
+<td>Bloqueo de Páginas</td>
+<td>Reglas de firewall</td>
+</tr>
+<tr>
+<td>Mikrotik</td>
+<td>Información en vivo del equipo</td>
+</tr>
+<tr>
+<td>Gráficos</td>
+<td>Tráfico histórico</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Eventos del router</td>
+</tr>
+<tr>
+<td>Backups</td>
+<td>Respaldos de configuración</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>Modifique los campos necesarios y guarde.</li>
+</ol>
+<h4 id="acciones-disponibles">Acciones disponibles</h4>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Permiso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nuevo router</td>
+<td>Router → Nuevo</td>
+</tr>
+<tr>
+<td>Editar</td>
+<td>Router → Editar</td>
+</tr>
+<tr>
+<td>Eliminar</td>
+<td>Router → Eliminar</td>
+</tr>
+<tr>
+<td>Backups Mikrotik</td>
+<td>Enlace en barra superior de la lista</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="62-smart-olt--adminolt">6.2 Smart OLT / AdminOLT</h3>
+<p><strong>Menú:</strong> Gestión de Red → Smart OLT o AdminOLT<br>
+<strong>Permiso:</strong> Gestión de Red → Router → Menú (solo aparece el OLT configurado)</p>
+<h4 id="para-qué-sirve-2">¿Para qué sirve?</h4>
+<p>Gestionar equipos OLT de fibra óptica: autorizar ONUs, monitorear señal, configurar perfiles de velocidad en la OLT.</p>
+<h4 id="paso-a-paso--autorizar-una-onu-desde-ficha-de-cliente">Paso a paso — Autorizar una ONU (desde ficha de cliente)</h4>
+<blockquote>
+<p>La autorización de ONUs se realiza normalmente desde la <strong>ficha del cliente</strong> (ver sección 10). Aquí se describe la vista general del módulo OLT.</p>
+</blockquote>
+<ol>
+<li>Vaya a <strong>Gestión de Red → AdminOLT</strong> (o Smart OLT).</li>
+<li>Revise el listado de ONUs registradas.</li>
+<li>Para autorizar una ONU nueva, vaya a la ficha del cliente → pestaña <strong>Servicios</strong> → botón <strong>AdminOLT/SmartOLT</strong>.</li>
+<li>Seleccione la ONU pendiente de la lista de no autorizadas.</li>
+<li>Haga clic en <strong>Autorizar</strong>.</li>
+<li>Configure los parámetros WAN si aplica.</li>
+<li>Guarde. La ONU quedará activa en la OLT y el servicio del cliente se habilitará.</li>
+</ol>
+<hr>
+<h3 id="63-redes-ipv4--ipv6">6.3 Redes (IPv4 / IPv6)</h3>
+<p><strong>Menú:</strong> Gestión de Red → Redes<br>
+<strong>Permiso:</strong> Gestión de Red → IPv4 → Menú</p>
+<h4 id="para-qué-sirve-3">¿Para qué sirve?</h4>
+<p>Administrar pools de direcciones IP, subredes y asignaciones para clientes.</p>
+<h4 id="paso-a-paso--consultar-pools-de-ip">Paso a paso — Consultar pools de IP</h4>
+<ol>
+<li>Vaya a <strong>Gestión de Red → Redes</strong>.</li>
+<li>Revise la lista de pools/subredes configuradas.</li>
+<li>Cada pool muestra: rango, router asociado, IPs usadas vs disponibles.</li>
+<li>Para asignar IP a un cliente, hágalo desde la ficha del cliente al crear/editar el servicio.</li>
+</ol>
+<hr>
+<h3 id="64-monitoreo-emisores">6.4 Monitoreo (Emisores)</h3>
+<p><strong>Menú:</strong> Gestión de Red → Monitoreo<br>
+<strong>Permiso:</strong> Gestión de Red → Monitoreo → Menú</p>
+<h4 id="para-qué-sirve-4">¿Para qué sirve?</h4>
+<p>Monitorear el estado de emisores inalámbricos, antenas y equipos de transmisión.</p>
+<h4 id="paso-a-paso">Paso a paso</h4>
+<ol>
+<li>Vaya a <strong>Gestión de Red → Monitoreo</strong>.</li>
+<li>Revise la lista de emisores con indicadores de estado (online/offline).</li>
+<li>Haga clic en un emisor para ver detalle: señal, clientes conectados, uptime.</li>
+</ol>
+<hr>
+<h3 id="65-cajas-nap">6.5 Cajas NAP</h3>
+<p><strong>Menú:</strong> Gestión de Red → Cajas Nap<br>
+<strong>Permiso:</strong> Gestión de Red → NAP → Menú</p>
+<h4 id="para-qué-sirve-5">¿Para qué sirve?</h4>
+<p>Gestionar cajas de distribución de fibra óptica (NAP) en calle: ubicación, puertos, clientes conectados.</p>
+<h4 id="paso-a-paso--registrar-una-caja-nap">Paso a paso — Registrar una caja NAP</h4>
+<ol>
+<li>Vaya a <strong>Gestión de Red → Cajas Nap</strong>.</li>
+<li>Haga clic en <strong>Nuevo</strong>.</li>
+<li>Complete: nombre, ubicación (dirección/coordenadas), capacidad de puertos.</li>
+<li>Guarde.</li>
+<li>Al dar de alta clientes con fibra, asigne el puerto NAP correspondiente en la ficha del servicio.</li>
+</ol>
+<hr>
+<h3 id="66-tráfico">6.6 Tráfico</h3>
+<p><strong>Menú:</strong> Gestión de Red → Tráfico<br>
+<strong>Permiso:</strong> Gestión de Red → Tráfico → Lista</p>
+<h4 id="para-qué-sirve-6">¿Para qué sirve?</h4>
+<p>Visualizar el consumo de ancho de banda por router, cliente o periodo.</p>
+<h4 id="paso-a-paso-1">Paso a paso</h4>
+<ol>
+<li>Vaya a <strong>Gestión de Red → Tráfico</strong>.</li>
+<li>Seleccione el router o cliente a consultar.</li>
+<li>Elija el rango de fechas.</li>
+<li>Revise los gráficos de subida/bajada.</li>
+<li>Exporte a Excel/PDF si necesita un reporte.</li>
+</ol>
+<hr>
+<h3 id="67-ips-visitadas">6.7 IPs Visitadas</h3>
+<p><strong>Menú:</strong> Gestión de Red → Ips Visitadas<br>
+<strong>Permiso:</strong> Gestión de Red → Tráfico → Lista visitadas</p>
+<h4 id="para-qué-sirve-7">¿Para qué sirve?</h4>
+<p>Ver qué sitios web o destinos IP visitan los clientes (requiere logging activo en el router).</p>
+<hr>
+<h3 id="68-monitor-blacklist">6.8 Monitor BlackList</h3>
+<p><strong>Menú:</strong> Gestión de Red → Monitor BlackList<br>
+<strong>Permiso:</strong> Gestión de Red → Router → Menú</p>
+<h4 id="para-qué-sirve-8">¿Para qué sirve?</h4>
+<p>Monitorear y gestionar listas negras de IPs o dominios bloqueados en la red.</p>
+<hr>
+<h2 id="7-servicios-y-perfiles">7. Servicios y perfiles</h2>
+<p><strong>Menú:</strong> Servicios (menú expandible)</p>
+<p>Los perfiles definen los planes de servicio que se ofrecen a los clientes.</p>
+<hr>
+<h3 id="71-perfiles-de-internet">7.1 Perfiles de Internet</h3>
+<p><strong>Menú:</strong> Servicios → Internet<br>
+<strong>Permiso:</strong> Servicios → Internet → Menú</p>
+<h4 id="para-qué-sirve-9">¿Para qué sirve?</h4>
+<p>Crear y administrar planes de internet: velocidad de bajada/subida, precio, tipo de conexión (PPPoE, Hotspot, DHCP), límites.</p>
+<h4 id="paso-a-paso--crear-un-perfil-de-internet">Paso a paso — Crear un perfil de Internet</h4>
+<ol>
+<li>Vaya a <strong>Servicios → Internet</strong>.</li>
+<li>Haga clic en <strong>Nuevo</strong>.</li>
+<li>Complete:
+<ul>
+<li><strong>Nombre del perfil:</strong> Ej. “Plan 50 Mbps”.</li>
+<li><strong>Velocidad bajada / subida:</strong> En Kbps o Mbps.</li>
+<li><strong>Precio:</strong> Monto mensual.</li>
+<li><strong>Tipo de conexión:</strong> PPPoE, Hotspot, DHCP, IP estática.</li>
+<li><strong>Router asociado:</strong> Nodo donde aplica.</li>
+<li><strong>Límite de tráfico:</strong> Opcional (GB mensuales).</li>
+</ul>
+</li>
+<li>Configure colas y reglas de MikroTik si aplica.</li>
+<li>Presione <strong>Guardar</strong>.</li>
+</ol>
+<h4 id="paso-a-paso--editar-o-desactivar-un-perfil">Paso a paso — Editar o desactivar un perfil</h4>
+<ol>
+<li>En la lista de perfiles, haga clic en <strong>Editar</strong> en la fila deseada.</li>
+<li>Modifique los campos necesarios.</li>
+<li>Para desactivar un plan sin eliminarlo, cambie su estado a <strong>Inactivo</strong>.</li>
+<li>Guarde los cambios.</li>
+</ol>
+<blockquote>
+<p><strong>Importante:</strong> Cambiar el precio de un perfil no modifica automáticamente el precio de clientes ya contratados. Debe actualizar cada servicio individualmente o usar <strong>Cambios Masivos</strong> en Ajustes.</p>
+</blockquote>
+<hr>
+<h3 id="72-perfiles-de-voz-voip">7.2 Perfiles de Voz (VoIP)</h3>
+<p><strong>Menú:</strong> Servicios → Voz<br>
+<strong>Permiso:</strong> Servicios → Voz → Menú</p>
+<p>Misma lógica que Internet pero para servicios de telefonía IP. Configure extensiones, minutos incluidos y tarifas.</p>
+<hr>
+<h3 id="73-perfiles-catv">7.3 Perfiles CATV</h3>
+<p><strong>Menú:</strong> Servicios → Catv<br>
+<strong>Permiso:</strong> Servicios → CATV → Menú</p>
+<p>Planes de televisión por cable analógico/digital.</p>
+<hr>
+<h3 id="74-perfiles-personalizados">7.4 Perfiles Personalizados</h3>
+<p><strong>Menú:</strong> Servicios → Personalizado<br>
+<strong>Permiso:</strong> Servicios → Personalizado → Menú</p>
+<p>Servicios no estándar definidos por el ISP (cámaras, enlaces dedicados, etc.).</p>
+<hr>
+<h3 id="75-iptv">7.5 IPTV</h3>
+<p><strong>Menú:</strong> Servicios → IPTV<br>
+<strong>Permiso:</strong> Admin o cualquier permiso de servicios</p>
+<h4 id="para-qué-sirve-10">¿Para qué sirve?</h4>
+<p>Gestionar servicios de televisión por protocolo IP, incluyendo integración con plataformas como Setplex/Nora.</p>
+<h4 id="paso-a-paso--gestionar-suscriptores-iptv">Paso a paso — Gestionar suscriptores IPTV</h4>
+<ol>
+<li>Vaya a <strong>Servicios → IPTV</strong>.</li>
+<li>Revise el listado de suscriptores activos.</li>
+<li>Use los filtros para buscar por nombre, plan o estado.</li>
+<li>Acciones disponibles:
+<ul>
+<li><strong>Activar / Suspender</strong> suscripción.</li>
+<li><strong>Editar</strong> datos del suscriptor.</li>
+<li><strong>Actualizar plan</strong> de suscripción.</li>
+</ul>
+</li>
+<li>Para vincular IPTV a un cliente del ISP, hágalo desde la ficha del cliente en la pestaña Servicios.</li>
+</ol>
+<hr>
+<h2 id="8-promociones">8. Promociones</h2>
+<p><strong>Menú:</strong> Promociones (ítem directo)<br>
+<strong>Permiso:</strong> Admin o permisos de servicios</p>
+<h3 id="para-qué-sirve-11">¿Para qué sirve?</h3>
+<p>Crear ofertas especiales: descuentos, meses gratis, precios promocionales temporales.</p>
+<h3 id="paso-a-paso--crear-una-promoción">Paso a paso — Crear una promoción</h3>
+<ol>
+<li>Vaya a <strong>Promociones</strong>.</li>
+<li>Haga clic en <strong>Nueva promoción</strong>.</li>
+<li>Configure:
+<ul>
+<li><strong>Nombre</strong> de la promoción.</li>
+<li><strong>Tipo:</strong> Descuento porcentual, monto fijo, meses gratis.</li>
+<li><strong>Perfiles aplicables:</strong> Qué planes incluye.</li>
+<li><strong>Vigencia:</strong> Fecha inicio y fin.</li>
+<li><strong>Condiciones:</strong> Nuevos clientes, clientes existentes, etc.</li>
+</ul>
+</li>
+<li>Guarde y active la promoción.</li>
+<li>Al registrar un cliente o servicio, seleccione la promoción aplicable.</li>
+</ol>
+<hr>
+<h2 id="9-clientes">9. Clientes</h2>
+<p><strong>Menú:</strong> Clientes (menú expandible)</p>
+<hr>
+<h3 id="91-usuarios-listado-de-clientes">9.1 Usuarios (Listado de clientes)</h3>
+<p><strong>Menú:</strong> Clientes → Usuarios<br>
+<strong>Permiso:</strong> Clientes → Usuarios → Menú</p>
+<h4 id="para-qué-sirve-12">¿Para qué sirve?</h4>
+<p>Listar, buscar, filtrar y gestionar todos los clientes del ISP.</p>
+<h4 id="barra-de-herramientas">Barra de herramientas</h4>
+<table>
+<thead>
+<tr>
+<th>Botón</th>
+<th>Permiso</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nuevo</td>
+<td>Usuarios → Nuevo</td>
+<td>Alta de cliente</td>
+</tr>
+<tr>
+<td>Filtrar</td>
+<td>Todos</td>
+<td>Filtro avanzado colapsable</td>
+</tr>
+<tr>
+<td>Estado</td>
+<td>Todos</td>
+<td>TODOS / ACTIVOS / SUSPENDIDOS / RETIRADOS / ONLINE</td>
+</tr>
+<tr>
+<td>Suspender masivo</td>
+<td>Usuarios → Activar</td>
+<td>Suspender seleccionados</td>
+</tr>
+<tr>
+<td>Activar masivo</td>
+<td>Usuarios → Activar</td>
+<td>Activar seleccionados</td>
+</tr>
+<tr>
+<td>Retirar masivo</td>
+<td>Usuarios → Retirar</td>
+<td>Retirar seleccionados</td>
+</tr>
+<tr>
+<td>Eliminar masivo</td>
+<td>Usuarios → Eliminar</td>
+<td>Eliminar seleccionados</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--alta-de-nuevo-cliente-wizard-3-pasos">Paso a paso — Alta de nuevo cliente (Wizard 3 pasos)</h4>
+<ol>
+<li>Vaya a <strong>Clientes → Usuarios</strong>.</li>
+<li>Haga clic en <strong>Nuevo</strong>.</li>
+<li><strong>Paso 1 — Datos personales:</strong>
+<ul>
+<li>Nombre completo o razón social.</li>
+<li>Cédula / RIF / documento (validación automática según país).</li>
+<li>Dirección, teléfono, email.</li>
+<li>Coordenadas GPS (opcional).</li>
+</ul>
+</li>
+<li><strong>Paso 2 — Facturación y notificaciones:</strong>
+<ul>
+<li>Tipo: Prepago o Postpago.</li>
+<li>Día de pago (1-28).</li>
+<li>Día de corte automático.</li>
+<li>Activar/desactivar avisos por SMS, email, push.</li>
+<li>Configuración de mora.</li>
+</ul>
+</li>
+<li><strong>Paso 3 — Servicios:</strong>
+<ul>
+<li>Seleccione router/nodo.</li>
+<li>Elija perfil de servicio.</li>
+<li>Configure tipo de conexión (PPPoE, Hotspot, etc.).</li>
+<li>Asigne IP (automática o estática).</li>
+<li>Configure IPv6 si aplica.</li>
+<li>Seleccione ubicación/NAP si es fibra.</li>
+</ul>
+</li>
+<li>Presione <strong>Registrar Cliente</strong>.</li>
+<li>El sistema crea el cliente, el servicio y opcionalmente la primera factura.</li>
+</ol>
+<blockquote>
+<p><strong>Consejo:</strong> Si el cliente viene de una instalación, use el botón <strong>Dar de alta</strong> desde el módulo Instalaciones para pre-cargar los datos.</p>
+</blockquote>
+<h4 id="paso-a-paso--buscar-y-filtrar-clientes">Paso a paso — Buscar y filtrar clientes</h4>
+<ol>
+<li>Use el campo de búsqueda global (barra superior) para acceso rápido.</li>
+<li>O en la lista de Usuarios, use el selector de <strong>Estado</strong> para filtrar.</li>
+<li>Expanda <strong>Filtrar</strong> para criterios avanzados: router, perfil, zona, día de pago, etc.</li>
+<li>Haga clic en el nombre del cliente para abrir su ficha completa.</li>
+</ol>
+<hr>
+<h3 id="92-mapa-de-clientes">9.2 Mapa de Clientes</h3>
+<p><strong>Menú:</strong> Clientes → Mapa Clientes<br>
+<strong>Permiso:</strong> Clientes → Mapa</p>
+<h4 id="para-qué-sirve-13">¿Para qué sirve?</h4>
+<p>Visualizar geográficamente la ubicación de todos los clientes en un mapa interactivo.</p>
+<h4 id="paso-a-paso-2">Paso a paso</h4>
+<ol>
+<li>Vaya a <strong>Clientes → Mapa Clientes</strong>.</li>
+<li>El mapa muestra marcadores por cliente (requiere coordenadas GPS en la ficha).</li>
+<li>Haga clic en un marcador para ver datos básicos del cliente.</li>
+<li>Use los filtros para mostrar solo activos, suspendidos, etc.</li>
+</ol>
+<hr>
+<h3 id="93-anuncios">9.3 Anuncios</h3>
+<p><strong>Menú:</strong> Clientes → Anuncios<br>
+<strong>Permiso:</strong> Clientes → Anuncios → Menú</p>
+<h4 id="para-qué-sirve-14">¿Para qué sirve?</h4>
+<p>Publicar avisos visibles en el portal del cliente (mantenimientos, promociones, etc.).</p>
+<h4 id="paso-a-paso--crear-un-anuncio">Paso a paso — Crear un anuncio</h4>
+<ol>
+<li>Vaya a <strong>Clientes → Anuncios</strong>.</li>
+<li>Haga clic en <strong>Nuevo</strong>.</li>
+<li>Escriba título y contenido del anuncio.</li>
+<li>Configure vigencia (fecha inicio/fin).</li>
+<li>Seleccione si aplica a todos los clientes o a un grupo específico.</li>
+<li>Publique.</li>
+</ol>
+<hr>
+<h3 id="94-notificaciones-push">9.4 Notificaciones Push</h3>
+<p><strong>Menú:</strong> Clientes → Notificaciones push<br>
+<strong>Permiso:</strong> Clientes → Anuncios → Menú</p>
+<p>Enviar notificaciones push a la app móvil o navegador del cliente.</p>
+<hr>
+<h3 id="95-instalaciones">9.5 Instalaciones</h3>
+<p><strong>Menú:</strong> Clientes → Instalaciones<br>
+<strong>Permiso:</strong> Clientes → Instalaciones → Menú</p>
+<h4 id="para-qué-sirve-15">¿Para qué sirve?</h4>
+<p>Gestionar el ciclo completo de instalaciones: pre-registro de prospectos, órdenes de instalación, materiales y alta final del cliente.</p>
+<h4 id="pestañas">Pestañas</h4>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registro</td>
+<td>Pre-instalaciones / prospectos</td>
+</tr>
+<tr>
+<td>Instalaciones</td>
+<td>Órdenes activas en campo</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--flujo-completo-de-instalación">Paso a paso — Flujo completo de instalación</h4>
+<ol>
+<li>
+<p><strong>Crear pre-registro:</strong></p>
+<ul>
+<li>Vaya a <strong>Clientes → Instalaciones → Registro</strong>.</li>
+<li>Clic en <strong>Nuevo</strong>.</li>
+<li>Ingrese cédula, nombre, teléfono, dirección, plan deseado.</li>
+<li>Guarde. El prospecto queda en estado “Pendiente”.</li>
+</ul>
+</li>
+<li>
+<p><strong>Aceptar instalación:</strong></p>
+<ul>
+<li>En la pestaña <strong>Instalaciones</strong>, localice la orden.</li>
+<li>Clic en <strong>Aceptar instalación</strong>.</li>
+<li>Asigne técnico responsable y fecha/hora.</li>
+<li>Confirme.</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar materiales:</strong></p>
+<ul>
+<li>Clic en <strong>Materiales</strong>.</li>
+<li>Seleccione productos del almacén (ONU, cable, conectores, etc.).</li>
+<li>Confirme. El inventario se descuenta automáticamente.</li>
+</ul>
+</li>
+<li>
+<p><strong>Imprimir hoja de instalación:</strong></p>
+<ul>
+<li>Clic en <strong>Imprimir</strong> para generar PDF con datos del cliente, materiales y plan.</li>
+<li>Entregue al técnico de campo.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dar de alta al cliente:</strong></p>
+<ul>
+<li>Una vez completada la instalación en campo, clic en <strong>Dar de alta</strong>.</li>
+<li>Se abre el wizard de alta de cliente con datos pre-cargados.</li>
+<li>Complete servicio, IP, credenciales y confirme.</li>
+<li>El prospecto pasa a ser cliente activo.</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>Permisos granulares:</strong> editar-registro, eliminar-registro, aceptar-instalacion, materiales-instalacion, alta-instalacion.</p>
+</blockquote>
+<hr>
+<h3 id="96-contratos">9.6 Contratos</h3>
+<p><strong>Menú:</strong> Clientes → Contratos<br>
+<strong>Permiso:</strong> Clientes → Contratos → Menú</p>
+<h4 id="para-qué-sirve-16">¿Para qué sirve?</h4>
+<p>Gestionar contratos formales con clientes: generación, firma, renovación.</p>
+<h4 id="paso-a-paso--generar-contrato">Paso a paso — Generar contrato</h4>
+<ol>
+<li>Vaya a <strong>Clientes → Contratos</strong> o desde la ficha del cliente.</li>
+<li>Clic en <strong>Nuevo contrato</strong>.</li>
+<li>Seleccione plantilla de contrato.</li>
+<li>Revise datos pre-cargados del cliente.</li>
+<li>Genere PDF.</li>
+<li>Envíe por correo al cliente o imprima para firma física.</li>
+</ol>
+<hr>
+<h3 id="97-correos">9.7 Correos</h3>
+<p><strong>Menú:</strong> Clientes → Correos<br>
+<strong>Permiso:</strong> Clientes → Correo → Menú</p>
+<h4 id="para-qué-sirve-17">¿Para qué sirve?</h4>
+<p>Bandeja de correos enviados/recibidos relacionados con clientes: facturas, avisos, respuestas.</p>
+<hr>
+<h2 id="10-ficha-del-cliente-viewuser">10. Ficha del cliente (ViewUser)</h2>
+<p><strong>Acceso:</strong> Buscar cliente (barra superior) o clic en nombre desde cualquier listado.</p>
+<h3 id="para-qué-sirve-18">¿Para qué sirve?</h3>
+<p>Es el <strong>centro de operaciones</strong> de cada cliente. Desde aquí se gestiona todo: servicios, facturación, pagos, tickets, documentos, estadísticas.</p>
+<h3 id="pestañas-principales">Pestañas principales</h3>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Resumen</strong></td>
+<td>Datos generales, estado del servicio, accesos rápidos</td>
+</tr>
+<tr>
+<td><strong>Servicios</strong></td>
+<td>Servicios contratados, configuración técnica, OLT/ONU</td>
+</tr>
+<tr>
+<td><strong>Facturación</strong></td>
+<td>Facturas, pagos, saldos, configuración de cobro</td>
+</tr>
+<tr>
+<td><strong>Tickets</strong></td>
+<td>Historial de soporte del cliente</td>
+</tr>
+<tr>
+<td><strong>Email &amp; SMS</strong></td>
+<td>Comunicaciones enviadas</td>
+</tr>
+<tr>
+<td><strong>Documentos</strong></td>
+<td>Archivos adjuntos (contratos, cédulas, etc.)</td>
+</tr>
+<tr>
+<td><strong>Estadísticas</strong></td>
+<td>Tráfico, gráficos de consumo, sitios visitados</td>
+</tr>
+<tr>
+<td><strong>Log</strong></td>
+<td>Auditoría de acciones sobre el cliente</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-a-paso--consultar-estado-de-un-cliente">Paso a paso — Consultar estado de un cliente</h3>
+<ol>
+<li>Busque al cliente (barra superior o listado).</li>
+<li>Se abre la ficha. Revise la pestaña <strong>Resumen</strong>:
+<ul>
+<li>Estado: Activo / Suspendido / Retirado.</li>
+<li>Saldo pendiente.</li>
+<li>Servicios activos.</li>
+<li>Última conexión.</li>
+</ul>
+</li>
+<li>Para ver deuda, vaya a pestaña <strong>Facturación</strong>.</li>
+</ol>
+<h3 id="paso-a-paso--suspender-un-cliente">Paso a paso — Suspender un cliente</h3>
+<ol>
+<li>En la ficha, botón <strong>Suspender</strong> (visible según permisos).</li>
+<li>Confirme la acción.</li>
+<li>El servicio se corta en el router/OLT automáticamente.</li>
+<li>El estado cambia a “Suspendido”.</li>
+</ol>
+<h3 id="paso-a-paso--activar-un-cliente">Paso a paso — Activar un cliente</h3>
+<ol>
+<li>En la ficha de un cliente suspendido, botón <strong>Activar</strong>.</li>
+<li>Confirme.</li>
+<li>El servicio se restaura en router/OLT.</li>
+</ol>
+<h3 id="paso-a-paso--registrar-pago-desde-ficha">Paso a paso — Registrar pago desde ficha</h3>
+<ol>
+<li>Pestaña <strong>Facturación</strong> → sub-pestaña <strong>Facturas</strong>.</li>
+<li>Localice la factura pendiente.</li>
+<li>Clic en <strong>Agregar pago</strong> (✓).</li>
+<li>Complete: monto, forma de pago, referencia bancaria.</li>
+<li>Confirme. Si el pago cubre la deuda, el servicio se activa automáticamente (si estaba suspendido por mora).</li>
+</ol>
+<h3 id="paso-a-paso--configurar-onu-adminolt--smartolt">Paso a paso — Configurar ONU (AdminOLT / SmartOLT)</h3>
+<ol>
+<li>Pestaña <strong>Servicios</strong>.</li>
+<li>Clic en botón <strong>AdminOLT</strong> o <strong>SmartOLT</strong> junto al servicio de fibra.</li>
+<li>Se abre modal con ONUs pendientes de autorización.</li>
+<li>Seleccione la ONU correcta (por serial number).</li>
+<li>Clic en <strong>Autorizar</strong>.</li>
+<li>Configure parámetros WAN (VLAN, PPPoE credentials).</li>
+<li>Clic en <strong>Autorizar y Continuar</strong>.</li>
+<li>Espere la confirmación de configuración WAN.</li>
+<li>Clic en <strong>Concluir Configuración WAN</strong>.</li>
+<li>La ONU queda operativa.</li>
+</ol>
+<h3 id="paso-a-paso--enviar-factura-por-correo">Paso a paso — Enviar factura por correo</h3>
+<ol>
+<li>Pestaña <strong>Facturación</strong> → seleccione la factura.</li>
+<li>Clic en botón <strong>Compartir</strong> (icono de envío).</li>
+<li>Elija <strong>Enviar por correo</strong>.</li>
+<li>Confirme. El cliente recibe la factura en PDF.</li>
+</ol>
+<h3 id="herramientas-rápidas-llave-inglesa">Herramientas rápidas (llave inglesa)</h3>
+<p>Desde la ficha, el botón de <strong>herramientas</strong> (llave inglesa) abre un panel con:</p>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ver antena</td>
+<td>Estado de conexión inalámbrica</td>
+</tr>
+<tr>
+<td>Tráfico Mikrotik</td>
+<td>Consumo en tiempo real</td>
+</tr>
+<tr>
+<td>Ping</td>
+<td>Prueba de conectividad</td>
+</tr>
+<tr>
+<td>Gráficos</td>
+<td>Histórico de tráfico</td>
+</tr>
+<tr>
+<td>Portal cliente</td>
+<td>Abrir portal como el cliente (enmascarado)</td>
+</tr>
+<tr>
+<td>Enviar correo/SMS</td>
+<td>Comunicación directa</td>
+</tr>
+<tr>
+<td>Activar/Suspender</td>
+<td>Control de servicio</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Permiso requerido:</strong> Clientes → Usuarios → Herramientas</p>
+<hr>
+<h2 id="11-fichas-hotspot">11. Fichas Hotspot</h2>
+<p><strong>Menú:</strong> Fichas Hotspot (menú expandible)</p>
+<hr>
+<h3 id="111-fichas-inventario">11.1 Fichas (Inventario)</h3>
+<p><strong>Menú:</strong> Fichas Hotspot → Fichas<br>
+<strong>Permiso:</strong> Fichas Hotspot → Fichas → Menú</p>
+<h4 id="para-qué-sirve-19">¿Para qué sirve?</h4>
+<p>Gestionar el inventario de tickets de acceso WiFi temporal (fichas hotspot): crear lotes, imprimir, vender, consultar.</p>
+<h4 id="pestañas-1">Pestañas</h4>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disponibles</td>
+<td>Fichas sin vender (estado NUEVO)</td>
+</tr>
+<tr>
+<td>Vendidas</td>
+<td>Fichas ya comercializadas</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--crear-lote-de-fichas">Paso a paso — Crear lote de fichas</h4>
+<ol>
+<li>Vaya a <strong>Fichas Hotspot → Fichas</strong>.</li>
+<li>Pestaña <strong>Disponibles</strong>.</li>
+<li>Clic en <strong>Nuevo</strong>.</li>
+<li>Seleccione:
+<ul>
+<li><strong>Perfil hotspot:</strong> Plan de tiempo/velocidad.</li>
+<li><strong>Cantidad:</strong> Número de fichas a generar.</li>
+</ul>
+</li>
+<li>Clic en <strong>Crear</strong>.</li>
+<li>Las fichas aparecen en la tabla con usuario y PIN generados.</li>
+<li>Opcional: clic en <strong>Imprimir</strong> para generar PDF con las fichas.</li>
+</ol>
+<h4 id="paso-a-paso--imprimir-fichas">Paso a paso — Imprimir fichas</h4>
+<ol>
+<li>Seleccione las fichas deseadas (checkbox).</li>
+<li>Clic en <strong>Imprimir</strong>.</li>
+<li>Elija plantilla de impresión.</li>
+<li>Se genera PDF listo para imprimir y entregar.</li>
+</ol>
+<h4 id="paso-a-paso--enviar-ficha-por-sms">Paso a paso — Enviar ficha por SMS</h4>
+<ol>
+<li>En pestaña <strong>Vendidas</strong>, seleccione la ficha.</li>
+<li>Clic en <strong>Enviar SMS</strong>.</li>
+<li>Ingrese número de teléfono.</li>
+<li>El cliente recibe usuario y PIN por mensaje de texto.</li>
+</ol>
+<hr>
+<h3 id="112-routers-hotspot">11.2 Routers Hotspot</h3>
+<p><strong>Menú:</strong> Fichas Hotspot → Routers<br>
+<strong>Permiso:</strong> Fichas Hotspot → Router → Menú</p>
+<h4 id="para-qué-sirve-20">¿Para qué sirve?</h4>
+<p>Configurar routers dedicados a hotspot: perfiles, límites, WiFi Social.</p>
+<h4 id="pestañas-2">Pestañas</h4>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Routers</td>
+<td>Equipos hotspot</td>
+</tr>
+<tr>
+<td>Perfiles</td>
+<td>Planes de tiempo/velocidad</td>
+</tr>
+<tr>
+<td>Wi-Fi Social</td>
+<td>Registro con redes sociales</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--agregar-router-hotspot">Paso a paso — Agregar router hotspot</h4>
+<ol>
+<li>Vaya a <strong>Fichas Hotspot → Routers</strong>.</li>
+<li>Clic en <strong>Nuevo router</strong>.</li>
+<li>Configure IP, credenciales API, zona.</li>
+<li>Guarde.</li>
+</ol>
+<hr>
+<h3 id="113-plantillas">11.3 Plantillas</h3>
+<p><strong>Menú:</strong> Fichas Hotspot → Plantillas<br>
+<strong>Permiso:</strong> Fichas Hotspot → Plantillas → Menú</p>
+<p>Editor visual de plantillas de impresión de fichas (tamaño, logo, campos, diseño A4/ticket).</p>
+<hr>
+<h3 id="114-ventas">11.4 Ventas</h3>
+<p><strong>Menú:</strong> Fichas Hotspot → Ventas<br>
+<strong>Permiso:</strong> Fichas Hotspot → Ventas → Menú</p>
+<p>Reporte de ventas de fichas: fecha, vendedor, monto, plan vendido.</p>
+<hr>
+<h2 id="12-tareas-y-planificación">12. Tareas y planificación</h2>
+<p><strong>Menú:</strong> Tareas (menú expandible)</p>
+<hr>
+<h3 id="121-tareas-del-día">12.1 Tareas del día</h3>
+<p><strong>Menú:</strong> Tareas → Tareas<br>
+<strong>Permiso:</strong> Tareas → Nuevo, Editar o Eliminar</p>
+<h4 id="para-qué-sirve-21">¿Para qué sirve?</h4>
+<p>Organizar trabajo diario: instalaciones programadas, visitas técnicas, tareas libres.</p>
+<h4 id="paso-a-paso--crear-una-tarea">Paso a paso — Crear una tarea</h4>
+<ol>
+<li>Vaya a <strong>Tareas → Tareas</strong> (fecha de hoy por defecto).</li>
+<li>Clic en <strong>Agregar Tarea</strong>.</li>
+<li>Complete:
+<ul>
+<li><strong>Tipo:</strong> Instalación, visita técnica, tarea libre.</li>
+<li><strong>Cliente vinculado</strong> (si aplica).</li>
+<li><strong>Técnico asignado.</strong></li>
+<li><strong>Fecha y hora.</strong></li>
+<li><strong>Descripción / notas.</strong></li>
+</ul>
+</li>
+<li>Guarde.</li>
+</ol>
+<h4 id="paso-a-paso--gestionar-tarea-de-instalación">Paso a paso — Gestionar tarea de instalación</h4>
+<ol>
+<li>Localice la tarea en la vista <strong>Cronología</strong> o <strong>Tareas</strong>.</li>
+<li>Estados del flujo:
+<ul>
+<li><strong>Pendiente</strong> → Clic <strong>En curso</strong> cuando el técnico sale a campo.</li>
+<li><strong>En curso</strong> → Clic <strong>Finalizar instalación</strong> (redirige a alta de cliente) o <strong>Reprogramar</strong>.</li>
+</ul>
+</li>
+<li>Si reprograma, seleccione nueva fecha/hora y motivo.</li>
+</ol>
+<h4 id="controles-adicionales">Controles adicionales</h4>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plantillas de duración</td>
+<td>Tiempos estimados por tipo de tarea</td>
+</tr>
+<tr>
+<td>Cola reprogramadas</td>
+<td>Tareas reprogramadas pendientes de reasignación</td>
+</tr>
+<tr>
+<td>Vista Cronología</td>
+<td>Línea de tiempo visual</td>
+</tr>
+<tr>
+<td>Vista Tareas</td>
+<td>Tabla con filtros</td>
+</tr>
+<tr>
+<td>Filtro Mis Tareas</td>
+<td>Solo tareas asignadas al operador logueado</td>
+</tr>
+<tr>
+<td>Navegación por fecha</td>
+<td>Flechas ◀ ▶ para cambiar día</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="122-planificación-calendario">12.2 Planificación (Calendario)</h3>
+<p><strong>Menú:</strong> Tareas → Planificación<br>
+<strong>Ruta:</strong> <code>#ajax/calendar_tareas</code></p>
+<p>Vista de calendario mensual/semanal con todas las tareas programadas. Permite arrastrar tareas para reprogramar.</p>
+<hr>
+<h3 id="123-monitoreo-vehicular">12.3 Monitoreo Vehicular</h3>
+<p><strong>Menú:</strong> Tareas → Monitoreo Vehicular<br>
+<strong>Permiso:</strong> Admin o Vehículos → Monitoreo → Menú</p>
+<p>Seguimiento GPS de vehículos de la empresa en mapa en tiempo real.</p>
+<hr>
+<h2 id="13-finanzas">13. Finanzas</h2>
+<p><strong>Menú:</strong> Finanzas (menú expandible)</p>
+<hr>
+<h3 id="131-facturas">13.1 Facturas</h3>
+<p><strong>Menú:</strong> Finanzas → Facturas<br>
+<strong>Permiso:</strong> Finanzas → Facturas → Menú</p>
+<h4 id="para-qué-sirve-22">¿Para qué sirve?</h4>
+<p>Consultar, generar, cobrar y administrar todas las facturas del ISP.</p>
+<h4 id="filtros-disponibles">Filtros disponibles</h4>
+<ul>
+<li>Tipo de fecha (emisión / vencimiento).</li>
+<li>Estado (pendiente, pagada, anulada, vencida).</li>
+<li>Rango de fechas.</li>
+<li>Router / nodo.</li>
+</ul>
+<h4 id="paso-a-paso--consultar-facturas-pendientes">Paso a paso — Consultar facturas pendientes</h4>
+<ol>
+<li>Vaya a <strong>Finanzas → Facturas</strong>.</li>
+<li>Filtro de estado: <strong>Pendiente</strong>.</li>
+<li>Revise la lista con montos y fechas de vencimiento.</li>
+<li>Use la búsqueda para localizar por cliente o número de factura.</li>
+</ol>
+<h4 id="paso-a-paso--cobrar-una-factura">Paso a paso — Cobrar una factura</h4>
+<ol>
+<li>Localice la factura en la lista.</li>
+<li>Clic en <strong>Agregar pago</strong> (✓).</li>
+<li>Se abre modal de pago (mismo flujo que desde ficha de cliente).</li>
+<li>Complete monto y forma de pago.</li>
+<li>Confirme.</li>
+</ol>
+<h4 id="acciones-por-factura">Acciones por factura</h4>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Permiso</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agregar pago</td>
+<td>Facturas → Pagar</td>
+<td>Registrar cobro</td>
+</tr>
+<tr>
+<td>Editar</td>
+<td>Facturas → Editar</td>
+<td>Modificar datos</td>
+</tr>
+<tr>
+<td>Eliminar</td>
+<td>Facturas → Eliminar</td>
+<td>Borrar factura</td>
+</tr>
+<tr>
+<td>Anular</td>
+<td>Facturas → Anular</td>
+<td>Anular sin eliminar</td>
+</tr>
+<tr>
+<td>Compartir</td>
+<td>—</td>
+<td>Enviar por correo, Telegram, pasarela</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="132-registrar-pagos">13.2 Registrar Pagos</h3>
+<p><strong>Menú:</strong> Finanzas → Registrar Pagos<br>
+<strong>Atajo:</strong> Icono $ en barra superior<br>
+<strong>Permiso:</strong> Finanzas → Registrar Pago → Menú</p>
+<h4 id="para-qué-sirve-23">¿Para qué sirve?</h4>
+<p>Módulo optimizado para caja: registrar pagos de forma rápida en mostrador.</p>
+<h4 id="pestañas-3">Pestañas</h4>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registrar pago</td>
+<td>Formulario activo de cobro</td>
+</tr>
+<tr>
+<td>Pagos registrados (hoy)</td>
+<td>Listado del día</td>
+</tr>
+<tr>
+<td>Promesas de pago</td>
+<td>Compromisos de pago activos</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--registrar-pago-en-caja">Paso a paso — Registrar pago en caja</h4>
+<ol>
+<li>Vaya a <strong>Finanzas → Registrar Pagos</strong> (o clic en $ de la barra).</li>
+<li>Modo de búsqueda:
+<ul>
+<li><strong>Buscar Cliente:</strong> Escriba nombre/cédula → seleccione de la lista.</li>
+<li><strong>Buscar Nº comprobante:</strong> Escanee código de barras de la factura.</li>
+</ul>
+</li>
+<li>Se despliega panel con facturas pendientes del cliente.</li>
+<li>Seleccione la factura a pagar.</li>
+<li>Configure:
+<ul>
+<li><strong>Forma de pago:</strong> Efectivo, transferencia, pago móvil, etc.</li>
+<li><strong>Monto:</strong> Total o parcial.</li>
+<li><strong>Referencia:</strong> Número de transferencia/comprobante.</li>
+</ul>
+</li>
+<li>Elija impresión: Recibo / Factura / POS / Ninguna.</li>
+<li>Clic en <strong>Registrar pago</strong>.</li>
+<li>Si hay saldo pendiente, el sistema pregunta si desea registrar pago parcial.</li>
+<li>Confirme. Opcional: impresión automática del recibo.</li>
+</ol>
+<hr>
+<h3 id="133-registrar-pagos-masivos">13.3 Registrar Pagos Masivos</h3>
+<p><strong>Menú:</strong> Finanzas → Registrar Pagos Masivos<br>
+<strong>Permiso:</strong> Finanzas → Registrar Pago Masivo → Menú</p>
+<p>Importar archivo (Excel/CSV) con múltiples pagos para procesarlos de una sola vez.</p>
+<hr>
+<h3 id="134-transacciones">13.4 Transacciones</h3>
+<p><strong>Menú:</strong> Finanzas → Transacciones<br>
+<strong>Permiso:</strong> Finanzas → Transacciones → Menú</p>
+<p>Listado de todas las transacciones financieras: pagos, notas de crédito, ajustes de saldo.</p>
+<hr>
+<h3 id="135-pago-móvil-recibidos">13.5 Pago móvil recibidos</h3>
+<p><strong>Menú:</strong> Finanzas → Pago móvil recibidos<br>
+<strong>Permiso:</strong> Finanzas → Pago móvil (solo Venezuela, zona Caracas)</p>
+<h4 id="para-qué-sirve-24">¿Para qué sirve?</h4>
+<p>Ver pagos móviles recibidos automáticamente desde el banco y conciliarlos con facturas de clientes.</p>
+<h4 id="paso-a-paso--conciliar-pago-móvil">Paso a paso — Conciliar pago móvil</h4>
+<ol>
+<li>Vaya a <strong>Finanzas → Pago móvil recibidos</strong>.</li>
+<li>Revise la lista de pagos recibidos (fecha, monto, referencia, banco).</li>
+<li>Para pagos no conciliados automáticamente:
+<ul>
+<li>Clic en <strong>Conciliar</strong>.</li>
+<li>Busque al cliente por cédula o nombre.</li>
+<li>Asigne a la factura correspondiente.</li>
+</ul>
+</li>
+<li>Confirme. El pago se aplica y el servicio se activa si corresponde.</li>
+</ol>
+<hr>
+<h3 id="136-pasarelas-de-pago-evertec-banco-provincial-cashea">13.6 Pasarelas de pago (Evertec, Banco Provincial, Cashea)</h3>
+<table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Menú</th>
+<th>Condición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pagos via Place To Pay</td>
+<td>Finanzas → Pagos via Place To Pay</td>
+<td>Pasarela Evertec activa</td>
+</tr>
+<tr>
+<td>Pagos Banco Provincial</td>
+<td>Finanzas → Pagos Banco Provincial</td>
+<td>Pasarela BBVA activa</td>
+</tr>
+<tr>
+<td>Cashea (órdenes)</td>
+<td>Finanzas → Cashea</td>
+<td>Pasarela Cashea activa</td>
+</tr>
+</tbody>
+</table>
+<p>Consulte pagos procesados por pasarelas en línea, verifique estados y gestione devoluciones.</p>
+<hr>
+<h3 id="137-dólar-price--casa-de-cambio">13.7 Dólar Price / Casa de cambio</h3>
+<p><strong>Menú:</strong> Finanzas → Dolar price / Casa de cambio</p>
+<p>Gestión de tasa de cambio para facturación en moneda extranjera (USD) con conversión a moneda local (Bs, ARS, etc.).</p>
+<hr>
+<h3 id="138-otros-ingresos--egresos">13.8 Otros Ingresos &amp; Egresos</h3>
+<p><strong>Menú:</strong> Finanzas → Otros Ingresos &amp; Egresos</p>
+<p>Registrar movimientos financieros no relacionados con clientes: gastos operativos, ingresos extraordinarios.</p>
+<hr>
+<h3 id="139-reportes-de-pagos-portal-cliente">13.9 Reportes de Pagos (Portal Cliente)</h3>
+<p><strong>Menú:</strong> Finanzas → Reportes de Pagos (Portal Cliente)</p>
+<p>Pagos reportados por clientes desde el portal (informar pago). El operador verifica y aprueba/rechaza.</p>
+<hr>
+<h3 id="1310-facturación-syh">13.10 Facturación SyH</h3>
+<p><strong>Menú:</strong> Finanzas → Facturación SyH<br>
+<strong>Condición:</strong> Módulo SyH activo (<code>issyh=on</code>)</p>
+<p>Facturación electrónica integrada con sistema SyH (Venezuela).</p>
+<hr>
+<h3 id="1311-estadísticas-de-pagos">13.11 Estadísticas de pagos</h3>
+<p><strong>Menú:</strong> Finanzas → Estadísticas<br>
+<strong>Permiso:</strong> Finanzas → Transacciones → Estadísticas</p>
+<p>Gráficos y reportes de ingresos por periodo, forma de pago, operador, sucursal.</p>
+<hr>
+<h2 id="14-almacén">14. Almacén</h2>
+<p><strong>Menú:</strong> Almacén (menú expandible)</p>
+<hr>
+<h3 id="141-tipos-de-productos-categorías">14.1 Tipos de productos (Categorías)</h3>
+<p><strong>Menú:</strong> Almacén → Tipos de productos<br>
+<strong>Permiso:</strong> Almacén → Categorías → Menú</p>
+<p>Categorías de inventario: ONUs, cables, conectores, antenas, etc.</p>
+<hr>
+<h3 id="142-proveedores">14.2 Proveedores</h3>
+<p><strong>Menú:</strong> Almacén → Proveedores<br>
+<strong>Permiso:</strong> Almacén → Categorías → Menú</p>
+<p>Registro de proveedores de equipos y materiales.</p>
+<hr>
+<h3 id="143-productos">14.3 Productos</h3>
+<p><strong>Menú:</strong> Almacén → Productos<br>
+<strong>Permiso:</strong> Almacén → Productos → Menú</p>
+<h4 id="pestañas-4">Pestañas</h4>
+<table>
+<thead>
+<tr>
+<th>Pestaña</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Productos</td>
+<td>Equipos e inventario principal</td>
+</tr>
+<tr>
+<td>Accesorios</td>
+<td>Materiales menores</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--ingresar-producto-al-almacén">Paso a paso — Ingresar producto al almacén</h4>
+<ol>
+<li>Vaya a <strong>Almacén → Productos</strong>.</li>
+<li>Clic en <strong>Nuevo Producto</strong>.</li>
+<li>Complete:
+<ul>
+<li><strong>Categoría</strong> (tipo de producto).</li>
+<li><strong>Nombre / descripción.</strong></li>
+<li><strong>Serial / MAC</strong> (si aplica).</li>
+<li><strong>Proveedor.</strong></li>
+<li><strong>Condición:</strong> Nuevo, Comodato, Vendido.</li>
+<li><strong>Precio de costo</strong> (opcional).</li>
+</ul>
+</li>
+<li>Guarde. El producto queda en estado <strong>Disponible</strong>.</li>
+</ol>
+<h4 id="paso-a-paso--asignar-producto-a-instalación">Paso a paso — Asignar producto a instalación</h4>
+<ol>
+<li>Desde <strong>Clientes → Instalaciones</strong>, abra la orden.</li>
+<li>Clic en <strong>Materiales</strong>.</li>
+<li>Busque el producto por serial o categoría.</li>
+<li>Asigne cantidad.</li>
+<li>Confirme. El producto pasa a estado <strong>Asignado/Vendido</strong>.</li>
+</ol>
+<h4 id="filtros">Filtros</h4>
+<ul>
+<li>Estado: Disponible, No disponible, Comodato.</li>
+<li>Categoría.</li>
+</ul>
+<hr>
+<h2 id="15-reportes">15. Reportes</h2>
+<p><strong>Menú:</strong> Reportes (menú expandible)<br>
+<strong>Permiso:</strong> Reportes → Administración → Menú (o admin)</p>
+<table>
+<thead>
+<tr>
+<th>Sub-módulo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administración</strong></td>
+<td>Clientes activos/suspendidos, morosos, crecimiento</td>
+</tr>
+<tr>
+<td><strong>Ventas</strong></td>
+<td>Ingresos por periodo, por plan, por operador</td>
+</tr>
+<tr>
+<td><strong>Almacén</strong></td>
+<td>Inventario, movimientos, productos asignados</td>
+</tr>
+<tr>
+<td><strong>Red</strong></td>
+<td>Tráfico, uptime de routers, clientes online</td>
+</tr>
+<tr>
+<td><strong>Soporte</strong></td>
+<td>Tickets abiertos/cerrados, tiempos de respuesta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-a-paso--generar-un-reporte">Paso a paso — Generar un reporte</h3>
+<ol>
+<li>Vaya a <strong>Reportes → [tipo deseado]</strong>.</li>
+<li>Configure filtros: fechas, sucursal, router, operador.</li>
+<li>Clic en <strong>Generar</strong> o <strong>Buscar</strong>.</li>
+<li>Revise la tabla/gráfico resultante.</li>
+<li>Exporte a Excel o PDF con el botón correspondiente.</li>
+</ol>
+<hr>
+<h2 id="16-soporte-y-tickets">16. Soporte y tickets</h2>
+<p><strong>Menú:</strong> Tickets (menú expandible) o Zendesk Support<br>
+<strong>Permiso:</strong> Soporte → Menú</p>
+<hr>
+<h3 id="161-sistema-de-tickets-interno">16.1 Sistema de tickets interno</h3>
+<h4 id="sub-menús">Sub-menús</h4>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Ruta</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Esperando Respuesta</td>
+<td><code>#ajax/soporte?action=open</code></td>
+<td>Tickets sin responder</td>
+</tr>
+<tr>
+<td>Respondidos</td>
+<td><code>#ajax/soporte?action=answered</code></td>
+<td>Tickets con respuesta pendiente de cierre</td>
+</tr>
+<tr>
+<td>Cerrados</td>
+<td><code>#ajax/soporte?action=close</code></td>
+<td>Tickets resueltos</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--atender-un-ticket">Paso a paso — Atender un ticket</h4>
+<ol>
+<li>Vaya a <strong>Tickets → Esperando Respuesta</strong>.</li>
+<li>Revise la lista ordenada por prioridad/fecha.</li>
+<li>Haga clic en el ticket para abrirlo.</li>
+<li>Pestañas del ticket:
+<ul>
+<li><strong>Añadir respuesta:</strong> Escriba respuesta visible para el cliente.</li>
+<li><strong>Añadir nota:</strong> Nota interna (no visible para el cliente).</li>
+<li><strong>Otros tickets:</strong> Historial del mismo cliente.</li>
+<li><strong>Opciones:</strong> Asignar técnico, cambiar prioridad, departamento.</li>
+</ul>
+</li>
+<li>Escriba la respuesta y adjunte archivos si es necesario.</li>
+<li>Clic en <strong>Enviar respuesta</strong>. El cliente recibe notificación (email/push).</li>
+<li>Cuando esté resuelto, clic en <strong>Cerrar ticket</strong>.</li>
+</ol>
+<h4 id="paso-a-paso--crear-ticket-manualmente">Paso a paso — Crear ticket manualmente</h4>
+<ol>
+<li>Clic en <strong>Nuevo Ticket</strong>.</li>
+<li>Seleccione cliente (buscador).</li>
+<li>Elija departamento (Soporte, Facturación, Comercial).</li>
+<li>Escriba asunto y descripción.</li>
+<li>Adjunte archivos si aplica.</li>
+<li>Asigne prioridad y técnico.</li>
+<li>Guarde.</li>
+</ol>
+<hr>
+<h3 id="162-zendesk-support">16.2 Zendesk Support</h3>
+<p>Si la integración Zendesk está activa, el menú muestra <strong>Zendesk Support</strong> que redirige al módulo conectado con Zendesk.</p>
+<hr>
+<h2 id="17-mensajería-sms--whatsapp">17. Mensajería (SMS / WhatsApp)</h2>
+<p><strong>Menú:</strong> Mensajería (menú expandible)<br>
+<strong>Permiso:</strong> SMS → Menú</p>
+<table>
+<thead>
+<tr>
+<th>Sub-módulo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mensajes enviados</td>
+<td>Historial de SMS enviados</td>
+</tr>
+<tr>
+<td>Mensajes recibidos</td>
+<td>SMS entrantes + contador WhatsApp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-a-paso--enviar-sms-a-un-cliente">Paso a paso — Enviar SMS a un cliente</h3>
+<ol>
+<li>Desde la <strong>ficha del cliente</strong> → pestaña Email &amp; SMS → <strong>Enviar SMS</strong>.</li>
+<li>O desde <strong>Mensajería → Mensajes enviados → Nuevo</strong>.</li>
+<li>Seleccione plantilla o escriba mensaje personalizado.</li>
+<li>Confirme envío.</li>
+</ol>
+<hr>
+<h2 id="18-ajustes-generales">18. Ajustes generales</h2>
+<p><strong>Menú:</strong> Ajustes Generales<br>
+<strong>Permiso:</strong> Ajustes → Menú</p>
+<p>Pantalla de configuración del sistema organizada en categorías.</p>
+<hr>
+<h3 id="181-configuración">18.1 Configuración</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>General</strong></td>
+<td>Nombre empresa, logo, moneda, zona horaria, datos fiscales</td>
+</tr>
+<tr>
+<td><strong>Ubicaciones</strong></td>
+<td>Zonas geográficas de operación</td>
+</tr>
+<tr>
+<td><strong>Sucursales</strong></td>
+<td>Sedes/puntos de venta</td>
+</tr>
+<tr>
+<td><strong>Cloud</strong></td>
+<td>Integración con servicios en la nube</td>
+</tr>
+<tr>
+<td><strong>Google</strong></td>
+<td>Integración Google (Maps, Calendar)</td>
+</tr>
+<tr>
+<td><strong>Calendario</strong></td>
+<td>Sincronización calendario técnicos</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="182-administración">18.2 Administración</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gestión personal</strong></td>
+<td>Operadores, roles y permisos</td>
+</tr>
+<tr>
+<td><strong>Portal cliente</strong></td>
+<td>Configuración del portal de abonados</td>
+</tr>
+<tr>
+<td><strong>Importar clientes</strong></td>
+<td>Importación masiva desde Excel/CSV</td>
+</tr>
+<tr>
+<td><strong>Cambios masivos</strong></td>
+<td>Modificar configuración de facturación en lote</td>
+</tr>
+<tr>
+<td><strong>Login RADIUS</strong></td>
+<td>Equipos NAS autorizados</td>
+</tr>
+<tr>
+<td><strong>Backups Mikrotik</strong></td>
+<td>Configuración de respaldos automáticos</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--crear-operador-con-permisos">Paso a paso — Crear operador con permisos</h4>
+<ol>
+<li>Vaya a <strong>Ajustes → Gestión personal</strong>.</li>
+<li>Pestaña <strong>Operadores</strong>.</li>
+<li>Clic en <strong>Nuevo operador</strong>.</li>
+<li>Complete: nombre, usuario, contraseña, email, sucursal.</li>
+<li>Asigne <strong>plantilla de rol</strong> o configure permisos manualmente en el árbol de permisos.</li>
+<li>Guarde.</li>
+</ol>
+<h4 id="paso-a-paso--configurar-portal-del-cliente">Paso a paso — Configurar portal del cliente</h4>
+<ol>
+<li>Vaya a <strong>Ajustes → Portal cliente</strong>.</li>
+<li>Pestañas: General, Reporte pago, Banners.</li>
+<li>Active/desactive secciones visibles para el abonado.</li>
+<li>Configure textos, logos y colores del portal.</li>
+<li>Guarde.</li>
+</ol>
+<hr>
+<h3 id="183-facturación">18.3 Facturación</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Facturación</strong></td>
+<td>Día de facturación, corte, mora, impuestos, numeración</td>
+</tr>
+<tr>
+<td><strong>Pasarelas de pago</strong></td>
+<td>Configuración de bancos y procesadores</td>
+</tr>
+</tbody>
+</table>
+<h4 id="paso-a-paso--configurar-pasarela-de-pago">Paso a paso — Configurar pasarela de pago</h4>
+<ol>
+<li>Vaya a <strong>Ajustes → Pasarelas de pago</strong>.</li>
+<li>Localice el banco deseado (Banesco, Mercantil, BDV, Bancaribe, etc.).</li>
+<li>Active la pasarela con el switch.</li>
+<li>Complete credenciales API del banco.</li>
+<li>Configure método: Botón de pago, C2P, Pago móvil, Transferencia, Debin.</li>
+<li>Guarde y pruebe con un pago de prueba.</li>
+</ol>
+<hr>
+<h3 id="184-soporte-y-mensajes">18.4 Soporte y mensajes</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Servidor de correo</strong></td>
+<td>SMTP para envío de emails</td>
+</tr>
+<tr>
+<td><strong>Tickets</strong></td>
+<td>Departamentos de soporte</td>
+</tr>
+<tr>
+<td><strong>Zendesk</strong></td>
+<td>Integración Zendesk</td>
+</tr>
+<tr>
+<td><strong>Mensajería (SMS)</strong></td>
+<td>Proveedor SMS, plantillas, WhatsApp</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="185-herramientas">18.5 Herramientas</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Editor plantillas</strong></td>
+<td>PDF, correos, avisos</td>
+</tr>
+<tr>
+<td><strong>Configuración plantillas</strong></td>
+<td>Valores predeterminados al registrar clientes</td>
+</tr>
+<tr>
+<td><strong>Mensajes facturas</strong></td>
+<td>Textos en facturas y recibos</td>
+</tr>
+<tr>
+<td><strong>Campos personalizados</strong></td>
+<td>Campos extra en ficha de cliente</td>
+</tr>
+<tr>
+<td><strong>Configuración VPN</strong></td>
+<td>Servidor OpenVPN para operadores</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="186-sistema">18.6 Sistema</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Base de datos</strong></td>
+<td>Backup y restauración</td>
+</tr>
+<tr>
+<td><strong>Crontab</strong></td>
+<td>Tareas programadas</td>
+</tr>
+<tr>
+<td><strong>Logs</strong></td>
+<td>Registros del sistema y accesos</td>
+</tr>
+<tr>
+<td><strong>Servidor</strong></td>
+<td>Estado de servicios (MySQL, Radius, VPN)</td>
+</tr>
+<tr>
+<td><strong>Migrar sistema</strong></td>
+<td>Migración desde Mikrowisp 5</td>
+</tr>
+<tr>
+<td><strong>Freeradius</strong></td>
+<td>Logs y estado del servidor Radius</td>
+</tr>
+<tr>
+<td><strong>Licencia</strong></td>
+<td>Token de licencia, límites, actualizaciones</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="19-portal-del-cliente">19. Portal del cliente</h2>
+<p><strong>URL:</strong> <code>/cliente/</code><br>
+<strong>Usuario:</strong> Abonados del ISP</p>
+<hr>
+<h3 id="191-inicio-de-sesión-del-cliente">19.1 Inicio de sesión del cliente</h3>
+<ol>
+<li>El cliente accede a <code>https://su-servidor/cliente/</code>.</li>
+<li>Ingresa usuario (cédula o email) y contraseña.</li>
+<li>Si el operador le envió un enlace con token, accede automáticamente.</li>
+</ol>
+<hr>
+<h3 id="192-menú-del-portal">19.2 Menú del portal</h3>
+<table>
+<thead>
+<tr>
+<th>Sección</th>
+<th>Descripción</th>
+<th>Configurable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inicio (Dashboard)</strong></td>
+<td>Resumen: deuda, estado, consumo</td>
+<td>Siempre visible</td>
+</tr>
+<tr>
+<td><strong>Mis comprobantes</strong></td>
+<td>Facturas y recibos en PDF</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><strong>Mis métodos de pago</strong></td>
+<td>Tarjetas, cuentas bancarias guardadas</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><strong>Soporte técnico</strong></td>
+<td>Abrir y consultar tickets</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><strong>Documentos</strong></td>
+<td>Contratos, reglamentos</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><strong>Informar pago</strong></td>
+<td>Reportar transferencia/pago móvil</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td><strong>Utilidades</strong></td>
+<td>Submenú (ver abajo)</td>
+<td>Parcial</td>
+</tr>
+<tr>
+<td><strong>Mi Wifi</strong></td>
+<td>Gestión de red doméstica</td>
+<td>Si módulo activo</td>
+</tr>
+<tr>
+<td><strong>Salir</strong></td>
+<td>Cerrar sesión</td>
+<td>Siempre</td>
+</tr>
+</tbody>
+</table>
+<h4 id="submenú-utilidades">Submenú Utilidades</h4>
+<table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test de Velocidad</td>
+<td>Medir velocidad de conexión</td>
+</tr>
+<tr>
+<td>Mi tráfico actual</td>
+<td>Consumo del mes en curso</td>
+</tr>
+<tr>
+<td>Actualizar Datos</td>
+<td>Modificar teléfono, email, dirección</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="193-dashboard-del-cliente">19.3 Dashboard del cliente</h3>
+<p>Al iniciar sesión, el cliente ve:</p>
+<table>
+<thead>
+<tr>
+<th>Widget</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deuda actual</td>
+<td>Monto pendiente con enlace a comprobantes</td>
+</tr>
+<tr>
+<td>Tickets abiertos</td>
+<td>Soporte pendiente</td>
+</tr>
+<tr>
+<td>Consumo del mes</td>
+<td>Tráfico utilizado</td>
+</tr>
+<tr>
+<td>Estado del servicio</td>
+<td>Activo / Suspendido</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="194-paso-a-paso--cliente-paga-su-factura">19.4 Paso a paso — Cliente paga su factura</h3>
+<ol>
+<li>Cliente inicia sesión en el portal.</li>
+<li>Vaya a <strong>Mis comprobantes</strong>.</li>
+<li>Localice la factura pendiente.</li>
+<li>Clic en <strong>Pagar</strong>.</li>
+<li>Seleccione método de pago (botón de pago, transferencia, pago móvil).</li>
+<li>Complete datos bancarios y confirme.</li>
+<li>Si paga por transferencia manual, vaya a <strong>Informar pago</strong> y suba comprobante.</li>
+</ol>
+<hr>
+<h3 id="195-paso-a-paso--cliente-abre-ticket-de-soporte">19.5 Paso a paso — Cliente abre ticket de soporte</h3>
+<ol>
+<li>Vaya a <strong>Soporte técnico</strong>.</li>
+<li>Clic en <strong>Nuevo ticket</strong>.</li>
+<li>Seleccione departamento.</li>
+<li>Escriba asunto y describa el problema.</li>
+<li>Adjunte foto/captura si es necesario.</li>
+<li>Envíe. Recibirá respuesta por email/push cuando el operador responda.</li>
+</ol>
+<hr>
+<h3 id="196-paso-a-paso--cliente-informa-un-pago">19.6 Paso a paso — Cliente informa un pago</h3>
+<ol>
+<li>Vaya a <strong>Informar pago</strong>.</li>
+<li>Complete: monto, fecha, banco, número de referencia.</li>
+<li>Adjunte foto del comprobante de transferencia.</li>
+<li>Envíe.</li>
+<li>El operador verifica en <strong>Finanzas → Reportes de Pagos (Portal Cliente)</strong> y aprueba.</li>
+</ol>
+<hr>
+<h2 id="20-flujos-de-trabajo-integrados">20. Flujos de trabajo integrados</h2>
+<h3 id="201-alta-completa-de-cliente-sin-instalación">20.1 Alta completa de cliente (sin instalación)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Clientes → Usuarios → Nuevo</span></span>
+<span class="line"><span>  → Paso 1: Datos personales</span></span>
+<span class="line"><span>  → Paso 2: Facturación</span></span>
+<span class="line"><span>  → Paso 3: Servicios</span></span>
+<span class="line"><span>  → Registrar Cliente</span></span>
+<span class="line"><span>  → [Automático] Factura generada + servicio activo en router</span></span></code></pre>
+<h3 id="202-alta-con-instalación">20.2 Alta con instalación</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Clientes → Instalaciones → Nuevo registro</span></span>
+<span class="line"><span>  → Aceptar instalación (asignar técnico)</span></span>
+<span class="line"><span>  → Agregar materiales (almacén)</span></span>
+<span class="line"><span>  → Imprimir hoja → Técnico instala en campo</span></span>
+<span class="line"><span>  → Tareas: marcar "En curso" → "Finalizar"</span></span>
+<span class="line"><span>  → Dar de alta → Wizard de usuarios (datos pre-cargados)</span></span>
+<span class="line"><span>  → Cliente activo</span></span></code></pre>
+<h3 id="203-cobro-en-caja">20.3 Cobro en caja</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Barra superior → $ (Registrar pago)</span></span>
+<span class="line"><span>  → Buscar cliente</span></span>
+<span class="line"><span>  → Seleccionar factura</span></span>
+<span class="line"><span>  → Forma de pago + monto</span></span>
+<span class="line"><span>  → Registrar pago</span></span>
+<span class="line"><span>  → [Automático] Servicio activado si estaba suspendido</span></span>
+<span class="line"><span>  → Imprimir recibo</span></span></code></pre>
+<h3 id="204-ciclo-de-morosidad">20.4 Ciclo de morosidad</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[Automático - Cron] Factura generada el día configurado</span></span>
+<span class="line"><span>  → [Automático] Avisos SMS/email según configuración</span></span>
+<span class="line"><span>  → [Automático] Corte el día de corte configurado</span></span>
+<span class="line"><span>  → Cliente suspendido en router/OLT</span></span>
+<span class="line"><span>  → Cliente paga (caja o portal)</span></span>
+<span class="line"><span>  → [Automático] Servicio reactivado</span></span></code></pre>
+<h3 id="205-venta-de-ficha-hotspot">20.5 Venta de ficha hotspot</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Fichas Hotspot → Fichas → Nuevo (lote)</span></span>
+<span class="line"><span>  → Imprimir fichas</span></span>
+<span class="line"><span>  → Entregar al cliente (venta manual)</span></span>
+<span class="line"><span>  → Marcar como vendida (automático al usar o manual)</span></span>
+<span class="line"><span>  → Consultar ventas en Fichas Hotspot → Ventas</span></span></code></pre>
+<h3 id="206-atención-de-soporte">20.6 Atención de soporte</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Cliente abre ticket (portal) o operador crea ticket (admin)</span></span>
+<span class="line"><span>  → Aparece en Tickets → Esperando Respuesta</span></span>
+<span class="line"><span>  → Operador responde</span></span>
+<span class="line"><span>  → Cliente recibe notificación</span></span>
+<span class="line"><span>  → Operador cierra ticket cuando resuelto</span></span></code></pre>
+<hr>
+<h2 id="21-permisos-y-roles">21. Permisos y roles</h2>
+<h3 id="cómo-funciona">¿Cómo funciona?</h3>
+<p>Cada operador tiene un <strong>rol</strong> con permisos granulares. Los permisos determinan qué módulos del menú lateral son visibles y qué acciones puede ejecutar.</p>
+<h3 id="niveles">Niveles</h3>
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administrador</strong> (<code>nivelusername = 0</code>)</td>
+<td>Acceso total a todos los módulos</td>
+</tr>
+<tr>
+<td><strong>Operador</strong></td>
+<td>Acceso según permisos asignados</td>
+</tr>
+</tbody>
+</table>
+<h3 id="áreas-de-permisos-principales">Áreas de permisos principales</h3>
+<table>
+<thead>
+<tr>
+<th>Área</th>
+<th>Ejemplos de permisos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Widget barra</td>
+<td>Pago, Telegram, Notificaciones, Soporte</td>
+</tr>
+<tr>
+<td>Gestión de Red</td>
+<td>Router (menu, nuevo, editar, eliminar), IPv4, Monitoreo, NAP, Tráfico</td>
+</tr>
+<tr>
+<td>Servicios</td>
+<td>Internet, Voz, CATV, Personalizado (menu)</td>
+</tr>
+<tr>
+<td>Clientes</td>
+<td>Usuarios (menu, nuevo, editar, eliminar, activar, retirar, herramientas), Mapa, Anuncios, Instalaciones, Contratos, Correo</td>
+</tr>
+<tr>
+<td>Fichas Hotspot</td>
+<td>Fichas (menu, nuevo, eliminar, imprimir), Router, Plantillas, Ventas</td>
+</tr>
+<tr>
+<td>Tareas</td>
+<td>Nuevo, Editar, Eliminar</td>
+</tr>
+<tr>
+<td>Finanzas</td>
+<td>Facturas (menu, pagar, editar, eliminar, anular), Registrar pago, Transacciones, Reporte, etc.</td>
+</tr>
+<tr>
+<td>Almacén</td>
+<td>Categorías, Productos (menu, editar, eliminar)</td>
+</tr>
+<tr>
+<td>Reportes</td>
+<td>Administración</td>
+</tr>
+<tr>
+<td>Soporte</td>
+<td>Menu, Nuevo, Listar, Editar, Eliminar, Cerrar</td>
+</tr>
+<tr>
+<td>SMS</td>
+<td>Menu, Nuevo</td>
+</tr>
+<tr>
+<td>Ajustes</td>
+<td>General, Gestión, Facturación, Portal, Importar, Pasarela, Plantillas, Base de datos, Licencia, etc.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-a-paso--solicitar-acceso-a-un-módulo">Paso a paso — Solicitar acceso a un módulo</h3>
+<ol>
+<li>Identifique qué módulo necesita y no ve en su menú.</li>
+<li>Contacte al administrador del sistema.</li>
+<li>El administrador debe ir a <strong>Ajustes → Gestión personal → [su usuario] → Permisos</strong>.</li>
+<li>Activar el permiso correspondiente en el árbol.</li>
+<li>Cierre sesión y vuelva a entrar para ver los cambios.</li>
+</ol>
+<hr>
+<h2 id="22-preguntas-frecuentes">22. Preguntas frecuentes</h2>
+<h3 id="general">General</h3>
+<p><strong>P: ¿Por qué no veo un módulo en el menú?</strong><br>
+R: Su rol no tiene permiso para ese módulo. Contacte al administrador.</p>
+<p><strong>P: ¿Puedo usar Nexo desde el celular?</strong><br>
+R: Sí, el panel es responsive. Sin embargo, se recomienda escritorio para tareas complejas (alta de clientes, facturación).</p>
+<p><strong>P: ¿Cómo busco un cliente rápidamente?</strong><br>
+R: Use el buscador de la barra superior. Escriba al menos 3 caracteres.</p>
+<h3 id="facturación">Facturación</h3>
+<p><strong>P: ¿Cómo genero una factura manual?</strong><br>
+R: Desde la ficha del cliente → Facturación → botón “Nueva factura”. O espere la generación automática del cron.</p>
+<p><strong>P: El cliente pagó pero sigue suspendido.</strong><br>
+R: Verifique que el pago se aplicó a la factura correcta y cubre el monto total. Revise en Finanzas → Transacciones.</p>
+<p><strong>P: ¿Cómo anulo una factura?</strong><br>
+R: Finanzas → Facturas → botón Anular en la factura. Requiere permiso de anular.</p>
+<h3 id="red">Red</h3>
+<p><strong>P: Un cliente no tiene internet pero aparece activo en Nexo.</strong><br>
+R: Verifique: 1) Estado en router (¿conectado?), 2) ONU autorizada en OLT, 3) Queues/colas en MikroTik, 4) Saldo/corte.</p>
+<p><strong>P: ¿Cómo reinicio la ONU de un cliente?</strong><br>
+R: Ficha del cliente → Servicios → botón AdminOLT/SmartOLT → Reiniciar ONT.</p>
+<h3 id="hotspot">Hotspot</h3>
+<p><strong>P: ¿Cómo vendo una ficha hotspot?</strong><br>
+R: Cree un lote en Fichas Hotspot → Fichas → Nuevo. Imprima y entregue. La ficha se marca vendida al usarse o manualmente.</p>
+<h3 id="soporte">Soporte</h3>
+<p><strong>P: ¿El cliente puede ver las notas internas de un ticket?</strong><br>
+R: No. Las notas internas solo son visibles para operadores.</p>
+<hr>
+<h2 id="apéndice-a--mapa-completo-del-menú-admin">Apéndice A — Mapa completo del menú admin</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Dashboard</span></span>
+<span class="line"><span>Gestión de Red</span></span>
+<span class="line"><span>  ├── Routers</span></span>
+<span class="line"><span>  ├── Smart OLT / AdminOLT</span></span>
+<span class="line"><span>  ├── Redes</span></span>
+<span class="line"><span>  ├── Monitoreo</span></span>
+<span class="line"><span>  ├── Cajas Nap</span></span>
+<span class="line"><span>  ├── Tráfico</span></span>
+<span class="line"><span>  ├── Ips Visitadas</span></span>
+<span class="line"><span>  └── Monitor BlackList</span></span>
+<span class="line"><span>Servicios</span></span>
+<span class="line"><span>  ├── Internet</span></span>
+<span class="line"><span>  ├── Voz</span></span>
+<span class="line"><span>  ├── Catv</span></span>
+<span class="line"><span>  ├── Personalizado</span></span>
+<span class="line"><span>  └── IPTV</span></span>
+<span class="line"><span>Promociones</span></span>
+<span class="line"><span>Clientes</span></span>
+<span class="line"><span>  ├── Usuarios</span></span>
+<span class="line"><span>  ├── Mapa Clientes</span></span>
+<span class="line"><span>  ├── Anuncios</span></span>
+<span class="line"><span>  ├── Notificaciones push</span></span>
+<span class="line"><span>  ├── Instalaciones</span></span>
+<span class="line"><span>  ├── Contratos</span></span>
+<span class="line"><span>  └── Correos</span></span>
+<span class="line"><span>Fichas Hotspot</span></span>
+<span class="line"><span>  ├── Fichas</span></span>
+<span class="line"><span>  ├── Routers</span></span>
+<span class="line"><span>  ├── Plantillas</span></span>
+<span class="line"><span>  └── Ventas</span></span>
+<span class="line"><span>Tareas</span></span>
+<span class="line"><span>  ├── Tareas</span></span>
+<span class="line"><span>  ├── Planificación</span></span>
+<span class="line"><span>  └── Monitoreo Vehicular</span></span>
+<span class="line"><span>Finanzas</span></span>
+<span class="line"><span>  ├── Facturas</span></span>
+<span class="line"><span>  ├── Registrar Pagos</span></span>
+<span class="line"><span>  ├── Registrar Pagos Masivos</span></span>
+<span class="line"><span>  ├── Transacciones</span></span>
+<span class="line"><span>  ├── Dolar price</span></span>
+<span class="line"><span>  ├── Casa de cambio</span></span>
+<span class="line"><span>  ├── Pago móvil recibidos</span></span>
+<span class="line"><span>  ├── Pagos via Place To Pay</span></span>
+<span class="line"><span>  ├── Pagos Banco Provincial</span></span>
+<span class="line"><span>  ├── Cashea (órdenes)</span></span>
+<span class="line"><span>  ├── Otros Ingresos &#x26; Egresos</span></span>
+<span class="line"><span>  ├── Reportes de Pagos (Portal Cliente)</span></span>
+<span class="line"><span>  ├── Facturación SyH</span></span>
+<span class="line"><span>  └── Estadísticas</span></span>
+<span class="line"><span>Almacén</span></span>
+<span class="line"><span>  ├── Tipos de productos</span></span>
+<span class="line"><span>  ├── Proveedores</span></span>
+<span class="line"><span>  └── Productos</span></span>
+<span class="line"><span>Reportes</span></span>
+<span class="line"><span>  ├── Administración</span></span>
+<span class="line"><span>  ├── Ventas</span></span>
+<span class="line"><span>  ├── Almacén</span></span>
+<span class="line"><span>  ├── Red</span></span>
+<span class="line"><span>  └── Soporte</span></span>
+<span class="line"><span>Tickets / Zendesk Support</span></span>
+<span class="line"><span>Mensajería</span></span>
+<span class="line"><span>  ├── Mensajes enviados</span></span>
+<span class="line"><span>  └── Mensajes recibidos</span></span>
+<span class="line"><span>Ajustes Generales</span></span></code></pre>
+<h2 id="apéndice-b--mapa-del-menú-portal-cliente">Apéndice B — Mapa del menú portal cliente</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Inicio (Dashboard)</span></span>
+<span class="line"><span>Mis comprobantes</span></span>
+<span class="line"><span>Mis métodos de pago</span></span>
+<span class="line"><span>Soporte técnico</span></span>
+<span class="line"><span>Documentos</span></span>
+<span class="line"><span>Informar pago</span></span>
+<span class="line"><span>[Pestaña personalizada]</span></span>
+<span class="line"><span>Utilidades</span></span>
+<span class="line"><span>  ├── Test de Velocidad</span></span>
+<span class="line"><span>  ├── Mi tráfico actual</span></span>
+<span class="line"><span>  └── Actualizar Datos</span></span>
+<span class="line"><span>Mi Wifi</span></span>
+<span class="line"><span>Salir</span></span></code></pre>
+<hr>
+<p><em>Documento generado para Nexo (Mikrowisp 6). Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.</em></p>

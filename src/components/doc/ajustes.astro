@@ -18,7 +18,7 @@ const configSections = [
   {
     title: 'Administración',
     items: [
-      { name: 'Gestión personal', desc: 'Operadores, roles y permisos.' },
+      { name: 'Gestión personal', desc: 'Operadores, plantillas de rol y permisos.' },
       { name: 'Portal cliente', desc: 'Qué ve y puede hacer el abonado.' },
       { name: 'Importar clientes', desc: 'Carga masiva desde Excel/CSV.' },
       { name: 'Cambios masivos', desc: 'Modificar facturación u otros datos en lote.' },
@@ -29,7 +29,8 @@ const configSections = [
     title: 'Facturación y mensajes',
     items: [
       { name: 'Facturación', desc: 'Día de facturación, corte, mora, impuestos, numeración.' },
-      { name: 'Pasarelas de pago', desc: 'Bancos y procesadores (API y métodos).' },
+      { name: 'Facturación Serdimpre', desc: 'Token, URL, serie, sucursal y modo Al generar / Al pagar.' },
+      { name: 'Pasarelas de pago', desc: 'Bancos y procesadores.' },
       { name: 'Servidor de correo', desc: 'SMTP para emails.' },
       { name: 'Tickets / Zendesk', desc: 'Departamentos e integración externa.' },
       { name: 'Mensajería SMS', desc: 'Proveedor SMS, plantillas y WhatsApp.' },
@@ -53,14 +54,14 @@ const procedures = [
     steps: [
       'Gestión personal → Operadores → Nuevo operador',
       'Nombre, usuario, contraseña, email y sucursal',
-      'Asigne plantilla de rol o configure el árbol de permisos → Guardar',
+      'Elija una plantilla de rol (Caja, Soporte…) o marque permisos a mano → Guardar',
     ],
   },
   {
     title: 'Configurar portal',
     steps: [
       'Portal cliente → pestañas General, Reporte pago, Banners',
-      'Active/desactive secciones visibles para el abonado',
+      'Active o desactive las secciones visibles para el abonado',
       'Ajuste textos, logos y colores → Guardar',
     ],
   },
@@ -68,7 +69,7 @@ const procedures = [
     title: 'Pasarela de pago',
     steps: [
       'Pasarelas → localice el banco (Banesco, Mercantil, BDV, etc.)',
-      'Active el switch, complete credenciales API',
+      'Active el switch y complete los datos de acceso del banco',
       'Método: botón de pago, C2P, pago móvil, transferencia o Debin → pruebe',
     ],
   },
