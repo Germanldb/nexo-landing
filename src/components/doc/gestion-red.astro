@@ -1,6 +1,7 @@
 ---
 import DocImage from './DocImage.astro';
 import imgCajasNap from '../../assets/img-docs/doc-01.png';
+import imgCajasNapRx from '../../assets/img-docs/doc-71.png';
 import imgMonitoreo from '../../assets/img-docs/doc-02.png';
 import imgTrafico from '../../assets/img-docs/doc-03.png';
 import imgRouters from '../../assets/img-docs/doc-05.png';
@@ -26,9 +27,9 @@ const primary = [
   },
   {
     title: 'Smart OLT / AdminOLT',
-    what: 'OLT de fibra: ONUs, señal y perfiles de velocidad. El panel general lista ONUs; la autorización de una ONU nueva se hace desde la ficha del cliente.',
+    what: 'OLT de fibra: ONUs, señal y perfiles. Según la instalación pueden verse ambos accesos. El listado general es en Gestión de Red; autorizar una ONU nueva se hace desde la ficha del cliente.',
     steps: [
-      'Revise ONUs registradas en Gestión de Red → AdminOLT o Smart OLT.',
+      'Revise ONUs en Gestión de Red → AdminOLT y/o Smart OLT (pueden coexistir).',
       'Para autorizar una nueva: ficha del cliente → Servicios → AdminOLT/SmartOLT.',
       'Elija la ONU pendiente (no autorizada) → Autorizar → configure WAN si aplica → Guardar.',
       'La ONU queda activa en la OLT y el servicio se habilita.',
@@ -40,19 +41,23 @@ const primary = [
   },
   {
     title: 'Cajas NAP',
-    what: 'Cajas de fibra en calle: ubicación, capacidad de puertos y clientes conectados.',
+    what: 'Cajas de fibra en calle: ubicación, capacidad de puertos y clientes conectados. Con OLT integrado puede consultar potencia óptica (Rx) de las ONUs asociadas.',
     steps: [
       'Nuevo → nombre, dirección/coordenadas y capacidad de puertos → Guardar.',
       'Al dar de alta fibra, asigne el puerto NAP en la ficha del servicio.',
+      'Si la API OLT lo permite: use la consulta Rx para revisar señal baja.',
     ],
-    images: [{ src: imgCajasNap, alt: 'Cajas NAP', caption: 'Ubicación y estado de puertos.' }],
+    images: [
+      { src: imgCajasNap, alt: 'Cajas NAP', caption: 'Ubicación y estado de puertos.' },
+      { src: imgCajasNapRx, alt: 'Resumen RX de potencia NAP', caption: 'Botón Resumen RX y modal de potencia óptica por caja.' },
+    ],
   },
 ];
 
 const secondary = [
   {
-    title: 'Redes (IPv4 / IPv6)',
-    what: 'Pools y subredes: rango, router asociado, IPs usadas vs disponibles. La IP al cliente se asigna al crear o editar el servicio en su ficha.',
+    title: 'Redes IPv4',
+    what: 'Menú Redes: pools IPv4, subredes y asignaciones. IPv6 no tiene ítem aparte: se configura al crear/editar el servicio (incluye IPv6 DUID para DHCPv6).',
     image: { src: imgRedes, alt: 'Pools IP', caption: 'Pools con uso y router.' },
   },
   {
@@ -72,8 +77,8 @@ const secondary = [
   },
   {
     title: 'Monitor BlackList',
-    what: 'IPs o dominios bloqueados en la red y su estado.',
-    image: { src: imgBlackList, alt: 'BlackList', caption: 'IPs bloqueadas.' },
+    what: 'Estado de las IP públicas del ISP en listas negras (no es el firewall de cada MikroTik). Configuración en Ajustes → Monitor Blacklist (HetrixTools si aplica).',
+    image: { src: imgBlackList, alt: 'BlackList', caption: 'Monitoreo de IP públicas en listas negras.' },
   },
 ];
 ---

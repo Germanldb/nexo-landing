@@ -11,26 +11,26 @@ const { id } = Astro.props;
 const subModules = [
   { name: 'Tipos de productos', desc: 'Categorías (ONU, cable, herramientas…).' },
   { name: 'Proveedores', desc: 'Quién suministra los equipos.' },
-  { name: 'Productos', desc: 'Bodegas, equipos, herramientas y materiales.' },
-  { name: 'Cuadrillas', desc: 'Inventario que lleva cada equipo de técnicos.' },
+  { name: 'Almacenes', desc: 'Bodegas: crear, existencias y traslados (menú directo).' },
+  { name: 'Productos', desc: 'Hub: stock, cuadrillas e instalados.' },
   { name: 'Vehículos', desc: 'Flota y ubicación GPS.' },
 ];
 
 const homeTabs = [
-  { name: 'Almacen', desc: 'Bodegas, productos, herramientas y materiales.' },
-  { name: 'Cuadrillas', desc: 'Unidades de campo y su inventario.' },
+  { name: 'Almacen', desc: 'Productos, herramientas y materiales; bodegas también en el menú.' },
+  { name: 'Cuadrillas', desc: 'Unidades de campo y su inventario (solo aquí; no hay ítem de menú).' },
   { name: 'Instalados', desc: 'Productos ya instalados en clientes.' },
 ];
 
 const homeCards = [
-  { name: 'Almacenes', desc: 'Ver bodegas, crear una nueva, hacer traslados.' },
+  { name: 'Almacenes', desc: 'Atajo al listado de bodegas (también en menú lateral).' },
   { name: 'Productos', desc: 'Equipos e inventario principal por bodega.' },
   { name: 'Herramientas', desc: 'Herramientas de campo e instalación.' },
   { name: 'Materiales', desc: 'Materiales y accesorios.' },
 ];
 
 const entregaPerms = [
-  { name: 'Ver cuadrillas', who: 'Menú / pestaña Cuadrillas' },
+  { name: 'Ver cuadrillas', who: 'Pestaña Cuadrillas en Productos' },
   { name: 'Asignar a vehículo', who: 'Mover inventario a unidad' },
   { name: 'Jefe de almacén', who: 'Aceptar entregas / devoluciones' },
   { name: 'Ver entregas pendientes', who: 'Botón y modal de entregas' },
@@ -59,6 +59,10 @@ const entregaPerms = [
       ))}
     </div>
 
+    <p class="text-nexo-dark/55 text-xs leading-relaxed bg-amber-50/80 border border-amber-200/60 rounded-lg px-3 py-2">
+      <strong class="text-nexo-dark">Importante:</strong> Cuadrillas se administra desde el hub/pestaña de <strong class="text-nexo-dark">Productos</strong>. No aparece como ítem independiente en el menú lateral.
+    </p>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
         <h3 class="text-base font-bold text-nexo-dark mb-1">Tipos de productos</h3>
@@ -77,9 +81,33 @@ const entregaPerms = [
     </div>
 
     <div>
-      <h3 class="text-lg font-bold text-nexo-dark mb-1">Productos (pantalla principal)</h3>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Almacenes (bodegas)</h3>
       <p class="text-nexo-dark/60 text-sm mb-3">
-        Al entrar verá tarjetas y tres pestañas. Desde aquí gestiona bodegas, stock e instalados.
+        Acceso directo: <strong class="text-nexo-dark">Almacén → Almacenes</strong>. Crear bodegas, ver existencias y gestionar traslados.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Crear una bodega</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacén → Almacenes → Nuevo Almacén</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Nombre, sucursal/ubicación → Guardar</li>
+          </ol>
+        </div>
+        <div class="doc-card !py-4 !px-5">
+          <h4 class="font-bold text-nexo-dark text-sm mb-2">Traslado entre almacenes</h4>
+          <ol class="space-y-2">
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacén → Almacenes → Traslados</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Origen, destino y cantidades → Confirme</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Si aplica, la bodega destino recibe el traslado</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Productos (hub de inventario)</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3">
+        Al entrar verá tarjetas y tres pestañas. Desde aquí gestiona stock, cuadrillas e instalados.
       </p>
       <DocImage src={imgProductos} alt="Productos en almacén" caption="Inventario por bodega, categoría y estado." />
 
@@ -102,28 +130,12 @@ const entregaPerms = [
         ))}
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Crear bodega</h4>
-          <ol class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacenes → Nuevo Almacén</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Nombre, sucursal/ubicación → Guardar</li>
-          </ol>
-        </div>
-        <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Trasladar entre bodegas</h4>
-          <ol class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Almacenes → Traslados</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Origen, destino y cantidades → Confirme</li>
-          </ol>
-        </div>
-        <div class="doc-card !py-4 !px-5">
-          <h4 class="font-bold text-nexo-dark text-sm mb-2">Ingresar producto</h4>
-          <ol class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Productos → Nuevo</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Categoría, serial/MAC, proveedor, condición → Disponible</li>
-          </ol>
-        </div>
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Ingresar producto</h4>
+        <ol class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Productos → Nuevo</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Categoría, serial/MAC, proveedor, condición → Disponible</li>
+        </ol>
       </div>
 
       <p class="text-nexo-dark/55 text-xs mt-3 leading-relaxed">
@@ -134,8 +146,8 @@ const entregaPerms = [
     <div>
       <h3 class="text-lg font-bold text-nexo-dark mb-1">Cuadrillas</h3>
       <p class="text-nexo-dark/60 text-sm mb-3">
-        Equipos de técnicos y el material que llevan en el vehículo. Cada tarjeta es una cuadrilla.
-        Use <strong class="text-nexo-dark">Entregas</strong> (devoluciones) e <strong class="text-nexo-dark">Historial</strong> (ya aceptadas).
+        Acceso: <strong class="text-nexo-dark">Almacén → Productos → pestaña Cuadrillas</strong>.
+        Cada tarjeta es una unidad. Use <strong class="text-nexo-dark">Entregas</strong> (devoluciones) e <strong class="text-nexo-dark">Historial</strong> (ya aceptadas).
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
         <div class="doc-card !py-4 !px-5">
@@ -143,7 +155,7 @@ const entregaPerms = [
           <ol class="space-y-2">
             <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> El técnico solicita la devolución desde la unidad</li>
             <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> El jefe recibe toast naranja + campanita</li>
-            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Cuadrillas → Entregas (o Revisar en el toast) → acepte o rechace</li>
+            <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Productos → Cuadrillas → Entregas (o Revisar en el toast) → acepte o rechace</li>
             <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">4</span> Opcional: evidencia (estado del vehículo, comentario, fotos)</li>
           </ol>
         </div>

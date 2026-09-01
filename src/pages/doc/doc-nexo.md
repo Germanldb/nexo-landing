@@ -1,7 +1,7 @@
 # Nexo — Manual de Usuario Completo
 
-**Versión del documento:** 1.2  
-**Fecha:** 4 de agosto de 2026  
+**Versión del documento:** 1.3  
+**Fecha:** 1 de septiembre de 2026  
 **Sistema:** Nexo (Mikrowisp 6) — Plataforma de gestión para proveedores de internet (ISP)
 
 ---
@@ -179,12 +179,23 @@ El sistema consulta pendientes cada ~8 segundos (y al volver a la pestaña):
 
 > Si el técnico se **autoasignó** la unidad (`modo = auto`), no recibe toast: él ya sabe de la asignación.
 
-### 4.5 Modo oscuro y personalización
+### 4.5 Otros accesos de la barra superior
+
+Según los permisos del operador y los módulos activos, la barra también puede mostrar:
+
+| Acceso | Descripción |
+|--------|-------------|
+| **Telegram** | Abre los mensajes de Telegram y muestra el contador de conversaciones no leídas |
+| **Soporte** (icono de disco) | Despliega las notificaciones de tickets asignadas al operador |
+| **Notificaciones generales** | Abre el panel de alertas del sistema descrito en la sección anterior |
+
+### 4.6 Modo oscuro y personalización
 
 - **Modo oscuro:** Botón luna/sol para alternar tema claro/oscuro.
+- Si todavía no se ha elegido un tema, Nexo adopta inicialmente la preferencia clara u oscura del navegador/sistema operativo. La elección manual queda guardada para próximos accesos.
 - **Personalización:** Panel de colores para ajustar acentos primario y secundario del panel. Los cambios se guardan por usuario con **Guardar mi estilo**.
 
-### 4.6 Menú de usuario
+### 4.7 Menú de usuario
 
 | Opción | Descripción |
 |--------|-------------|
@@ -192,6 +203,12 @@ El sistema consulta pendientes cada ~8 segundos (y al volver a la pestaña):
 | Mi Perfil | Datos del operador logueado |
 | Cambiar Contraseña | Actualizar credenciales |
 | Cerrar Sesión | Salir del sistema |
+
+#### Consultar asistencia
+
+1. Abra el menú de usuario → **Asistencia**.
+2. Revise sus registros de entrada, salida o asistencia disponibles.
+3. Si falta un registro, comuníquelo al administrador o responsable de personal.
 
 ---
 
@@ -281,8 +298,8 @@ Administrar los equipos MikroTik (routers) que dan servicio a los clientes: cone
 
 ### 6.2 Smart OLT / AdminOLT
 
-**Menú:** Gestión de Red → Smart OLT o AdminOLT  
-**Permiso:** Gestión de Red → Router → Menú (solo aparece el OLT configurado)
+**Menú:** Gestión de Red → Smart OLT / AdminOLT  
+**Permiso:** Gestión de Red → Router → Menú
 
 #### ¿Para qué sirve?
 
@@ -292,7 +309,7 @@ Gestionar equipos OLT de fibra óptica: autorizar ONUs, monitorear señal, confi
 
 > La autorización de ONUs se realiza normalmente desde la **ficha del cliente** (ver sección 10). Aquí se describe la vista general del módulo OLT.
 
-1. Vaya a **Gestión de Red → AdminOLT** (o Smart OLT).
+1. Vaya al módulo correspondiente: **Gestión de Red → AdminOLT** o **Smart OLT**. Dependiendo de la instalación pueden estar visibles ambos accesos.
 2. Revise el listado de ONUs registradas.
 3. Para autorizar una ONU nueva, vaya a la ficha del cliente → pestaña **Servicios** → botón **AdminOLT/SmartOLT**.
 4. Seleccione la ONU pendiente de la lista de no autorizadas.
@@ -302,14 +319,14 @@ Gestionar equipos OLT de fibra óptica: autorizar ONUs, monitorear señal, confi
 
 ---
 
-### 6.3 Redes (IPv4 / IPv6)
+### 6.3 Redes IPv4 y configuración IPv6
 
 **Menú:** Gestión de Red → Redes  
 **Permiso:** Gestión de Red → IPv4 → Menú
 
 #### ¿Para qué sirve?
 
-Administrar pools de direcciones IP, subredes y asignaciones para clientes.
+El menú **Redes** (`#ajax/redipv4`) administra pools IPv4, subredes y asignaciones para clientes. La configuración IPv6 no tiene un ítem separado en el menú lateral: se realiza principalmente al crear o editar el servicio del cliente.
 
 #### Paso a paso — Consultar pools de IP
 
@@ -317,6 +334,14 @@ Administrar pools de direcciones IP, subredes y asignaciones para clientes.
 2. Revise la lista de pools/subredes configuradas.
 3. Cada pool muestra: rango, router asociado, IPs usadas vs disponibles.
 4. Para asignar IP a un cliente, hágalo desde la ficha del cliente al crear/editar el servicio.
+
+#### IPv6 y DUID del servicio
+
+1. Abra la ficha del cliente → **Servicios** → editar servicio.
+2. Complete o verifique la IPv6 asignada.
+3. Revise el **IPv6 DUID**, identificador usado por el binding DHCPv6 en MikroTik.
+4. Nexo puede normalizar el DUID y calcularlo desde la MAC cuando el flujo del servicio lo permite.
+5. Guarde y compruebe que el binding quedó asociado al cliente correcto.
 
 ---
 
@@ -353,6 +378,10 @@ Gestionar cajas de distribución de fibra óptica (NAP) en calle: ubicación, pu
 3. Complete: nombre, ubicación (dirección/coordenadas), capacidad de puertos.
 4. Guarde.
 5. Al dar de alta clientes con fibra, asigne el puerto NAP correspondiente en la ficha del servicio.
+
+#### Consultar potencia óptica (Rx)
+
+Cuando la integración OLT está disponible, desde una caja NAP puede abrir la consulta **Rx** para revisar la potencia óptica de las ONUs asociadas. Use esta lectura como apoyo para detectar señal baja; la disponibilidad del dato depende del proveedor OLT y de la conexión con su API.
 
 ---
 
@@ -393,7 +422,9 @@ Ver qué sitios web o destinos IP visitan los clientes (requiere logging activo 
 
 #### ¿Para qué sirve?
 
-Monitorear y gestionar listas negras de IPs o dominios bloqueados en la red.
+Consultar el estado de las IP públicas del ISP en listas negras. No debe confundirse con las reglas de firewall o bloqueo de páginas de cada MikroTik.
+
+En **Ajustes → Monitor Blacklist** también existe la configuración de la integración de monitoreo (HetrixTools, cuando está disponible).
 
 ---
 
@@ -971,7 +1002,7 @@ Organizar trabajo diario: instalaciones programadas, visitas técnicas, tareas l
 
 Vista de calendario mensual/semanal con todas las tareas programadas. Permite arrastrar tareas para reprogramar.
 
-> **Vehículos / GPS:** la flota y el monitoreo vehicular están en **Almacén → Vehiculos** (ver sección 14.5), no bajo Tareas.
+> **Vehículos / GPS:** la flota y el monitoreo vehicular están en **Almacén → Vehiculos** (ver sección 14.6), no bajo Tareas.
 
 ---
 
@@ -1112,11 +1143,19 @@ Consulte pagos procesados por pasarelas en línea, verifique estados y gestione 
 
 ---
 
-### 13.7 Dólar Price / Casa de cambio
+### 13.7 Dólar Price
 
-**Menú:** Finanzas → Dolar price / Casa de cambio
+**Menú:** Finanzas → Dolar price  
+**Ruta:** `#ajax/dolar-price`
 
-Gestión de tasa de cambio para facturación en moneda extranjera (USD) con conversión a moneda local (Bs, ARS, etc.).
+Gestiona la tasa de cambio usada para convertir importes de facturación entre USD y moneda local.
+
+### 13.7.1 Casa de cambio
+
+**Menú:** Finanzas → Casa de cambio  
+**Ruta:** `#ajax/casacambio`
+
+Registra y administra operaciones de compra/venta o cambio de moneda. Es un módulo distinto de **Dólar Price** y su visibilidad depende de los permisos para crear, editar o eliminar operaciones.
 
 ---
 
@@ -1151,7 +1190,7 @@ Facturación electrónica integrada con sistema SyH (Venezuela).
 **Menú:** Finanzas → Serdimpre  
 **Condición:** Módulo activo (`isserdimpre=on`)  
 **Permiso:** Finanzas → Serdimpre → Menú  
-**Configuración:** Ajustes → Facturación Serdimpre (token, URL, serie, sucursal, modo de emisión)
+**Configuración:** Ajustes → Facturación → bloque Facturación Serdimpre (token, URL, serie, sucursal, modo de emisión)
 
 #### ¿Para qué sirve?
 
@@ -1193,7 +1232,7 @@ La clave cruzada es el **IdPersonalizado** de Serdimpre = `id` de la factura en 
 
 #### Paso a paso — Configurar Serdimpre
 
-1. Vaya a **Ajustes → Facturación Serdimpre**.
+1. Vaya a **Ajustes → Facturación** y ubique el bloque **Facturación Serdimpre**.
 2. Active el módulo (`isserdimpre`).
 3. Complete: token API, URL del gateway, serie, sucursal, tipo de documento.
 4. Elija modo **Al generar** o **Al pagar**.
@@ -1223,11 +1262,13 @@ Gestiona inventario físico, cuadrillas de campo, entregas a bodega, asignación
 
 | Sub-módulo | Ruta | Permiso |
 |------------|------|---------|
+| Almacenes | `#ajax/almacen-almacenes` | Administrador o permiso para ver bodegas |
 | Tipos de productos | `#ajax/almacen?action=categorias` | Almacén → Categorías → Menú |
 | Proveedores | `#ajax/almacen?action=proveedores` | Almacén → Categorías → Menú |
 | Productos | `#ajax/almacen` | Almacén → Productos → Menú |
-| Cuadrillas | `#ajax/almacen-cuadrillas` | Almacén → Cuadrillas → Menú (o Productos → Menú según rol) |
 | Vehiculos | `#ajax/vehiculos` | Admin o Vehículos / Monitoreo |
+
+> **Importante:** Cuadrillas se administra actualmente desde el hub/pestaña de **Productos** y desde los flujos de asignación. No aparece como ítem independiente en el menú lateral.
 
 ---
 
@@ -1247,7 +1288,30 @@ Registro de proveedores de equipos y materiales.
 
 ---
 
-### 14.3 Productos (hub de inventario)
+### 14.3 Almacenes (bodegas)
+
+**Menú:** Almacén → Almacenes  
+**Ruta:** `#ajax/almacen-almacenes`
+
+Muestra las bodegas disponibles y permite crear o editar almacenes, consultar sus existencias y gestionar traslados.
+
+#### Paso a paso — Crear una bodega
+
+1. Vaya a **Almacén → Almacenes**.
+2. Clic en **Nuevo Almacén**.
+3. Complete nombre, sucursal/ubicación y datos requeridos.
+4. Guarde. La bodega aparece en el listado de almacenes.
+
+#### Paso a paso — Traslado entre almacenes
+
+1. Vaya a **Almacén → Almacenes** y pulse **Traslados**.
+2. Indique bodega origen, destino y productos/cantidades.
+3. Confirme el envío.
+4. Si el flujo requiere recepción, el responsable de la bodega destino debe revisar y recibir el traslado.
+
+---
+
+### 14.4 Productos (hub de inventario)
 
 **Menú:** Almacén → Productos  
 **Permiso:** Almacén → Productos → Menú
@@ -1256,8 +1320,8 @@ Pantalla tipo **hub** (tarjetas) con tres pestañas principales (cada una puede 
 
 | Pestaña | Contenido | Permiso extra |
 |---------|-----------|---------------|
-| **Almacen** | Acceso a Almacenes (bodegas), Productos, Herramientas y Materiales | Pestaña Almacén (bodegas) |
-| **Cuadrillas** | Vista de unidades/cuadrillas y su inventario en campo (también hay ítem de menú dedicado) | Ver cuadrillas |
+| **Almacen** | Acceso a Productos, Herramientas y Materiales; las bodegas también tienen acceso directo en el menú | Pestaña Almacén (bodegas) |
+| **Cuadrillas** | Vista de unidades/cuadrillas y su inventario en campo | Ver cuadrillas |
 | **Instalados** | Productos ya instalados en clientes | Pestaña Instalados |
 
 #### Home de Almacén (pestaña Almacen)
@@ -1266,23 +1330,10 @@ Al entrar verá cuatro accesos:
 
 | Tarjeta | Para qué sirve |
 |---------|----------------|
-| **Almacenes** | Listar bodegas, crear almacén, traslados entre bodegas |
+| **Almacenes** | Acceso al listado de bodegas (también disponible directamente en el menú lateral) |
 | **Productos** | Equipos e inventario principal por bodega |
 | **Herramientas** | Herramientas de campo e instalación |
 | **Materiales** | Materiales y accesorios |
-
-#### Paso a paso — Crear una bodega
-
-1. Vaya a **Almacén → Productos** → tarjeta **Almacenes**.
-2. Clic en **Nuevo Almacén**.
-3. Complete nombre, sucursal/ubicación y datos requeridos.
-4. Guarde. La bodega aparece en el hub de almacenes.
-
-#### Paso a paso — Traslado entre almacenes
-
-1. En el hub de Almacenes, clic en **Traslados**.
-2. Indique bodega origen, destino y productos/cantidades.
-3. Confirme. El inventario se mueve entre bodegas (requiere permiso de traslados).
 
 #### Paso a paso — Ingresar / consultar producto
 
@@ -1302,9 +1353,9 @@ Al entrar verá cuatro accesos:
 
 ---
 
-### 14.4 Cuadrillas
+### 14.5 Cuadrillas
 
-**Menú:** Almacén → Cuadrillas  
+**Acceso:** Almacén → Productos → pestaña **Cuadrillas**  
 **Ruta:** `#ajax/almacen-cuadrillas`  
 **Permiso:** Almacén → Cuadrillas → Menú
 
@@ -1325,7 +1376,7 @@ Administrar las **cuadrillas** (equipos de técnicos) y el inventario que llevan
 
 1. El técnico/instalador **solicita** la devolución desde la unidad (requiere permiso *Solicitar entrega*).
 2. El **jefe de almacén** recibe toast + campanita sticky.
-3. Vaya a **Almacén → Cuadrillas** → **Entregas** (o use **Revisar** en el toast).
+3. Vaya a **Almacén → Productos → Cuadrillas** → **Entregas** (o use **Revisar** en el toast).
 4. Revise unidad, productos y bodega destino.
 5. Con permiso **Jefe de almacén (aceptar)**, acepte o rechace.
 6. Al aceptar puede registrar **evidencia de recepción**: estado del vehículo, comentario y fotos.
@@ -1363,7 +1414,7 @@ En **Ajustes → Gestión personal → Permisos** (bloque Almacén):
 
 ---
 
-### 14.5 Vehículos
+### 14.6 Vehículos
 
 **Menú:** Almacén → Vehiculos  
 **Ruta:** `#ajax/vehiculos`  
@@ -1539,6 +1590,13 @@ Si la integración Zendesk está activa, el menú muestra **Zendesk Support** qu
 3. Seleccione plantilla o escriba mensaje personalizado.
 4. Confirme envío.
 
+### Plantillas y canales
+
+- Las plantillas se administran desde **Ajustes → Mensajería**.
+- Si la integración Meta/WhatsApp está configurada, Nexo puede mostrar un selector de plantillas aprobadas antes del envío.
+- La disponibilidad de SMS, WhatsApp y sus plantillas depende del proveedor habilitado; si un canal no aparece, revise su configuración y permisos.
+- Los accesos para enviar datos de una ficha Hotspot reutilizan estos canales cuando la instalación los tiene activos.
+
 ---
 
 ## 18. Ajustes generales
@@ -1571,8 +1629,8 @@ Pantalla de configuración del sistema organizada en categorías.
 | **Portal cliente** | Configuración del portal de abonados |
 | **Importar clientes** | Importación masiva desde Excel/CSV |
 | **Cambios masivos** | Modificar configuración de facturación en lote |
-| **Login RADIUS** | Equipos NAS autorizados |
-| **Backups Mikrotik** | Configuración de respaldos automáticos |
+| **Login RADIUS (NAS)** | Equipos NAS autorizados para autenticar operadores |
+| **Backups Mikrotik** | Equipos incluidos, respaldos automáticos y política de retención |
 
 #### Paso a paso — Crear operador con permisos
 
@@ -1583,6 +1641,34 @@ Pantalla de configuración del sistema organizada en categorías.
 5. En **Tipo / plantilla de rol**, elija una **plantilla** (`login_role_templates`): el árbol de permisos se rellena automáticamente según la plantilla (o el preset del privilegio 0–3 si la plantilla no tiene hojas guardadas).
 6. Ajuste permisos finos en el acordeón si hace falta (incluye bloque Almacén: pestañas, flota, entregas y traslados).
 7. Guarde.
+
+#### Configurar 2FA de un operador
+
+1. En **Ajustes → Gestión personal**, cree o edite el operador.
+2. En **Verificación en dos pasos (login)** elija:
+   - **Aplicación (TOTP):** compatible con Google Authenticator y aplicaciones equivalentes.
+   - **SMS:** solo está disponible si existe un proveedor SMS activo.
+   - **Email:** usa el servidor SMTP configurado en **Ajustes → Servidor de correo**.
+3. Para TOTP, complete el enrolamiento y confirme el código generado por la aplicación.
+4. Guarde y pruebe el próximo inicio de sesión antes de dar por finalizada la configuración.
+
+> Si se pierde el segundo factor, un administrador debe revisar o restablecer el método desde la ficha del operador.
+
+#### Configurar Login RADIUS (NAS)
+
+1. Vaya a **Ajustes → Login RADIUS (NAS)**.
+2. Registre el equipo NAS con su dirección, servidor y secreto compartido.
+3. Puede generar un secreto seguro desde el formulario.
+4. Guarde y pruebe la autenticación del operador.
+5. Un NAS vinculado a un nodo no puede eliminarse hasta retirar correctamente esa relación.
+
+#### Configurar Backups Mikrotik
+
+1. Vaya a **Ajustes → Backups Mikrotik**.
+2. Agregue los routers que participarán en los respaldos automáticos.
+3. Configure y revise la retención global para evitar acumulación indefinida.
+4. Consulte los archivos generados y su fecha.
+5. Para retirar un router de la rotación se requiere el permiso específico de eliminación de backups.
 
 #### Paso a paso — Gestionar plantillas de rol
 
@@ -1614,12 +1700,13 @@ Pantalla de configuración del sistema organizada en categorías.
 |---------|-------------|
 | **Facturación** | Día de facturación, corte, mora, impuestos, numeración |
 | **Pasarelas de pago** | Configuración de bancos y procesadores |
-| **Facturación Serdimpre** | Token, URL, serie, sucursal, modo al generar/al pagar, moneda (`isserdimpre`) |
+| **Facturación SyH** | Configuración integrada dentro de la pantalla Facturación (si tiene permiso) |
+| **Facturación Serdimpre** | Configuración integrada dentro de Facturación: token, URL, serie, sucursal, modo y moneda (`isserdimpre`) |
 
 #### Paso a paso — Configurar pasarela de pago
 
 1. Vaya a **Ajustes → Pasarelas de pago**.
-2. Localice el banco deseado (Banesco, Mercantil, BDV, Bancaribe, etc.).
+2. Localice el banco deseado (Banesco, Mercantil, BDV, Bancaribe, Banco Plaza, BBVA, etc.).
 3. Active la pasarela con el switch.
 4. Complete credenciales API del banco.
 5. Configure método: Botón de pago, C2P, Pago móvil, Transferencia, Debin.
@@ -1627,7 +1714,7 @@ Pantalla de configuración del sistema organizada en categorías.
 
 #### Paso a paso — Configurar Facturación Serdimpre
 
-Ver sección **13.11 Serdimpre** (configuración y modos de emisión). Requiere permiso `ajustes.facturacionserdimpre`.
+Abra **Ajustes → Facturación** y ubique el bloque **Facturación Serdimpre**. Ver sección **13.11 Serdimpre** para configuración y modos de emisión. Requiere permiso `ajustes.facturacionserdimpre`.
 
 ---
 
@@ -1666,6 +1753,16 @@ Ver sección **13.11 Serdimpre** (configuración y modos de emisión). Requiere 
 | **Freeradius** | Logs y estado del servidor Radius |
 | **Licencia** | Token de licencia, límites, actualizaciones |
 
+#### Ejecutar corte manual
+
+La sección **Crontab** puede incluir controles para ejecutar manualmente procesos de corte o activación. Úselos solo para una necesidad operativa puntual:
+
+1. Confirme primero que el cron automático no esté ejecutándose.
+2. Ejecute la acción necesaria una sola vez.
+3. Revise el mensaje devuelto y los logs antes de repetirla.
+
+> El corte manual no sustituye la programación automática. Repetirlo sin diagnóstico puede procesar clientes innecesariamente.
+
 ---
 
 ## 19. Portal del cliente
@@ -1680,6 +1777,8 @@ Ver sección **13.11 Serdimpre** (configuración y modos de emisión). Requiere 
 1. El cliente accede a `https://su-servidor/cliente/`.
 2. Ingresa usuario (cédula o email) y contraseña.
 3. Si el operador le envió un enlace con token, accede automáticamente.
+
+Desde el menú del usuario en la barra superior, el cliente también puede **Editar datos** y **Cambiar contraseña**. Cuando un administrador entra en modo enmascarado, aparece **Volver al administrador**.
 
 ---
 
@@ -1838,6 +1937,7 @@ Cliente abre ticket (portal) o operador crea ticket (admin)
 ```
 Entrega (devolución):
   Técnico solicita devolución → Toast + campanita al jefe
+  → Jefe abre Revisar o Productos → Cuadrillas → Entregas
   → Jefe acepta (evidencia opcional) → Inventario vuelve a bodega
 
 Asignación:
@@ -2006,11 +2106,12 @@ Finanzas
   ├── Serdimpre
   └── Estadísticas
 Almacén
+  ├── Almacenes
   ├── Tipos de productos
   ├── Proveedores
   ├── Productos
-  ├── Cuadrillas
   └── Vehiculos
+  [Cuadrillas está dentro del hub/pestaña Productos]
 Reportes
   ├── Administración
   ├── Ventas
@@ -2039,9 +2140,13 @@ Utilidades
   ├── Mi tráfico actual
   └── Actualizar Datos
 Mi Wifi
+Menú de usuario
+  ├── Editar datos
+  └── Cambiar contraseña
+[Volver al administrador, solo en modo enmascarado]
 Salir
 ```
 
 ---
 
-*Documento generado para Nexo Versión 1.2 (4 ago 2026): Serdimpre (panel, columna Facturación, factura_fiscal, modos de emisión), toast/campanita sticky de almacén, asignación de unidad, evidencia en entregas, permisos extra de almacén, plantillas de rol (CRUD + sincronizar), email por departamento en tickets, captura de pantalla. Versión 1.1 (23 jul 2026): Almacén hub/cuadrillas/entregas/vehículos, Reportes dashboards, plantillas de rol y mapa de menú. Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.*
+*Documento actualizado para Nexo Versión 1.3 (1 sep 2026): menú real de Almacén con acceso directo a Almacenes, Cuadrillas dentro del hub, Dólar Price y Casa de cambio separados, coexistencia Smart OLT/AdminOLT, IPv6/DUID, potencia Rx NAP, 2FA de operadores, Login RADIUS (NAS), retención de backups MikroTik, corte manual, canales de mensajería y accesos del portal cliente. Versión 1.2 (4 ago 2026): Serdimpre, toast/campanita de almacén, asignación de unidad, evidencia en entregas, permisos extra, plantillas de rol, email por departamento y captura de pantalla. Versión 1.1 (23 jul 2026): Almacén, reportes y mapa de menú. Actualice este manual cuando se agreguen módulos o cambien flujos de trabajo.*

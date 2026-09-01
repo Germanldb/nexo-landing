@@ -21,12 +21,18 @@ const features = [
   },
   {
     title: 'Tema',
-    desc: 'Alterna claro/oscuro (luna/sol). Puede guardar su estilo de colores.',
+    desc: 'Alterna claro/oscuro (luna/sol). Si no eligió aún, respeta el sistema; luego puede guardar su estilo.',
   },
 ];
 
+const extraAccess = [
+  { name: 'Telegram', desc: 'Mensajes y contador de conversaciones no leídas.' },
+  { name: 'Soporte', desc: 'Icono de disco: tickets asignados al operador.' },
+  { name: 'Notificaciones', desc: 'Panel de alertas (campanita) del sistema.' },
+];
+
 const userMenu = [
-  { option: 'Asistencia', desc: 'Registro de asistencia' },
+  { option: 'Asistencia', desc: 'Entrada, salida y registros del operador' },
   { option: 'Mi Perfil', desc: 'Datos del operador' },
   { option: 'Cambiar Contraseña', desc: 'Actualizar acceso' },
   { option: 'Cerrar Sesión', desc: 'Salir del sistema' },
@@ -84,6 +90,18 @@ const userMenu = [
     </div>
 
     <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Otros accesos (según permisos)</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+        {extraAccess.map(a => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+            <p class="font-bold text-nexo-dark text-xs">{a.name}</p>
+            <p class="text-nexo-dark/50 text-[11px] mt-0.5 leading-snug">{a.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
       <h3 class="text-lg font-bold text-nexo-dark mb-4">Menú de usuario</h3>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <DocImage
@@ -101,6 +119,12 @@ const userMenu = [
               </div>
             </div>
           ))}
+          <div class="doc-card !py-3 !px-4">
+            <p class="font-bold text-nexo-dark text-xs mb-1">Consultar asistencia</p>
+            <p class="text-nexo-dark/55 text-[11px] leading-relaxed">
+              Menú → <strong class="text-nexo-dark">Asistencia</strong> → revise entradas/salidas. Si falta un registro, avise al administrador.
+            </p>
+          </div>
         </div>
       </div>
     </div>

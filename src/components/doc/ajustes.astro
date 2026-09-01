@@ -1,6 +1,9 @@
 ---
 import DocImage from './DocImage.astro';
 import imgAjustes from '../../assets/img-docs/doc-39.png';
+import imgOperador from '../../assets/img-docs/doc-68.png';
+import img2fa from '../../assets/img-docs/doc-67.png';
+import imgBackups from '../../assets/img-docs/doc-69.png';
 
 interface Props { id?: string; }
 const { id } = Astro.props;
@@ -18,22 +21,22 @@ const configSections = [
   {
     title: 'Administración',
     items: [
-      { name: 'Gestión personal', desc: 'Operadores, plantillas de rol y permisos.' },
+      { name: 'Gestión personal', desc: 'Operadores, plantillas de rol, permisos y 2FA de login.' },
       { name: 'Portal cliente', desc: 'Qué ve y puede hacer el abonado.' },
       { name: 'Importar clientes', desc: 'Carga masiva desde Excel/CSV.' },
       { name: 'Cambios masivos', desc: 'Modificar facturación u otros datos en lote.' },
-      { name: 'Login RADIUS / Backups', desc: 'NAS autorizados y respaldos MikroTik.' },
+      { name: 'Login RADIUS (NAS)', desc: 'Equipos NAS autorizados para autenticar operadores.' },
+      { name: 'Backups Mikrotik', desc: 'Equipos, respaldos automáticos y retención.' },
     ],
   },
   {
     title: 'Facturación y mensajes',
     items: [
-      { name: 'Facturación', desc: 'Día de facturación, corte, mora, impuestos, numeración.' },
-      { name: 'Facturación Serdimpre', desc: 'Token, URL, serie, sucursal y modo Al generar / Al pagar.' },
+      { name: 'Facturación', desc: 'Día de corte, mora, impuestos; dentro: bloques SyH y Serdimpre.' },
       { name: 'Pasarelas de pago', desc: 'Bancos y procesadores.' },
-      { name: 'Servidor de correo', desc: 'SMTP para emails.' },
+      { name: 'Servidor de correo', desc: 'SMTP para emails (también usado por 2FA email).' },
       { name: 'Tickets / Zendesk', desc: 'Departamentos e integración externa.' },
-      { name: 'Mensajería SMS', desc: 'Proveedor SMS, plantillas y WhatsApp.' },
+      { name: 'Mensajería', desc: 'Proveedor SMS/WhatsApp y plantillas.' },
     ],
   },
   {
@@ -41,7 +44,7 @@ const configSections = [
     items: [
       { name: 'Plantillas y mensajes', desc: 'PDF, correos, avisos, textos de facturas.' },
       { name: 'Campos personalizados / VPN', desc: 'Campos extra en ficha y OpenVPN.' },
-      { name: 'Base de datos / Crontab / Logs', desc: 'Backup, tareas programadas y auditoría.' },
+      { name: 'Base de datos / Crontab / Logs', desc: 'Backup, tareas programadas, corte manual y auditoría.' },
       { name: 'Servidor / Freeradius / Licencia', desc: 'Estado de servicios, Radius, token y límites.' },
       { name: 'Migrar sistema', desc: 'Migración desde Mikrowisp 5.' },
     ],
@@ -58,6 +61,14 @@ const procedures = [
     ],
   },
   {
+    title: '2FA del operador',
+    steps: [
+      'Gestión personal → editar operador → Verificación en dos pasos',
+      'TOTP (app), SMS (si hay proveedor) o Email (SMTP)',
+      'Complete el enrolamiento, guarde y pruebe el próximo login',
+    ],
+  },
+  {
     title: 'Configurar portal',
     steps: [
       'Portal cliente → pestañas General, Reporte pago, Banners',
@@ -68,9 +79,25 @@ const procedures = [
   {
     title: 'Pasarela de pago',
     steps: [
-      'Pasarelas → localice el banco (Banesco, Mercantil, BDV, etc.)',
+      'Pasarelas → banco (Banesco, Mercantil, BDV, Banco Plaza, BBVA…)',
       'Active el switch y complete los datos de acceso del banco',
       'Método: botón de pago, C2P, pago móvil, transferencia o Debin → pruebe',
+    ],
+  },
+  {
+    title: 'Login RADIUS (NAS)',
+    steps: [
+      'Ajustes → Login RADIUS (NAS)',
+      'Registre NAS: dirección, servidor y secreto (puede generarlo)',
+      'Guarde y pruebe; no elimine un NAS vinculado a un nodo sin desvincular',
+    ],
+  },
+  {
+    title: 'Backups Mikrotik',
+    steps: [
+      'Ajustes → Backups Mikrotik → agregue routers',
+      'Configure retención global para no acumular archivos',
+      'Consulte respaldos; retirar un router requiere permiso de eliminación',
     ],
   },
 ];
@@ -105,7 +132,28 @@ const procedures = [
     ))}
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+  <div class="mb-6">
+    <h3 class="text-lg font-bold text-nexo-dark mb-3">Gestión personal, 2FA y backups</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <DocImage
+        src={imgOperador}
+        alt="Editar operador — datos, sucursales y permisos"
+        caption="Gestión personal: datos del operador y permisos por módulo."
+      />
+      <DocImage
+        src={img2fa}
+        alt="Método 2FA en ficha de operador"
+        caption="2FA: Desactivado, TOTP, SMS o Email."
+      />
+      <DocImage
+        src={imgBackups}
+        alt="Backups Mikrotik"
+        caption="Ajustes → Backups Mikrotik: equipos en rotación y configuración."
+      />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
     {procedures.map(proc => (
       <div class="doc-card !py-4 !px-5">
         <h3 class="font-bold text-nexo-dark text-sm mb-2">{proc.title}</h3>
@@ -119,5 +167,17 @@ const procedures = [
         </ol>
       </div>
     ))}
+  </div>
+
+  <div class="doc-card !py-4 !px-5 border-amber-200/80">
+    <h3 class="font-bold text-nexo-dark text-sm mb-2">Corte manual (Crontab)</h3>
+    <p class="text-nexo-dark/60 text-xs leading-relaxed mb-2">
+      Solo para una necesidad operativa puntual. No sustituye el cron automático.
+    </p>
+    <ol class="space-y-2">
+      <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Confirme que el cron automático no esté ejecutándose</li>
+      <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Ejecute la acción una sola vez</li>
+      <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Revise el mensaje y los logs antes de repetir</li>
+    </ol>
   </div>
 </section>

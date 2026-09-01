@@ -1,37 +1,28 @@
 CAPTURAS — Documentación Nexo
 =============================
-Actualizado: 2026-07-23
+Actualizado: 2026-09-01 (lote doc-65…69, 71)
+
+Lista detallada:
+  → src/pages/doc/CAPTURAS-FALTANTES.txt
 
 ────────────────────────────────────────────────────────────
-INTEGRADAS EN LA PÁGINA WEB (astro)
+ÚLTIMO LOTE INTEGRADO
 ────────────────────────────────────────────────────────────
-[x] doc-52  Ficha del cliente → ficha-cliente.astro
-[x] doc-53  Registrar Pagos → finanzas.astro
-[x] doc-54  Portal cliente → portal-cliente.astro
-[x] doc-55  Barra superior → barra-superior.astro
-[x] doc-56  Menú de usuario → barra-superior.astro
-[x] doc-01…doc-50  Varios módulos (ver componentes doc/)
+[x] doc-65  Dólar Price → finanzas.astro
+[x] doc-66  Casa de cambio → finanzas.astro
+[x] doc-67  2FA operador → ajustes.astro
+[x] doc-68  Editar operador → ajustes.astro (no es NAS)
+[x] doc-69  Backups Mikrotik → ajustes.astro
+[x] doc-71  NAP Resumen RX → gestion-red.astro
 
 ────────────────────────────────────────────────────────────
-MARCADORES EN doc-nexo.md (carpeta sugerida: pages/doc/img/)
+PENDIENTES P1
 ────────────────────────────────────────────────────────────
-Ya referenciados con captura existente (copiar/enlazar desde img-docs):
-  doc-07, doc-11, doc-28, doc-31, doc-33, doc-36, doc-38,
-  doc-41, doc-42, doc-43, doc-44, doc-50, doc-52…doc-56
+[ ] doc-57  Almacenes (bodegas)
+[ ] doc-58  Cuadrillas hub
+[ ] doc-59  Modal Entregas
+[ ] doc-60  Toast naranja
+[ ] doc-61  Columna Facturación Serdimpre
+[ ] doc-62  Panel Serdimpre
 
-Pendientes de captura (nuevos flujos Almacén):
-[ ] almacen-hub-bodegas.png       Hub de bodegas / Almacenes
-[ ] almacen-cuadrillas-hub.png    Hub de cuadrillas
-[ ] almacen-entregas-modal.png    Modal Entregas pendientes
-
-────────────────────────────────────────────────────────────
-DESCARTADO A PROPÓSITO
-────────────────────────────────────────────────────────────
-• Login admin, Wizard alta paso a paso, 2FA
-• PlaceToPay dedicado, flujos/permisos como screenshot
-
-────────────────────────────────────────────────────────────
-NOTA
-────────────────────────────────────────────────────────────
-Siguiente número libre en img-docs: doc-57.png
-En doc-nexo.md las rutas usan ./img/….png (manual markdown).
+También: doc-63, 64, Login RADIUS NAS, IPv6/DUID (opcional)

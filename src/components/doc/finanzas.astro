@@ -8,6 +8,8 @@ import imgReportesPortal from '../../assets/img-docs/doc-45.png';
 import imgFacturacionSyh from '../../assets/img-docs/doc-44.png';
 import imgEstadisticas from '../../assets/img-docs/doc-36.png';
 import imgRegistrarPagos from '../../assets/img-docs/doc-53.png';
+import imgDolarPrice from '../../assets/img-docs/doc-65.png';
+import imgCasaCambio from '../../assets/img-docs/doc-66.png';
 
 interface Props { id?: string; }
 const { id } = Astro.props;
@@ -49,6 +51,16 @@ const detailed = [
 
 const withImage = [
   {
+    title: 'Dólar Price',
+    what: 'Tasa de cambio para convertir importes de facturación (USD ↔ moneda local). Puede insertar tasa BCV o activar consulta automática.',
+    image: { src: imgDolarPrice, alt: 'Dólar Price — listado de tasas', caption: 'Historial de tasas, nuevo precio e inserción BCV.' },
+  },
+  {
+    title: 'Casa de cambio',
+    what: 'Operaciones de compra/venta de divisas y proveedores. Módulo distinto de Dólar Price; depende de permisos.',
+    image: { src: imgCasaCambio, alt: 'Casa de cambio', caption: 'Cambios de divisas, proveedores y filtros por fecha.' },
+  },
+  {
     title: 'Pasarelas de pago',
     what: 'Pagos en línea: Evertec (Place To Pay), Banco Provincial y Cashea. Consulte estados y gestione devoluciones.',
     image: { src: imgCashea, alt: 'Órdenes Cashea', caption: 'Cashea: financiamiento y autorización.' },
@@ -78,7 +90,6 @@ const withImage = [
 const compact = [
   { title: 'Pagos Masivos', what: 'Importar Excel/CSV con varios pagos y procesarlos de una vez.' },
   { title: 'Transacciones', what: 'Historial de pagos, notas de crédito y ajustes de saldo.' },
-  { title: 'Dólar Price / Casa de cambio', what: 'Tasa de cambio para facturar en USD con conversión a moneda local (Bs, ARS, etc.).' },
 ];
 
 const serdimpreTabs = [
@@ -125,7 +136,7 @@ const serdimpreTabs = [
       </div>
     ))}
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {compact.map(item => (
         <div class="doc-card !py-3 !px-4">
           <p class="font-bold text-nexo-dark text-sm mb-1">{item.title}</p>
@@ -137,7 +148,7 @@ const serdimpreTabs = [
     <div>
       <h3 class="text-lg font-bold text-nexo-dark mb-1">Serdimpre (facturación fiscal)</h3>
       <p class="text-nexo-dark/60 text-sm mb-3">
-        Envía facturas de Nexo al sistema fiscal Serdimpre (Venezuela). Solo aparece si el administrador lo activó en <strong class="text-nexo-dark">Ajustes → Facturación Serdimpre</strong>.
+        Envía facturas de Nexo al sistema fiscal Serdimpre (Venezuela). Solo aparece si el administrador lo activó en <strong class="text-nexo-dark">Ajustes → Facturación</strong> (bloque Facturación Serdimpre).
       </p>
       <div class="flex flex-wrap gap-1.5 mb-3">
         {serdimpreTabs.map(tab => (
@@ -161,7 +172,7 @@ const serdimpreTabs = [
       <div class="doc-card !py-4 !px-5">
         <h4 class="font-bold text-nexo-dark text-sm mb-2">Configurar</h4>
         <ol class="space-y-2">
-          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Ajustes → Facturación Serdimpre → active el módulo</li>
+          <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Ajustes → Facturación → bloque Facturación Serdimpre → active el módulo</li>
           <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Token, URL, serie, sucursal y tipo de documento</li>
           <li class="flex items-start gap-2.5 text-sm text-nexo-dark/70"><span class="w-5 h-5 rounded-md bg-nexo-primary text-nexo-dark flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Elija Al generar o Al pagar → moneda y mapeo de pasarelas → Guardar</li>
         </ol>

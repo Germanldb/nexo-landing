@@ -1,0 +1,110 @@
+CAPTURAS FALTANTES — Manual Nexo (doc v1.3)
+============================================
+Actualizado: 1 de septiembre de 2026
+Carpeta destino: src/assets/img-docs/
+Último lote integrado: doc-65…69, doc-71
+
+Cómo usar este archivo
+----------------------
+1. Marca [x] cuando la captura esté en img-docs Y cableada en la web.
+2. Prioridad P1 = hueco claro en la doc; P2 = refuerzo; P3 = opcional.
+
+════════════════════════════════════════════════════════════
+P1 — AÚN FALTAN (prioridad alta)
+════════════════════════════════════════════════════════════
+
+[ ] doc-57.png
+    Título: Almacén → Almacenes (listado de bodegas)
+    Qué capturar: Almacén → Almacenes con listado y botón Nuevo / Traslados
+    Dónde irá: sección Almacén (bodegas)
+    Nota: doc-41 es el hub Productos; esta es la pantalla directa de bodegas
+
+[ ] doc-58.png
+    Título: Productos → pestaña Cuadrillas (hub)
+    Qué capturar: hub de cuadrillas con tarjetas + botón Entregas
+    Dónde irá: Almacén → Cuadrillas
+    Nota: entrar por Productos (no hay ítem de menú)
+
+[ ] doc-59.png
+    Título: Modal Entregas pendientes
+    Qué capturar: modal aceptar/rechazar + evidencia si se ve
+    Dónde irá: flujo Entrega a almacén
+    Tip: use Revisar del toast naranja
+
+[ ] doc-60.png
+    Título: Toast naranja de almacén
+    Qué capturar: header + tarjeta naranja con botón Revisar
+    Dónde irá: Barra superior → Notificaciones
+
+[ ] doc-61.png
+    Título: Ficha → columna Facturación (Serdimpre)
+    Qué capturar: badges Pendiente / En cola / Facturado / Fallido…
+    Dónde irá: Ficha del cliente
+    Nota: doc-52 es la ficha general; esta debe enfocar la columna fiscal
+
+[ ] doc-62.png
+    Título: Finanzas → Serdimpre (panel)
+    Qué capturar: módulo con pestañas (Detalles, Clientes, Facturaciones…)
+    Dónde irá: Finanzas → Serdimpre
+
+════════════════════════════════════════════════════════════
+P2 — ESTADO
+════════════════════════════════════════════════════════════
+
+[ ] doc-63.png
+    Título: Asignación de unidad / confirmación de inventario
+    Qué capturar: formulario de asignación O modal “Unidad por confirmar”
+    Dónde irá: Almacén → Asignación de unidad
+
+[ ] doc-64.png
+    Título: Ajustes → Facturación (bloque Serdimpre)
+    Qué capturar: bloque dentro de Facturación (token/URL/serie/modo)
+    Dónde irá: Ajustes
+
+[x] doc-65.png  → INTEGRADA  Finanzas → Dólar Price (finanzas.astro)
+[x] doc-66.png  → INTEGRADA  Finanzas → Casa de cambio (finanzas.astro)
+[x] doc-67.png  → INTEGRADA  Ajustes → 2FA del operador (ajustes.astro)
+[x] doc-68.png  → INTEGRADA  Ajustes → Gestión personal / editar operador (ajustes.astro)
+    Nota: el archivo NO es Login RADIUS (NAS). Contenido real = ficha de operador
+          (datos, sucursales, permisos). NAS sigue pendiente como doc-70 o nuevo número.
+
+[x] doc-69.png  → INTEGRADA  Ajustes → Backups Mikrotik (ajustes.astro)
+
+[ ] doc-70.png  (o renombrar si prefieres)
+    Título: Ajustes → Login RADIUS (NAS)  ← pendiente real
+    Qué capturar: listado/formulario de equipos NAS (#ajax login RADIUS)
+    Dónde irá: Ajustes
+    Alternativa: Servicio del cliente → IPv6 / DUID (si capturas eso, avísame el nombre)
+
+[x] doc-71.png  → INTEGRADA  Gestión de Red → Cajas NAP Resumen RX (gestion-red.astro)
+
+════════════════════════════════════════════════════════════
+P3 — OPCIONAL
+════════════════════════════════════════════════════════════
+
+[ ] doc-72.png  Barra — Telegram / Soporte / campanita
+[ ] doc-73.png  Menú usuario → Asistencia (pantalla interna)
+[ ] doc-74.png  Portal — menú Editar datos / Cambiar contraseña
+[ ] doc-75.png  Traslado entre almacenes (formulario)
+[ ] doc-76.png  Evidencia de recepción al aceptar entrega
+[ ] doc-51.png  Número libre histórico (opcional)
+
+════════════════════════════════════════════════════════════
+YA INTEGRADAS EN LA WEB
+════════════════════════════════════════════════════════════
+doc-01…doc-50 (salvo doc-51), doc-52…doc-56
+doc-65 Dólar Price
+doc-66 Casa de cambio
+doc-67 2FA operador
+doc-68 Editar operador / permisos
+doc-69 Backups Mikrotik
+doc-71 Cajas NAP → Resumen RX
+
+════════════════════════════════════════════════════════════
+SIGUIENTE LOTE SUGERIDO
+════════════════════════════════════════════════════════════
+1) doc-57, doc-58, doc-59   Almacenes + Cuadrillas + Entregas
+2) doc-60, doc-61, doc-62   Toast + Serdimpre ficha + panel
+3) doc-63, doc-64 + NAS     Asignación, config Serdimpre, Login RADIUS
+
+Al dejar los PNG en src/assets/img-docs/, avisa para cablearlos.
