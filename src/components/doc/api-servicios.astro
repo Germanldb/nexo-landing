@@ -1,0 +1,201 @@
+---
+import ApiExample from './ApiExample.astro';
+import ApiMethods from './ApiMethods.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const responseLista = `{
+  "ok": true,
+  "salida": "",
+  "cliente": {
+    "id": 1,
+    "nombre": "Cliente Ejemplo",
+    "cedula": "12345678",
+    "estado": "ACTIVO"
+  },
+  "conteo": 1,
+  "servicios": [
+    {
+      "id": 101,
+      "idcliente": 1,
+      "tiposervicio": "internet",
+      "nombre_plan": "Plan 50 Mbps",
+      "velocidad_legible": "50 Mbps / 20 Mbps",
+      "nombre_nodo": "Nodo Centro",
+      "status_user": "online",
+      "pppuser": "user101",
+      "instalado": "2026-01-15"
+    }
+  ]
+}`;
+
+const responseUno = `{
+  "ok": true,
+  "cliente": {
+    "id": 1,
+    "nombre": "Cliente Ejemplo",
+    "cedula": "12345678",
+    "estado": "ACTIVO"
+  },
+  "servicio": {
+    "id": 101,
+    "tiposervicio": "internet",
+    "nombre_plan": "Plan 50 Mbps",
+    "velocidad_legible": "50 Mbps / 20 Mbps",
+    "status_user": "online",
+    "pppuser": "user101"
+  }
+}`;
+
+const methods = [
+  {
+    method: 'GET',
+    path: '/api/v2/servicios?cedula=',
+    desc: 'Lista servicios del cliente por documento',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/servicios/{cedula}',
+    desc: 'Igual, con la cédula en la URL',
+    response: responseLista,
+    note: 'Misma forma que ?cedula=',
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/servicios?idcliente=',
+    desc: 'Lista por id interno del cliente',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/servicios?id_servicio=',
+    desc: 'Un solo servicio (respuesta singular)',
+    response: responseUno,
+    note: 'Usa servicio (singular), no servicios[]',
+  },
+  {
+    method: 'POST',
+    path: '/api/v2/servicios',
+    desc: 'Misma consulta (token en JSON); no crea servicios',
+    response: responseLista,
+    note: 'Body JSON con token + cedula / idcliente / id_servicio',
+  },
+];
+
+const params = [
+  { name: 'cedula', type: 'string', req: 'Uno de…', use: 'Documento del abonado (acepta V12345678)' },
+  { name: 'idcliente', type: 'number', req: 'Uno de…', use: 'Id interno del cliente en Nexo' },
+  { name: 'id_servicio', type: 'number', req: 'Uno de…', use: 'Un servicio concreto' },
+  { name: 'tiposervicio', type: 'string', req: 'No', use: 'Filtrar, por ejemplo internet' },
+  { name: 'detalle', type: '0 | 1', req: 'No', use: 'Más datos técnicos (IPv6, ONU, NAP…) si existen' },
+  { name: 'incluir_anulados', type: '0 | 1', req: 'No', use: 'Incluye servicios anulados' },
+];
+
+const fields = [
+  { name: 'nombre_plan', desc: 'Plan comercial' },
+  { name: 'velocidad_legible', desc: 'Velocidad legible (ej. 50 Mbps)' },
+  { name: 'status_user', desc: 'Estado técnico (online, etc.)' },
+  { name: 'pppuser', desc: 'Usuario PPP (sin contraseña)' },
+  { name: 'nombre_nodo', desc: 'Nodo o router' },
+  { name: 'instalado', desc: 'Fecha de instalación' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Servicios</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Endpoint <code class="doc-code-inline">/api/v2/servicios</code>.
+      Sirve para saber <strong class="text-nexo-dark">qué tiene contratado</strong> un abonado.
+      Solo lectura: no crea ni modifica servicios y no entrega contraseñas PPP.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Métodos</h3>
+      <ApiMethods methods={methods} />
+      <p class="text-nexo-dark/40 text-[11px] mt-2">PUT y DELETE → 405 (no aplican). Auth: Bearer recomendado.</p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Ejemplo: consultar por cédula</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3 leading-relaxed">
+        Caso típico desde un CRM o chatbot: llega la cédula y Nexo responde con el cliente y sus servicios.
+      </p>
+      <ApiExample
+        title="Consultar servicios"
+        method="GET"
+        path="/api/v2/servicios?cedula=12345678"
+        http={`GET https://tu-dominio.com/api/v2/servicios?cedula=12345678 HTTP/1.1
+Authorization: Bearer TOKEN_API
+Accept: application/json`}
+        javascript={`const res = await fetch(
+  "https://tu-dominio.com/api/v2/servicios?cedula=12345678",
+  {
+    headers: {
+      Authorization: "Bearer TOKEN_API",
+      Accept: "application/json",
+    },
+  }
+);
+const data = await res.json();
+// data.ok · data.cliente · data.servicios[]`}
+        php={`<?php
+$ch = curl_init("https://tu-dominio.com/api/v2/servicios?cedula=12345678");
+curl_setopt_array($ch, [
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    "Authorization: Bearer TOKEN_API",
+    "Accept: application/json",
+  ],
+]);
+$data = json_decode(curl_exec($ch), true);`}
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Qué pide la API (parámetros)</h3>
+      <p class="text-nexo-dark/55 text-sm mb-3 leading-relaxed">
+        Debe enviar al menos un identificador del cliente o del servicio. El resto son filtros opcionales.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Tipo</th>
+              <th>Obligatorio</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {params.map(p => (
+              <tr>
+                <td><code>{p.name}</code></td>
+                <td>{p.type}</td>
+                <td>{p.req}</td>
+                <td>{p.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Campos útiles en cada servicio</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {fields.map(f => (
+          <div class="flex items-baseline gap-2 text-sm px-3 py-2 rounded-lg bg-nexo-dark/[0.02] border border-nexo-dark/5">
+            <code class="doc-code-inline text-[11px] shrink-0">{f.name}</code>
+            <span class="text-nexo-dark/50 text-xs">{f.desc}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

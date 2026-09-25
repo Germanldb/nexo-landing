@@ -1,0 +1,95 @@
+---
+interface Props {
+  title?: string;
+  method?: string;
+  path?: string;
+  http?: string;
+  javascript?: string;
+  php?: string;
+}
+
+const {
+  title = 'Ejemplo',
+  method,
+  path,
+  http = '',
+  javascript = '',
+  php = '',
+} = Astro.props;
+
+const tabs = [
+  http ? { id: 'http', label: 'HTTP' } : null,
+  javascript ? { id: 'js', label: 'JavaScript' } : null,
+  php ? { id: 'php', label: 'PHP' } : null,
+].filter(Boolean) as { id: string; label: string }[];
+
+const uid = `ex-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="doc-example" data-api-example={uid}>
+  <div class="doc-example-head">
+    <div class="min-w-0">
+      {title && <p class="doc-example-title">{title}</p>}
+      {(method || path) && (
+        <div class="doc-example-route">
+          {method && <span class="doc-method" data-method={method.toLowerCase()}>{method}</span>}
+          {path && <code class="doc-example-path">{path}</code>}
+        </div>
+      )}
+    </div>
+    {tabs.length > 1 && (
+      <div class="doc-example-tabs" role="tablist" aria-label="Formato del ejemplo">
+        {tabs.map((t, i) => (
+          <button
+            type="button"
+            class:list={['doc-example-tab', i === 0 && 'is-active']}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            data-tab={t.id}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+  {http && (
+    <pre class:list={['doc-code-block', 'doc-example-pane', tabs[0]?.id === 'http' && 'is-active']} data-pane="http" tabindex="0"><code>{http}</code></pre>
+  )}
+  {javascript && (
+    <pre class:list={['doc-code-block', 'doc-example-pane', tabs[0]?.id === 'js' && 'is-active']} data-pane="js" tabindex="0"><code>{javascript}</code></pre>
+  )}
+  {php && (
+    <pre class:list={['doc-code-block', 'doc-example-pane', tabs[0]?.id === 'php' && 'is-active']} data-pane="php" tabindex="0"><code>{php}</code></pre>
+  )}
+</div>
+
+<script is:inline>
+  (function () {
+    function bindApiExamples() {
+      document.querySelectorAll('[data-api-example]:not([data-ready])').forEach(function (root) {
+        root.setAttribute('data-ready', '1');
+        var tabs = root.querySelectorAll('.doc-example-tab');
+        var panes = root.querySelectorAll('.doc-example-pane');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var id = tab.getAttribute('data-tab');
+            tabs.forEach(function (t) {
+              var on = t === tab;
+              t.classList.toggle('is-active', on);
+              t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            panes.forEach(function (p) {
+              p.classList.toggle('is-active', p.getAttribute('data-pane') === id);
+            });
+          });
+        });
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindApiExamples);
+    } else {
+      bindApiExamples();
+    }
+  })();
+</script>

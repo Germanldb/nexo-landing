@@ -1,0 +1,153 @@
+---
+import ApiMethods from './ApiMethods.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const responseSucursales = `{
+  "ok": true,
+  "conteo": 1,
+  "sucursales": [
+    {
+      "id": 1,
+      "nombre": "Matriz Caracas",
+      "activo": 1,
+      "es_matriz": 1
+    }
+  ]
+}`;
+
+const responseSucursal = `{
+  "ok": true,
+  "sucursal": {
+    "id": 1,
+    "nombre": "Matriz Caracas",
+    "activo": 1,
+    "codigo": "CCS",
+    "zonas": [
+      { "id": 4, "nombre": "Los Palos Grandes" }
+    ]
+  }
+}`;
+
+const responseUbicaciones = `{
+  "ok": true,
+  "conteo": 1,
+  "ubicaciones": [
+    {
+      "id": 4,
+      "nombre": "Los Palos Grandes",
+      "id_sucursal": 1
+    }
+  ]
+}`;
+
+const responseUbicacion = `{
+  "ok": true,
+  "ubicacion": {
+    "id": 4,
+    "nombre": "Los Palos Grandes",
+    "id_sucursal": 1
+  }
+}`;
+
+const responseNap = `{
+  "ok": true,
+  "conteo": 1,
+  "nap": [
+    {
+      "id": 88,
+      "nombre": "NAP-LPG-01",
+      "latitud": "10.4980",
+      "longitud": "-66.8500",
+      "id_sucursal": 1
+    }
+  ]
+}`;
+
+const responseNapUno = `{
+  "ok": true,
+  "caja": {
+    "id": 88,
+    "nombre": "NAP-LPG-01",
+    "latitud": "10.4980",
+    "longitud": "-66.8500",
+    "id_sucursal": 1
+  }
+}`;
+
+const resources = [
+  {
+    title: 'Sucursales',
+    base: '/api/v2/sucursales',
+    desc: 'Sedes del ISP. Los resultados respetan las sucursales del operador.',
+    methods: [
+      { method: 'GET', path: '/sucursales', desc: 'Listado', response: responseSucursales },
+      { method: 'GET', path: '/sucursales/activas', desc: 'Solo activas', response: responseSucursales },
+      { method: 'GET', path: '/sucursales/{id}', desc: 'Una sede', response: responseSucursal },
+      {
+        method: 'GET',
+        path: '?detalle=1&incluir_zonas=1',
+        desc: 'Más datos y zonas',
+        response: responseSucursal,
+        note: 'Con detalle e incluir_zonas el objeto trae más campos y zonas[]',
+      },
+    ],
+  },
+  {
+    title: 'Ubicaciones (zonas)',
+    base: '/api/v2/ubicaciones',
+    desc: 'Zonas geográficas. Filtre por sucursal si maneja varias sedes.',
+    methods: [
+      { method: 'GET', path: '/ubicaciones', desc: 'Listado', response: responseUbicaciones },
+      { method: 'GET', path: '/ubicaciones/zonas', desc: 'Alias de lista', response: responseUbicaciones },
+      { method: 'GET', path: '/ubicaciones/{id}', desc: 'Una zona', response: responseUbicacion },
+      {
+        method: 'GET',
+        path: '?id_sucursal=1',
+        desc: 'Filtrar por sede',
+        response: responseUbicaciones,
+      },
+    ],
+  },
+  {
+    title: 'Cajas NAP',
+    base: '/api/v2/nap',
+    desc: 'Cajas de fibra. Por defecto solo las que tienen coordenadas válidas.',
+    methods: [
+      { method: 'GET', path: '/nap', desc: 'Listado', response: responseNap },
+      { method: 'GET', path: '/nap/coordenadas', desc: 'Enfoque mapa', response: responseNap },
+      { method: 'GET', path: '/nap/{id}', desc: 'Una caja', response: responseNapUno },
+      {
+        method: 'GET',
+        path: '?id_sucursal=1&detalle=1',
+        desc: 'Filtro y detalle',
+        response: responseNap,
+      },
+    ],
+    note: 'Use solo_con_coordenadas=0 si necesita incluir cajas sin GPS.',
+  },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Sucursales, zonas y NAP</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Tres endpoints de cobertura. El token solo ve lo de las sedes asignadas al operador.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    {resources.map(r => (
+      <div>
+        <h3 class="text-lg font-bold text-nexo-dark mb-1">{r.title}</h3>
+        <p class="text-nexo-dark/60 text-sm mb-1 leading-relaxed">{r.desc}</p>
+        <p class="text-nexo-dark/45 text-xs mb-3"><code class="doc-code-inline">{r.base}</code></p>
+        <ApiMethods methods={r.methods} />
+        {r.note && <p class="text-nexo-dark/45 text-[11px] mt-2 leading-relaxed">{r.note}</p>}
+      </div>
+    ))}
+  </div>
+</section>

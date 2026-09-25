@@ -1,0 +1,107 @@
+---
+export interface MethodItem {
+  method: string;
+  path: string;
+  desc: string;
+  /** JSON de ejemplo (string ya formateado) */
+  response?: string;
+  /** Código HTTP, default 200 */
+  status?: string;
+  note?: string;
+}
+
+interface Props {
+  methods: MethodItem[];
+  hint?: string;
+}
+
+const {
+  methods,
+  hint = 'Haga clic en un método para ver la respuesta de ejemplo.',
+} = Astro.props;
+
+const uid = `methods-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="doc-methods" data-api-methods={uid}>
+  {hint && <p class="doc-methods-hint">{hint}</p>}
+  <div class="space-y-2">
+    {methods.map((m: MethodItem, i: number) => {
+      const hasResponse = Boolean(m.response);
+      const panelId = `${uid}-panel-${i}`;
+      return (
+        <div class="doc-method-item" data-method-item>
+          {hasResponse ? (
+            <button
+              type="button"
+              class="doc-method-row"
+              aria-expanded="false"
+              aria-controls={panelId}
+              data-method-toggle
+            >
+              <span class="doc-method" data-method={m.method.toLowerCase()}>{m.method}</span>
+              <code class="doc-method-path">{m.path}</code>
+              <span class="doc-method-desc">{m.desc}</span>
+              <svg class="doc-method-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+          ) : (
+            <div class="doc-method-row is-static">
+              <span class="doc-method" data-method={m.method.toLowerCase()}>{m.method}</span>
+              <code class="doc-method-path">{m.path}</code>
+              <span class="doc-method-desc">{m.desc}</span>
+            </div>
+          )}
+          {hasResponse && (
+            <div id={panelId} class="doc-method-panel" hidden data-method-panel>
+              <div class="doc-method-panel-head">
+                <span class="doc-badge">{m.status || '200'}</span>
+                <span class="doc-method-panel-label">Respuesta</span>
+              </div>
+              {m.note && <p class="doc-method-panel-note">{m.note}</p>}
+              <pre class="doc-code-block doc-method-response" tabindex="0"><code>{m.response}</code></pre>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    function bindApiMethods() {
+      document.querySelectorAll('[data-api-methods]:not([data-ready])').forEach(function (root) {
+        root.setAttribute('data-ready', '1');
+        var items = root.querySelectorAll('[data-method-item]');
+        items.forEach(function (item) {
+          var btn = item.querySelector('[data-method-toggle]');
+          var panel = item.querySelector('[data-method-panel]');
+          if (!btn || !panel) return;
+          btn.addEventListener('click', function () {
+            var open = btn.getAttribute('aria-expanded') === 'true';
+            items.forEach(function (other) {
+              var ob = other.querySelector('[data-method-toggle]');
+              var op = other.querySelector('[data-method-panel]');
+              if (!ob || !op) return;
+              ob.setAttribute('aria-expanded', 'false');
+              other.classList.remove('is-open');
+              op.hidden = true;
+            });
+            if (!open) {
+              btn.setAttribute('aria-expanded', 'true');
+              item.classList.add('is-open');
+              panel.hidden = false;
+            }
+          });
+        });
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindApiMethods);
+    } else {
+      bindApiMethods();
+    }
+  })();
+</script>

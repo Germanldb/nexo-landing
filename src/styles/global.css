@@ -538,6 +538,365 @@ body.nexo-landing .doc-code-inline {
   color: var(--nexo-text);
 }
 
+body.nexo-landing .doc-code-block {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--nexo-border);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 92%, #000);
+  color: #e8eee9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+body.nexo-landing .doc-code-block code {
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+html.theme-dark body.nexo-landing .doc-code-block {
+  background: color-mix(in srgb, var(--nexo-bg-elevated) 80%, #000);
+  border-color: var(--nexo-border);
+}
+
+/* API example panel with language tabs */
+body.nexo-landing .doc-example {
+  border: 1px solid var(--nexo-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--nexo-bg-elevated, #fff);
+}
+
+body.nexo-landing .doc-example-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--nexo-border);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 3%, transparent);
+}
+
+body.nexo-landing .doc-example-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--nexo-text);
+  margin: 0 0 0.35rem;
+}
+
+body.nexo-landing .doc-example-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.nexo-landing .doc-example-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  color: color-mix(in srgb, var(--nexo-text) 65%, transparent);
+  word-break: break-all;
+}
+
+body.nexo-landing .doc-method {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 85%, #fff);
+  color: var(--nexo-dark, #0D2E34);
+}
+
+body.nexo-landing .doc-method[data-method="post"] {
+  background: color-mix(in srgb, #3b82f6 75%, #fff);
+  color: #0f172a;
+}
+
+body.nexo-landing .doc-method[data-method="put"],
+body.nexo-landing .doc-method[data-method="delete"] {
+  background: color-mix(in srgb, #f59e0b 70%, #fff);
+  color: #0f172a;
+}
+
+body.nexo-landing .doc-methods-hint {
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--nexo-text) 45%, transparent);
+  margin: 0 0 0.65rem;
+  line-height: 1.4;
+}
+
+body.nexo-landing .doc-method-item {
+  border: 1px solid color-mix(in srgb, var(--nexo-dark, #0D2E34) 6%, transparent);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 2%, transparent);
+  overflow: hidden;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+body.nexo-landing .doc-method-item.is-open {
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 45%, transparent);
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 6%, transparent);
+}
+
+body.nexo-landing .doc-method-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+body.nexo-landing .doc-method-row.is-static {
+  cursor: default;
+}
+
+body.nexo-landing .doc-method-row:not(.is-static):hover {
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 3%, transparent);
+}
+
+body.nexo-landing .doc-method-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--nexo-text) 70%, transparent);
+  word-break: break-all;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body.nexo-landing .doc-method-desc {
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--nexo-text) 50%, transparent);
+  line-height: 1.35;
+  flex: 1 1 10rem;
+}
+
+@media (min-width: 640px) {
+  body.nexo-landing .doc-method-desc {
+    text-align: right;
+    margin-left: auto;
+    flex: 0 1 14rem;
+  }
+}
+
+body.nexo-landing .doc-method-chevron {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  color: color-mix(in srgb, var(--nexo-text) 40%, transparent);
+  transition: transform 0.2s ease;
+}
+
+body.nexo-landing .doc-method-item.is-open .doc-method-chevron {
+  transform: rotate(180deg);
+  color: var(--nexo-dark, #0D2E34);
+}
+
+body.nexo-landing .doc-method-panel {
+  padding: 0 0.85rem 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--nexo-dark, #0D2E34) 6%, transparent);
+}
+
+body.nexo-landing .doc-method-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0 0.4rem;
+}
+
+body.nexo-landing .doc-method-panel-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--nexo-text) 55%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+body.nexo-landing .doc-method-panel-note {
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--nexo-text) 50%, transparent);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+body.nexo-landing .doc-method-response {
+  margin: 0;
+  border-radius: 0.65rem;
+  max-height: 22rem;
+  overflow: auto;
+}
+
+html.theme-dark body.nexo-landing .doc-method-item {
+  background: color-mix(in srgb, var(--nexo-bg-elevated, #1a2e32) 80%, transparent);
+  border-color: var(--nexo-border);
+}
+
+html.theme-dark body.nexo-landing .doc-method-item.is-open {
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 40%, var(--nexo-border));
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 8%, var(--nexo-bg-elevated, #1a2e32));
+}
+
+html.theme-dark body.nexo-landing .doc-method-row:not(.is-static):hover {
+  background: color-mix(in srgb, #fff 4%, transparent);
+}
+
+html.theme-dark body.nexo-landing .doc-method-panel {
+  border-top-color: var(--nexo-border);
+}
+
+html.theme-dark body.nexo-landing .doc-method-item.is-open .doc-method-chevron {
+  color: var(--nexo-primary, #B3CD1D);
+}
+
+body.nexo-landing .doc-example-tabs {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+body.nexo-landing .doc-example-tab {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: color-mix(in srgb, var(--nexo-text) 50%, transparent);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+body.nexo-landing .doc-example-tab:hover {
+  color: var(--nexo-text);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 5%, transparent);
+}
+
+body.nexo-landing .doc-example-tab.is-active {
+  color: var(--nexo-dark, #0D2E34);
+  background: var(--nexo-primary, #B3CD1D);
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 40%, transparent);
+}
+
+body.nexo-landing .doc-example-pane {
+  display: none;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+body.nexo-landing .doc-example-pane.is-active {
+  display: block;
+}
+
+/* API params / response tables */
+body.nexo-landing .doc-api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--nexo-border);
+}
+
+body.nexo-landing .doc-api-table th,
+body.nexo-landing .doc-api-table td {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--nexo-border);
+  vertical-align: top;
+}
+
+body.nexo-landing .doc-api-table th {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--nexo-text) 45%, transparent);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 3.5%, transparent);
+}
+
+body.nexo-landing .doc-api-table tr:last-child td {
+  border-bottom: none;
+}
+
+body.nexo-landing .doc-api-table td {
+  color: color-mix(in srgb, var(--nexo-text) 72%, transparent);
+  line-height: 1.45;
+}
+
+body.nexo-landing .doc-api-table code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--nexo-text);
+}
+
+body.nexo-landing .doc-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 22%, transparent);
+  color: var(--nexo-dark, #0D2E34);
+}
+
+body.nexo-landing .doc-badge--muted {
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 8%, transparent);
+  color: color-mix(in srgb, var(--nexo-text) 55%, transparent);
+}
+
+body.nexo-landing .doc-auth-card {
+  position: relative;
+  border: 1px solid var(--nexo-border);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  background: var(--nexo-bg-elevated, #fff);
+}
+
+body.nexo-landing .doc-auth-card.is-recommended {
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 55%, var(--nexo-border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--nexo-primary, #B3CD1D) 20%, transparent);
+}
+
+body.nexo-landing .doc-auth-sample {
+  display: block;
+  margin-top: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 92%, #000);
+  color: #e8eee9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+html.theme-dark body.nexo-landing .doc-example,
+html.theme-dark body.nexo-landing .doc-auth-card {
+  background: var(--nexo-bg-elevated);
+}
+
 html.theme-dark body.nexo-landing .doc-card {
   background: var(--nexo-bg-elevated);
   border-color: var(--nexo-border);

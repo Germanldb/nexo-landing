@@ -1,0 +1,85 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const errors = [
+  { code: '400', action: 'Faltan datos o el JSON está mal; corrija y no reintente igual' },
+  { code: '401', action: 'No mandó token; agréguelo o renueve el JWT' },
+  { code: '403', action: 'Revise operador activo, API encendida, token y sucursales' },
+  { code: '404', action: 'URL, id o cédula incorrectos' },
+  { code: '405', action: 'Método HTTP incorrecto (por ejemplo PUT donde solo hay GET)' },
+  { code: '409', action: 'En pagos: referencia ya usada o monto distinto' },
+  { code: '502', action: 'Falló un sistema externo enlazado; revise el mensaje' },
+  { code: '503', action: 'Módulo o pasarela no configurada en esa instalación' },
+];
+
+const banned = [
+  { path: 'Webhooks de bancos', why: 'Solo el banco o el proveedor debe pegarles' },
+  { path: 'Agente conversacional', why: 'Uso interno; no lleva auth de Nexo' },
+  { path: 'Métricas', why: 'Dashboard interno del ISP' },
+  { path: 'consultafactura / facturacion', why: 'Hoy no exigen token de operador' },
+  { path: 'dolarprice', why: 'Auth distinta; no para integraciones nuevas' },
+  { path: 'IPTV Setplex', why: 'Proveedor externo; no se documenta aquí aún' },
+  { path: 'Panel ajax / portal ajax', why: 'Son pantallas con sesión, no API pública' },
+];
+
+const practices = [
+  'Un operador API por integración, solo con las sucursales necesarias.',
+  'Token en variables de entorno; nunca en Git, logs ni en el frontend del abonado.',
+  'Configure timeouts y registre el código HTTP, no las credenciales.',
+  'En pagos use referencias únicas y valide el resultado antes de reintentar.',
+  'Si sospecha filtración, rote el token o desactive la API de ese operador.',
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Errores y seguridad</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Cómo interpretar respuestas fallidas, qué no llamar desde un sistema de terceros
+      y prácticas mínimas para no exponer el token.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Códigos que verá con frecuencia</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {errors.map(e => (
+          <div class="flex items-start gap-3 bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+            <span class="font-bold text-nexo-dark text-xs shrink-0 w-8">{e.code}</span>
+            <p class="text-nexo-dark/55 text-[11px] leading-snug">{e.action}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-nexo-dark/45 text-xs mt-3 mb-2 leading-relaxed">Ejemplo de error en JSON:</p>
+      <pre class="doc-code-block" tabindex="0"><code>{`{ "ok": false, "salida": "Token inválido." }
+{ "estado": "error", "salida": "No se encontró el cliente." }`}</code></pre>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">No use esto como API de terceros</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {banned.map(b => (
+          <div class="doc-card !py-3 !px-4">
+            <p class="font-bold text-nexo-dark text-xs mb-0.5">{b.path}</p>
+            <p class="text-nexo-dark/50 text-[11px]">{b.why}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="doc-card !py-4 !px-5">
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">Buenas prácticas</h3>
+      <ul class="space-y-2">
+        {practices.map(p => (
+          <li class="flex items-start gap-2 text-xs text-nexo-dark/65 leading-relaxed">
+            <span class="w-1.5 h-1.5 rounded-full bg-nexo-primary mt-1.5 shrink-0"></span>
+            {p}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

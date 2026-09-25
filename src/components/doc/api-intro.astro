@@ -1,0 +1,163 @@
+---
+import ApiExample from './ApiExample.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const uses = [
+  {
+    title: 'Servicios',
+    endpoint: 'GET /api/v2/servicios',
+    desc: 'Qué tiene contratado un abonado (plan, nodo, estado).',
+    href: '#api-servicios',
+  },
+  {
+    title: 'Planes',
+    endpoint: 'GET /api/v2/planes',
+    desc: 'Catálogo de planes de internet disponibles.',
+    href: '#api-planes',
+  },
+  {
+    title: 'Promociones',
+    endpoint: 'GET /api/v2/promociones',
+    desc: 'Paquetes promocionales activos o por sede.',
+    href: '#api-promociones',
+  },
+  {
+    title: 'Sucursales, zonas y NAP',
+    endpoint: '/sucursales · /ubicaciones · /nap',
+    desc: 'Cobertura y sedes según el alcance del operador.',
+    href: '#api-red',
+  },
+  {
+    title: 'Planificación y vehículos',
+    endpoint: '/planificaciontareas · /vehiculos',
+    desc: 'Calendario técnico y telemetría GPS.',
+    href: '#api-campo',
+  },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Cómo integrar sistemas externos</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Si ya tiene Nexo y quiere que otro sistema (CRM, chatbot, app o automatización) consulte datos
+      sin entrar al panel, use estas rutas HTTPS. No son pantallas: son peticiones con un token de operador.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-lg font-bold text-nexo-dark mb-2">¿Para quién?</h3>
+        <p class="text-nexo-dark/70 text-sm leading-relaxed">
+          Desarrolladores o integradores con acceso a una instalación Nexo.
+          El abonado final no llama a estas APIs: su app o servidor lo hace en nombre del ISP.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-nexo-dark mb-2">¿Qué necesita?</h3>
+        <p class="text-nexo-dark/70 text-sm leading-relaxed">
+          La URL HTTPS de su Nexo, un operador activo con la opción <strong class="text-nexo-dark">API</strong>
+          marcada, y el <code class="doc-code-inline">token_api</code> de ese operador.
+          Guarde el token en el servidor; nunca en el navegador del cliente ni en capturas.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Empezar en tres pasos</h3>
+      <div class="doc-card !py-4 !px-5">
+        <ol class="space-y-2.5">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0">1</span>
+            <span class="text-nexo-dark/70 text-sm leading-relaxed pt-0.5">
+              En el panel: <strong class="text-nexo-dark">Personal / Operadores</strong> → edite el usuario de la integración → active API, copie el token y asigne las sucursales que podrá ver.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0">2</span>
+            <span class="text-nexo-dark/70 text-sm leading-relaxed pt-0.5">
+              La base es <code class="doc-code-inline">https://tu-dominio.com/api/v2</code> (cambie el dominio por el de su instalación).
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0">3</span>
+            <span class="text-nexo-dark/70 text-sm leading-relaxed pt-0.5">
+              En cada petición envíe la cabecera
+              <code class="doc-code-inline">Authorization: Bearer TOKEN_API</code>
+              (detalle en Autenticación).
+            </span>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Primera consulta de prueba</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3 leading-relaxed">
+        Pida los servicios de un cliente por cédula. Si responde con datos, el token está bien.
+        Use la pestaña del lenguaje que prefiera (HTTP, JavaScript o PHP).
+      </p>
+      <ApiExample
+        title="Servicios de un abonado"
+        method="GET"
+        path="/api/v2/servicios?cedula=12345678"
+        http={`GET https://tu-dominio.com/api/v2/servicios?cedula=12345678 HTTP/1.1
+Host: tu-dominio.com
+Authorization: Bearer TOKEN_API
+Accept: application/json`}
+        javascript={`const cedula = "12345678";
+const res = await fetch(
+  \`https://tu-dominio.com/api/v2/servicios?cedula=\${cedula}\`,
+  {
+    headers: {
+      Authorization: "Bearer TOKEN_API",
+      Accept: "application/json",
+    },
+  }
+);
+const data = await res.json();
+// data.cliente · data.servicios[]`}
+        php={`<?php
+$url = "https://tu-dominio.com/api/v2/servicios?cedula=12345678";
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    "Authorization: Bearer " . getenv("NEXO_API_TOKEN"),
+    "Accept: application/json",
+  ],
+]);
+echo curl_exec($ch);`}
+      />
+      <p class="text-nexo-dark/45 text-xs mt-2 leading-relaxed">
+        <strong class="text-nexo-dark/55">401</strong> = faltó el token ·
+        <strong class="text-nexo-dark/55">403</strong> = token o permisos incorrectos ·
+        detalle en Autenticación.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">APIs documentadas aquí</h3>
+      <p class="text-nexo-dark/55 text-sm mb-3 leading-relaxed">
+        Cada ítem del menú es un recurso. Abra la sección para ver métodos, parámetros y ejemplos.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {uses.map(u => (
+          <a href={u.href} class="doc-card !py-4 !px-5 block hover:border-nexo-primary/40 transition-colors no-underline">
+            <p class="font-bold text-nexo-dark text-sm mb-0.5">{u.title}</p>
+            <code class="doc-code-inline text-[10px]">{u.endpoint}</code>
+            <p class="text-nexo-dark/55 text-xs leading-relaxed mt-2">{u.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <p class="text-nexo-dark/40 text-xs leading-relaxed">
+      Aún no se documentan en esta página: pago móvil, C2P, plantillas de facturación, Hotspot e IPTV Setplex (este último es proveedor externo).
+    </p>
+  </div>
+</section>

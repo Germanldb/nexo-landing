@@ -1,0 +1,134 @@
+---
+import ApiExample from './ApiExample.astro';
+import ApiMethods from './ApiMethods.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const responseLista = `{
+  "ok": true,
+  "conteo": 2,
+  "planes": [
+    {
+      "id": 3,
+      "plan": "Plan 50 Mbps",
+      "descripcion": "Fibra residencial",
+      "velocidad": "50000K/20000K",
+      "costo": 20
+    },
+    {
+      "id": 5,
+      "plan": "Plan 100 Mbps",
+      "descripcion": "Fibra residencial",
+      "velocidad": "100000K/50000K",
+      "costo": 35
+    }
+  ]
+}`;
+
+const responseUno = `{
+  "ok": true,
+  "plan": {
+    "id": 3,
+    "plan": "Plan 50 Mbps",
+    "descripcion": "Fibra residencial",
+    "velocidad": "50000K/20000K",
+    "costo": 20
+  }
+}`;
+
+const methods = [
+  {
+    method: 'GET',
+    path: '/api/v2/planes',
+    desc: 'Lista el catálogo de planes',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/planes/{id}',
+    desc: 'Un plan por id',
+    response: responseUno,
+    note: 'Usa plan (singular), no planes[]',
+  },
+  {
+    method: 'GET',
+    path: '?router=',
+    desc: 'Solo planes del nodo indicado',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '?incluir_deshabilitados=1',
+    desc: 'Incluye planes deshabilitados',
+    response: responseLista,
+  },
+];
+
+const params = [
+  { name: 'router', type: 'number', req: 'No', use: 'Filtra por id de MikroTik / nodo' },
+  { name: 'incluir_deshabilitados', type: '0 | 1', req: 'No', use: 'Incluye planes con is_disabled ≠ 0' },
+  { name: 'todos', type: '0 | 1', req: 'No', use: 'Alias de incluir_deshabilitados' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Planes</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Endpoint <code class="doc-code-inline">/api/v2/planes</code>.
+      Es el <strong class="text-nexo-dark">catálogo</strong> de planes de internet.
+      Para lo que ya tiene un cliente, use la sección Servicios.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Métodos</h3>
+      <ApiMethods methods={methods} />
+    </div>
+
+    <ApiExample
+      title="Listar planes"
+      method="GET"
+      path="/api/v2/planes"
+      http={`GET https://tu-dominio.com/api/v2/planes HTTP/1.1
+Authorization: Bearer TOKEN_API
+Accept: application/json`}
+      javascript={`const res = await fetch("https://tu-dominio.com/api/v2/planes", {
+  headers: { Authorization: "Bearer TOKEN_API", Accept: "application/json" },
+});
+const { ok, conteo, planes } = await res.json();`}
+      php={`<?php
+$ch = curl_init("https://tu-dominio.com/api/v2/planes");
+curl_setopt_array($ch, [
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => ["Authorization: Bearer TOKEN_API", "Accept: application/json"],
+]);
+echo curl_exec($ch);`}
+    />
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Parámetros opcionales</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead>
+            <tr><th>Parámetro</th><th>Tipo</th><th>Obligatorio</th><th>Descripción</th></tr>
+          </thead>
+          <tbody>
+            {params.map(p => (
+              <tr>
+                <td><code>{p.name}</code></td>
+                <td>{p.type}</td>
+                <td>{p.req}</td>
+                <td>{p.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-nexo-dark/45 text-xs mt-2">Respuesta: <code class="doc-code-inline">ok</code>, <code class="doc-code-inline">conteo</code>, <code class="doc-code-inline">planes[]</code>.</p>
+    </div>
+  </div>
+</section>

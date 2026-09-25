@@ -1,0 +1,126 @@
+---
+import ApiExample from './ApiExample.astro';
+import ApiMethods from './ApiMethods.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const responseLista = `{
+  "ok": true,
+  "conteo": 1,
+  "paquetes": [
+    {
+      "id": 12,
+      "nombre": "Promo fibra + TV",
+      "activo": 1,
+      "id_sucursal": 1,
+      "items_resumen": "Plan 50 Mbps + decodificador"
+    }
+  ]
+}`;
+
+const responseUno = `{
+  "ok": true,
+  "paquete": {
+    "id": 12,
+    "nombre": "Promo fibra + TV",
+    "activo": 1,
+    "id_sucursal": 1,
+    "items": [
+      {
+        "tipo": "perfil_plan",
+        "id_referencia": 3
+      }
+    ]
+  }
+}`;
+
+const methods = [
+  {
+    method: 'GET',
+    path: '/api/v2/promociones',
+    desc: 'Lista paquetes promocionales',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/promociones/activas',
+    desc: 'Solo activas',
+    response: responseLista,
+  },
+  {
+    method: 'GET',
+    path: '/api/v2/promociones/{id}',
+    desc: 'Una promoción por id',
+    response: responseUno,
+    note: 'Detalle de un paquete (singular)',
+  },
+];
+
+const params = [
+  { name: 'id_sucursal', type: 'number', req: 'No', use: 'Filtrar por sede' },
+  { name: 'id_zona', type: 'number', req: 'No', use: 'Filtrar por zona / ubicación' },
+  { name: 'solo_activos', type: '0 | 1', req: 'No', use: 'Solo paquetes activos (también /activas)' },
+  { name: 'solo_vigentes', type: '0 | 1', req: 'No', use: 'Respeta vigencia_desde / vigencia_hasta' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Promociones</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Endpoint <code class="doc-code-inline">/api/v2/promociones</code>.
+      Solo lectura. El array de la respuesta se llama <code class="doc-code-inline">paquetes[]</code> (no “promociones”).
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Métodos</h3>
+      <ApiMethods methods={methods} />
+    </div>
+
+    <ApiExample
+      title="Promociones activas por sucursal"
+      method="GET"
+      path="/api/v2/promociones/activas?id_sucursal=1"
+      http={`GET https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1 HTTP/1.1
+Authorization: Bearer TOKEN_API
+Accept: application/json`}
+      javascript={`const res = await fetch(
+  "https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1",
+  { headers: { Authorization: "Bearer TOKEN_API", Accept: "application/json" } }
+);
+const { paquetes } = await res.json();`}
+      php={`<?php
+$ch = curl_init("https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1");
+curl_setopt_array($ch, [
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => ["Authorization: Bearer TOKEN_API", "Accept: application/json"],
+]);
+echo curl_exec($ch);`}
+    />
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Parámetros opcionales</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead>
+            <tr><th>Parámetro</th><th>Tipo</th><th>Obligatorio</th><th>Descripción</th></tr>
+          </thead>
+          <tbody>
+            {params.map(p => (
+              <tr>
+                <td><code>{p.name}</code></td>
+                <td>{p.type}</td>
+                <td>{p.req}</td>
+                <td>{p.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

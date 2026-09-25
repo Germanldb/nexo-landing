@@ -1,0 +1,255 @@
+---
+import ApiExample from './ApiExample.astro';
+import ApiMethods from './ApiMethods.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const responseCalendario = `{
+  "estado": "ok",
+  "events": [
+    {
+      "id": 501,
+      "title": "Instalación #1204",
+      "start": "2026-09-10T09:00:00",
+      "end": "2026-09-10T11:00:00",
+      "operador": 15
+    }
+  ],
+  "supervisor_view": true
+}`;
+
+const responseTecnico = `{
+  "estado": "ok",
+  "events": [
+    {
+      "id": 501,
+      "title": "Instalación #1204",
+      "start": "2026-09-10T09:00:00",
+      "end": "2026-09-10T11:00:00",
+      "operador": 15
+    }
+  ],
+  "supervisor_view": true
+}`;
+
+const responseCliente = `{
+  "estado": "ok",
+  "cliente": {
+    "id": 1,
+    "nombre": "Cliente Ejemplo",
+    "cedula": "12345678"
+  },
+  "tiene_planificacion": true,
+  "total": 1,
+  "tareas": [
+    {
+      "id": 501,
+      "titulo": "Instalación #1204",
+      "fecha": "2026-09-10",
+      "estado": "programada"
+    }
+  ]
+}`;
+
+const responseVehiculosHelp = `{
+  "ok": true,
+  "ayuda": "POST /api/v2/vehiculos/registro con id_dispositivo y ubicaciones[]",
+  "ejemplo": {
+    "id_dispositivo": "GPS-1001-A",
+    "ubicaciones": [
+      {
+        "latitud": "10.480600",
+        "longitud": "-66.903600",
+        "datetime": "2026-09-25 08:30:00"
+      }
+    ]
+  }
+}`;
+
+const responseRegistro = `{
+  "estado": "exito",
+  "salida": "Puntos registrados",
+  "recibidos": 1
+}`;
+
+const planificacionMethods = [
+  {
+    method: 'GET',
+    path: '?start=&end=',
+    desc: 'Calendario (todas)',
+    response: responseCalendario,
+    note: 'Indique siempre start y end (YYYY-MM-DD)',
+  },
+  {
+    method: 'GET',
+    path: '?action=events_por_tecnico&operador=',
+    desc: 'Solo un técnico',
+    response: responseTecnico,
+  },
+  {
+    method: 'POST',
+    path: '/consulta_cliente',
+    desc: 'Tareas de un cliente por cédula',
+    response: responseCliente,
+  },
+];
+
+const vehiculosMethods = [
+  {
+    method: 'GET',
+    path: '/vehiculos',
+    desc: 'Ayuda y ejemplo',
+    response: responseVehiculosHelp,
+  },
+  {
+    method: 'POST',
+    path: '/vehiculos/registro',
+    desc: 'Enviar puntos GPS (hasta 500)',
+    response: responseRegistro,
+  },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Planificación y vehículos</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Dos endpoints de campo: calendario de tareas técnicas y telemetría GPS.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Planificación de tareas</h3>
+      <p class="text-nexo-dark/45 text-xs mb-2"><code class="doc-code-inline">/api/v2/planificaciontareas</code></p>
+      <p class="text-nexo-dark/60 text-sm mb-3 leading-relaxed">
+        Con el token API obtiene vista de supervisor. Indique siempre <code class="doc-code-inline">start</code> y <code class="doc-code-inline">end</code>.
+      </p>
+      <div class="mb-4">
+        <ApiMethods methods={planificacionMethods} />
+      </div>
+      <ApiExample
+        title="¿Tiene visitas ese cliente?"
+        method="POST"
+        path="/api/v2/planificaciontareas/consulta_cliente"
+        http={`POST https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente HTTP/1.1
+Authorization: Bearer TOKEN_API
+Content-Type: application/json
+
+{
+  "cedula": "12345678",
+  "start": "2026-09-01",
+  "end": "2026-09-30"
+}`}
+        javascript={`const res = await fetch(
+  "https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente",
+  {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer TOKEN_API",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      cedula: "12345678",
+      start: "2026-09-01",
+      end: "2026-09-30",
+    }),
+  }
+);
+const data = await res.json();`}
+        php={`<?php
+$payload = json_encode([
+  "cedula" => "12345678",
+  "start" => "2026-09-01",
+  "end" => "2026-09-30",
+]);
+$ch = curl_init("https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente");
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    "Authorization: Bearer TOKEN_API",
+    "Content-Type: application/json",
+  ],
+  CURLOPT_POSTFIELDS => $payload,
+]);
+echo curl_exec($ch);`}
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-1">Vehículos (GPS)</h3>
+      <p class="text-nexo-dark/45 text-xs mb-2"><code class="doc-code-inline">/api/v2/vehiculos</code></p>
+      <div class="mb-4">
+        <ApiMethods methods={vehiculosMethods} />
+      </div>
+      <ApiExample
+        title="Registrar telemetría"
+        method="POST"
+        path="/api/v2/vehiculos/registro"
+        http={`POST https://tu-dominio.com/api/v2/vehiculos/registro HTTP/1.1
+Authorization: Bearer TOKEN_API
+Content-Type: application/json
+
+{
+  "id_dispositivo": "GPS-1001-A",
+  "datetime": "2026-09-25 08:30:00",
+  "comando": "GPS",
+  "parametro": "ubicacion",
+  "ubicaciones": [
+    {
+      "latitud": "10.480600",
+      "longitud": "-66.903600",
+      "datetime": "2026-09-25 08:30:00"
+    }
+  ]
+}`}
+        javascript={`await fetch("https://tu-dominio.com/api/v2/vehiculos/registro", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer TOKEN_API",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    id_dispositivo: "GPS-1001-A",
+    datetime: "2026-09-25 08:30:00",
+    comando: "GPS",
+    parametro: "ubicacion",
+    ubicaciones: [
+      {
+        latitud: "10.480600",
+        longitud: "-66.903600",
+        datetime: "2026-09-25 08:30:00",
+      },
+    ],
+  }),
+});`}
+        php={`<?php
+$payload = json_encode([
+  "id_dispositivo" => "GPS-1001-A",
+  "datetime" => "2026-09-25 08:30:00",
+  "comando" => "GPS",
+  "parametro" => "ubicacion",
+  "ubicaciones" => [[
+    "latitud" => "10.480600",
+    "longitud" => "-66.903600",
+    "datetime" => "2026-09-25 08:30:00",
+  ]],
+]);
+$ch = curl_init("https://tu-dominio.com/api/v2/vehiculos/registro");
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    "Authorization: Bearer TOKEN_API",
+    "Content-Type: application/json",
+  ],
+  CURLOPT_POSTFIELDS => $payload,
+]);
+echo curl_exec($ch);`}
+      />
+    </div>
+  </div>
+</section>

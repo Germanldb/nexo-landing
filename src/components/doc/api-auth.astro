@@ -1,0 +1,164 @@
+---
+import ApiExample from './ApiExample.astro';
+
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const authForms = [
+  {
+    name: 'Cabecera Authorization',
+    recommended: true,
+    sample: 'Authorization: Bearer TOKEN_API',
+    note: 'La forma recomendada. El token viaja en la cabecera y no queda guardado en historiales de URL ni en muchos logs de proxy.',
+  },
+  {
+    name: 'En el cuerpo JSON',
+    recommended: false,
+    sample: '{ "token": "TOKEN_API", ... }',
+    note: 'Útil en POST cuando ya manda un JSON. Añada el campo token junto al resto de datos.',
+  },
+  {
+    name: 'En la URL (pruebas)',
+    recommended: false,
+    sample: '?token=TOKEN_API',
+    note: 'Solo para probar a mano. En producción prefiera Bearer: el token puede quedar en logs y analítica.',
+  },
+];
+
+const probe = [
+  { code: '200', meaning: 'El token fue aceptado' },
+  { code: '401', meaning: 'No envió token' },
+  { code: '403', meaning: 'Token incorrecto, operador inactivo o API apagada' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Integraciones</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Autenticación</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Toda petición necesita identificar al operador API. En la práctica: copie el
+      <code class="doc-code-inline">token_api</code> del panel y envíelo como
+      <strong class="text-nexo-dark">Bearer</strong> en la cabecera.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Cómo pasar el token</h3>
+      <p class="text-nexo-dark/55 text-sm mb-4 leading-relaxed">
+        Sustituya <code class="doc-code-inline">TOKEN_API</code> por el valor real de su operador. Nexo acepta estas tres formas; use la primera en producción.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {authForms.map(f => (
+          <div class:list={['doc-auth-card', f.recommended && 'is-recommended']}>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <p class="font-bold text-nexo-dark text-sm">{f.name}</p>
+              {f.recommended
+                ? <span class="doc-badge">Recomendado</span>
+                : <span class="doc-badge doc-badge--muted">Alternativa</span>}
+            </div>
+            <p class="text-nexo-dark/55 text-xs leading-relaxed">{f.note}</p>
+            <code class="doc-auth-sample">{f.sample}</code>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Comprobar que el token funciona</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3 leading-relaxed">
+        No hay una ruta solo para “validar”. Haga una consulta de solo lectura (por ejemplo, planes). Elija el formato que use su stack:
+      </p>
+      <ApiExample
+        title="Listar planes (prueba de token)"
+        method="GET"
+        path="/api/v2/planes"
+        http={`GET https://tu-dominio.com/api/v2/planes HTTP/1.1
+Host: tu-dominio.com
+Authorization: Bearer TOKEN_API
+Accept: application/json`}
+        javascript={`const res = await fetch("https://tu-dominio.com/api/v2/planes", {
+  headers: {
+    Authorization: "Bearer TOKEN_API",
+    Accept: "application/json",
+  },
+});
+const data = await res.json();
+console.log(res.status, data);`}
+        php={`<?php
+$ch = curl_init("https://tu-dominio.com/api/v2/planes");
+curl_setopt_array($ch, [
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    "Authorization: Bearer TOKEN_API",
+    "Accept: application/json",
+  ],
+]);
+$body = curl_exec($ch);
+$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+// $code 200 = ok · 401/403 = revisar token`}
+      />
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
+        {probe.map(p => (
+          <div class="bg-nexo-dark/[0.02] border border-nexo-dark/5 rounded-lg px-3 py-2.5">
+            <p class="font-bold text-nexo-dark text-xs">{p.code}</p>
+            <p class="text-nexo-dark/50 text-[11px] mt-0.5">{p.meaning}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="doc-card !py-4 !px-5">
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">JWT (opcional)</h3>
+      <p class="text-nexo-dark/60 text-xs mb-3 leading-relaxed">
+        Si su cliente solo maneja tokens temporales, pida un JWT con usuario y clave del operador
+        (<code class="doc-code-inline">POST /api/auth.php</code>). Dura una hora.
+        Para servidor-a-servidor casi siempre basta el <code class="doc-code-inline">TOKEN_API</code> como Bearer.
+      </p>
+      <ApiExample
+        title="Obtener JWT"
+        method="POST"
+        path="/api/auth.php"
+        http={`POST https://tu-dominio.com/api/auth.php HTTP/1.1
+Content-Type: application/json
+
+{ "username": "operador_api", "password": "CLAVE_DEL_OPERADOR" }`}
+        javascript={`const res = await fetch("https://tu-dominio.com/api/auth.php", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    username: "operador_api",
+    password: "CLAVE_DEL_OPERADOR",
+  }),
+});
+const { token } = await res.json();`}
+        php={`<?php
+$payload = json_encode([
+  "username" => "operador_api",
+  "password" => "CLAVE_DEL_OPERADOR",
+]);
+$ch = curl_init("https://tu-dominio.com/api/auth.php");
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+  CURLOPT_POSTFIELDS => $payload,
+]);
+echo curl_exec($ch);`}
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Buenas costumbres al llamar</h3>
+      <ul class="space-y-1.5 text-sm text-nexo-dark/65 leading-relaxed">
+        <li>Use siempre HTTPS y pida JSON (<code class="doc-code-inline">Accept: application/json</code>).</li>
+        <li>En POST mande <code class="doc-code-inline">Content-Type: application/json</code>.</li>
+        <li>Fechas: <code class="doc-code-inline">YYYY-MM-DD</code>. Fecha y hora: <code class="doc-code-inline">YYYY-MM-DD HH:MM:SS</code>.</li>
+        <li>Un HTTP 200 no siempre es éxito: revise también <code class="doc-code-inline">ok</code>, <code class="doc-code-inline">estado</code> o <code class="doc-code-inline">status</code> en el JSON.</li>
+        <li>En pagos, no reintente a ciegas: primero confirme la referencia.</li>
+      </ul>
+    </div>
+  </div>
+</section>
