@@ -1,0 +1,56 @@
+---
+interface Props {
+  /** Ruta a la que volver tras login (ej. /doc/api) */
+  returnPath?: string;
+}
+
+const { returnPath = '/doc/api' } = Astro.props;
+---
+
+<div id="doc-auth-gate" class="doc-auth-gate" data-return-path={returnPath}>
+  <div id="doc-auth-loading" class="min-h-[60vh] flex flex-col items-center justify-center px-6 py-24">
+    <p class="text-sm text-nexo-dark/50">Comprobando acceso…</p>
+  </div>
+  <div id="doc-auth-denied" class="hidden min-h-[60vh] flex flex-col items-center justify-center px-6 py-24 text-center">
+    <p class="text-nexo-dark/70 text-sm max-w-md">Redirigiendo al acceso de documentación…</p>
+  </div>
+  <div id="doc-auth-content" class="hidden">
+    <slot />
+  </div>
+</div>
+
+<script define:vars={{ returnPath }}>
+  const gate = document.getElementById('doc-auth-gate');
+  const loading = document.getElementById('doc-auth-loading');
+  const denied = document.getElementById('doc-auth-denied');
+  const content = document.getElementById('doc-auth-content');
+  const path = gate?.dataset.returnPath || returnPath;
+
+  function loginUrl() {
+    const next = encodeURIComponent(path);
+    return `/doc/acceso/?next=${next}`;
+  }
+
+  async function checkAccess() {
+    try {
+      const response = await fetch('/api/doc/session', { credentials: 'include' });
+      const data = await response.json();
+
+      if (response.ok && data.ok) {
+        loading?.classList.add('hidden');
+        content?.classList.remove('hidden');
+        return;
+      }
+
+      loading?.classList.add('hidden');
+      denied?.classList.remove('hidden');
+      window.location.replace(loginUrl());
+    } catch {
+      loading?.classList.add('hidden');
+      denied?.classList.remove('hidden');
+      window.location.replace(loginUrl());
+    }
+  }
+
+  checkAccess();
+</script>

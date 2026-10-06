@@ -1,0 +1,113 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+type Row = { recurso: string; endpoints: string; note?: string };
+
+const authFacturacion: Row[] = [
+  { recurso: 'auth', endpoints: 'POST login JWT (username/password); refresh vía /api/auth.php?action=refresh' },
+  { recurso: 'consultafactura', endpoints: 'GET ?cedula= o GET /{cedula} — facturas pendientes y datos para chatbots' },
+  { recurso: 'pagos', endpoints: 'POST conciliación (nfactura, referencia, monto, token, …)' },
+  { recurso: 'facturacion', endpoints: 'GET prueba; POST registro pago facturación electrónica' },
+  { recurso: 'pagomovil', endpoints: 'GET/POST deuda por nfactura o cédula; POST pago por referencia', note: 'Pasarela — ver índice' },
+  { recurso: 'pagomovilbdv', endpoints: 'GET/POST conciliación BDV en vivo', note: 'Pasarela' },
+  { recurso: 'bdvc2p / c2p', endpoints: 'acciones resumen, request_otp, c2p_pay', note: 'Pasarela' },
+  { recurso: 'pagoc2p', endpoints: 'GET/POST C2P con consulta estilo pago móvil', note: 'Pasarela' },
+];
+
+const operacion: Row[] = [
+  { recurso: 'metrics', endpoints: 'GET /tickets, /customers (alias /clientes), /dashboard; GET raíz = ayuda' },
+  { recurso: 'planificaciontareas', endpoints: 'GET/POST calendario; POST /consulta_cliente, /por_cedula' },
+  { recurso: 'promociones', endpoints: 'GET lista; /activas; GET /{id}' },
+  { recurso: 'plantillasfacturacion', endpoints: 'GET lista (resumen=1); GET /{id}' },
+  { recurso: 'planes', endpoints: 'GET perfiles internet; GET /{id}' },
+  { recurso: 'sucursales', endpoints: 'GET lista; slug /activas; GET /{id}' },
+  { recurso: 'ubicaciones', endpoints: 'GET zonas; slugs /zonas, /lista; GET /{id}' },
+  { recurso: 'nap', endpoints: 'GET cajas NAP; /coordenadas, /lista, /cajas, /mapa; GET /{id}' },
+  { recurso: 'dolarprice', endpoints: 'GET tasa del día (date opcional)' },
+  { recurso: 'servicios', endpoints: 'Consulta y gestión de servicios del abonado — ver sección Servicios' },
+];
+
+const hotspotIptv: Row[] = [
+  { recurso: 'hotspotfichas', endpoints: '/disponibles, /por-sucursal, /por-zona, /lista, /ficha; POST alta ficha' },
+  { recurso: 'hotspotwifi', endpoints: 'GET/PUT por usuario; POST /cambiar' },
+  { recurso: 'hotspotventas', endpoints: 'GET /pago, /instrucciones; GET/POST /c2p, POST /pago', note: 'Conciliación' },
+  { recurso: 'hotspotpartido', endpoints: 'GET /agenda, /partido-agenda (datos externos)' },
+  { recurso: 'socialwifi', endpoints: 'GET /@usuario o ?username=; GET /followers' },
+  { recurso: 'socialwifiregistro', endpoints: 'GET /estado; POST /registro, /enviar_codigo, /verificar_codigo' },
+  { recurso: 'vehiculos', endpoints: 'POST registro GPS (ubicaciones[]) y log de comandos' },
+  { recurso: 'iptvsetplex', endpoints: 'GET /planes, /{idperfil}; POST /credenciales, /cambiar_plan' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Catálogo API v2</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Recursos enrutables en <code class="doc-code-inline">/api/v2/{'{recurso}'}</code>.
+      Autentique con <code class="doc-code-inline">token_api</code> o JWT (proxies v21).
+      Los recursos de pago y conciliación tienen un índice aparte sin detalle de pasarelas.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Facturación, consultas y pagos</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Recurso</th><th>Endpoints principales</th><th></th></tr></thead>
+          <tbody>
+            {authFacturacion.map(r => (
+              <tr>
+                <td><code>{r.recurso}</code></td>
+                <td>{r.endpoints}</td>
+                <td class="text-[11px] text-nexo-dark/45 whitespace-nowrap">{r.note ?? ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Operación, red y catálogos</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Recurso</th><th>Endpoints principales</th></tr></thead>
+          <tbody>
+            {operacion.map(r => (
+              <tr>
+                <td><code>{r.recurso}</code></td>
+                <td>{r.endpoints}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Hotspot, social WiFi, campo e IPTV</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Recurso</th><th>Endpoints principales</th><th></th></tr></thead>
+          <tbody>
+            {hotspotIptv.map(r => (
+              <tr>
+                <td><code>{r.recurso}</code></td>
+                <td>{r.endpoints}</td>
+                <td class="text-[11px] text-nexo-dark/45 whitespace-nowrap">{r.note ?? ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-nexo-dark/45 text-xs leading-relaxed">
+      El controlador de usuarios no está registrado en el router v2 (no enrutable).
+      Librerías internas de conciliación no exponen ruta propia.
+    </p>
+  </div>
+</section>

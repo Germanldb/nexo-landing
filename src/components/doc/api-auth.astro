@@ -111,12 +111,28 @@ curl_close($ch);
     </div>
 
     <div class="doc-card !py-4 !px-5">
-      <h3 class="font-bold text-nexo-dark text-sm mb-2">JWT (opcional)</h3>
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">JWT y proxies v11 / v21</h3>
       <p class="text-nexo-dark/60 text-xs mb-3 leading-relaxed">
-        Si su cliente solo maneja tokens temporales, pida un JWT con usuario y clave del operador
-        (<code class="doc-code-inline">POST /api/auth.php</code>). Dura una hora.
+        Login JWT: <code class="doc-code-inline">POST /api/auth.php</code> o
+        <code class="doc-code-inline">POST /api/v2/auth</code> con usuario y clave del operador.
+        Renovar: <code class="doc-code-inline">/api/auth.php?action=refresh</code> con Bearer JWT.
         Para servidor-a-servidor casi siempre basta el <code class="doc-code-inline">TOKEN_API</code> como Bearer.
       </p>
+      <div class="overflow-x-auto mb-3">
+        <table class="doc-api-table">
+          <thead><tr><th>Prefijo</th><th>Comportamiento</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>/api/v11/...</code></td>
+              <td>Proxy hacia v1: acepta JWT o token legacy e inyecta <code>token</code> en el JSON hacia v1.</td>
+            </tr>
+            <tr>
+              <td><code>/api/v21/...</code></td>
+              <td>Proxy hacia v2: misma auth; en GET el token puede ir en query.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <ApiExample
         title="Obtener JWT"
         method="POST"

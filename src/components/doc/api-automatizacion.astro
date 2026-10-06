@@ -1,0 +1,83 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const webhooks = [
+  { file: 'api/webhooks/bdv.php', uso: 'Notificaciones Banco de Venezuela (allowlist IP)' },
+  { file: 'api/webhooks/bbva.php', uso: 'Botón BBVA' },
+  { file: 'api/webhooks/evertec.php', uso: 'PlaceToPay / Evertec' },
+];
+
+const sidecars = [
+  { servicio: 'Socket.io (Telegram / WhatsApp UI)', url: 'localhost:3000, 3001', uso: 'POST /notifcatelegram' },
+  { servicio: 'Social WiFi followers', url: 'localhost:3008/api/followers', uso: 'Sync seguidores Instagram' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Agente, webhooks y CRM</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Además del REST v2, Nexo ofrece un agente conversacional, webhooks de pasarelas y un endpoint CRM para pre-instalaciones.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div class="doc-card !py-4 !px-5">
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">Agente conversacional (IA)</h3>
+      <p class="text-nexo-dark/60 text-xs mb-2 leading-relaxed">
+        <code class="doc-code-inline">POST /api/agente/api-agente.php</code> — JSON
+        <code class="doc-code-inline">{'{ "mensaje", "historial" }'}</code>.
+        Herramientas internas consultan facturas v2 y registran pagos BDV.
+        Proveedores de modelo (Groq, Gemini vía proxy) se configuran en el entorno del agente.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Webhooks entrantes</h3>
+      <p class="text-nexo-dark/55 text-sm mb-3">Notificaciones POST de terceros (detalle de pasarelas en el índice correspondiente).</p>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Ruta</th><th>Uso</th></tr></thead>
+          <tbody>
+            {webhooks.map(w => (
+              <tr>
+                <td><code>{w.file}</code></td>
+                <td>{w.uso}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-nexo-dark/45 text-xs mt-2">Listeners admin SMS/conciliación: rutas bajo <code class="doc-code-inline">admin/*_listener.php</code>.</p>
+    </div>
+
+    <div class="doc-card !py-4 !px-5">
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">CRM — pre-instalaciones</h3>
+      <p class="text-nexo-dark/60 text-xs leading-relaxed">
+        <code class="doc-code-inline">POST /admin/api/crm_instalacion_pre.php</code> (JSON).
+        Auth: Bearer, cabecera <code class="doc-code-inline">X-CRM-Token</code>, query <code class="doc-code-inline">?token=</code> o campo JSON <code class="doc-code-inline">token</code>.
+        Crea pre-registro equivalente al flujo de Instalaciones del panel; encadena plantillas de facturación, promos y almacén.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Sidecars HTTP locales</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Servicio</th><th>URL</th><th>Uso</th></tr></thead>
+          <tbody>
+            {sidecars.map(s => (
+              <tr>
+                <td>{s.servicio}</td>
+                <td><code>{s.url}</code></td>
+                <td>{s.uso}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

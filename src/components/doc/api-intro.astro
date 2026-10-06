@@ -35,6 +35,18 @@ const uses = [
     desc: 'Calendario técnico y telemetría GPS.',
     href: '#api-campo',
   },
+  {
+    title: 'Catálogo completo v2',
+    endpoint: 'Ver todos los recursos',
+    desc: 'Hotspot, métricas, IPTV, facturación y más.',
+    href: '#api-catalogo',
+  },
+  {
+    title: 'Arquitectura y proxies',
+    endpoint: 'v1 · v2 · v11 · v21',
+    desc: 'Cómo se enrutan las peticiones en Nexo.',
+    href: '#api-arquitectura',
+  },
 ];
 ---
 
@@ -157,7 +169,10 @@ echo curl_exec($ch);`}
     </div>
 
     <p class="text-nexo-dark/40 text-xs leading-relaxed">
-      Aún no se documentan en esta página: pago móvil, C2P, plantillas de facturación, Hotspot e IPTV Setplex (este último es proveedor externo).
+      Recursos adicionales (pago móvil, C2P, plantillas, hotspot, IPTV, integraciones OLT) están en
+      <a href="#api-catalogo" class="text-nexo-primary hover:underline">Catálogo v2</a>,
+      <a href="#api-integraciones" class="text-nexo-primary hover:underline">Integraciones externas</a> e
+      <a href="#api-pasarelas-indice" class="text-nexo-primary hover:underline">índice de pasarelas</a>.
     </p>
   </div>
 </section>

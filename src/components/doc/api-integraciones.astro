@@ -1,0 +1,165 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const smartoltGet = [
+  '/api/system/get_olts', '/api/system/get_onu_types', '/api/system/get_zones', '/api/system/get_odbs',
+  '/api/system/get_speed_profiles', '/api/onu/unconfigured_onus', '/api/onu/get_onus_statuses',
+  '/api/onu/get_onu_details/{onu_id}', '/api/onu/get_onus_details_by_sn/{sn}',
+];
+
+const smartoltPost = [
+  'authorize_onu', 'enable', 'disable', 'reboot', 'delete', 'update_onu_speed_profiles',
+  'set_onu_wan_mode_dhcp|pppoe|static_ip', 'enable_catv', 'disable_catv', 'update_location_details',
+];
+
+const adminOltSample = [
+  'GET /api/onu/unauthorized/', 'GET /api/onus/authorized/', 'POST /api/onu/authorize/',
+  'POST /api/onu/reboot/{id}/', 'GET /api/speedprofiles/download/', 'POST /api/onu/speed-profile/update-by-sn/{sn}/',
+];
+
+const setplexGroups = [
+  { title: 'Suscriptores', paths: '/subscribers/get, /create, /update, /subscription/update, /devices/{serial}/status, …' },
+  { title: 'Catálogo Nora', paths: '/subscriptions/plans/get, /payments/do, /channels/getList, …' },
+];
+
+const facturacion = [
+  { proveedor: 'Haulmer / OpenFactura (Chile)', base: 'API Haulmer + emisión OpenFactura' },
+  { proveedor: 'Serdimpre (VE)', base: 'Tenant + X-Third-Party-Key; rutas /api/lesys/...' },
+  { proveedor: 'SyH Computación', base: 'REST sync clientes, pedidos, artículos, zonas' },
+  { proveedor: 'AFIP (AR)', base: 'Web services SOAP en módulo de facturación' },
+];
+
+const mensajeria = [
+  { servicio: 'OneSignal', uso: 'Push web' },
+  { servicio: 'Telegram Bot', uso: 'Alertas y soporte' },
+  { servicio: 'WhatsApp / Waboxapp', uso: 'Gateway alternativo' },
+  { servicio: 'SMS (Nexmo, Connectus, etc.)', uso: 'Cron de envío masivo' },
+];
+
+const licencia = [
+  { host: 'control.itsnexo.com', rutas: 'check.php (validación licencia)' },
+  { host: 'updates.itsnexo.com', rutas: 'check.php, getv.php (versiones y paquetes)' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Integraciones que Nexo consume</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      El panel y los cron jobs llaman APIs externas (OLT, IPTV, routers, facturación, mapas, licencia).
+      Las credenciales viven en ajustes de cada instalación.
+    </p>
+  </div>
+
+  <div class="space-y-10">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">SmartOLT</h3>
+      <p class="text-nexo-dark/55 text-sm mb-2">
+        Base <code class="doc-code-inline">{'{empresa}'}.smartolt.com</code> con API key en ajustes.
+        Ejemplos GET (entre otros): {smartoltGet.slice(0, 4).join(', ')} …
+      </p>
+      <p class="text-nexo-dark/55 text-sm">
+        Acciones POST típicas sobre ONU: {smartoltPost.join(', ')} (prefijo <code class="doc-code-inline">/api/onu/</code>).
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">AdminOLT</h3>
+      <p class="text-nexo-dark/55 text-sm mb-2">URL del tenant + token. Endpoints de referencia:</p>
+      <ul class="text-sm text-nexo-dark/65 list-disc pl-5 space-y-1">
+        {adminOltSample.map(e => <li><code class="doc-code-inline">{e}</code></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Setplex / Nora (IPTV)</h3>
+      <p class="text-nexo-dark/55 text-sm mb-3">
+        Prefijo <code class="doc-code-inline">POST {'{base}'}/apex/v2/...</code>. Expuesto hacia clientes vía recurso v2 <code class="doc-code-inline">iptvsetplex</code>.
+      </p>
+      {setplexGroups.map(g => (
+        <p class="text-sm text-nexo-dark/65 mb-1"><strong class="text-nexo-dark">{g.title}:</strong> {g.paths}</p>
+      ))}
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Red y equipos</h3>
+      <ul class="text-sm text-nexo-dark/65 space-y-2 leading-relaxed">
+        <li><strong class="text-nexo-dark">MikroTik RouterOS API</strong> — puertos 8728/8729 (API binaria), cola en BD y cron de activaciones.</li>
+        <li><strong class="text-nexo-dark">Accounting HTTP</strong> — <code class="doc-code-inline">http://{'{ip_router}'}/accounting/ip.cgi</code>.</li>
+        <li><strong class="text-nexo-dark">Ubiquiti AirOS / Mimosa</strong> — HTTP(S) al equipo para login, dashboard y estado.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Facturación electrónica y contabilidad</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Proveedor</th><th>Notas</th></tr></thead>
+          <tbody>
+            {facturacion.map(f => (
+              <tr><td>{f.proveedor}</td><td>{f.base}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-nexo-dark/45 text-xs mt-2">Otros países (SAT, SIRO, Cobro Digital, etc.) según ajustes de facturación del panel.</p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Mensajería y notificaciones</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Servicio</th><th>Uso</th></tr></thead>
+          <tbody>
+            {mensajeria.map(m => (
+              <tr><td>{m.servicio}</td><td>{m.uso}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Google</h4>
+        <p class="text-nexo-dark/60 text-xs leading-relaxed">
+          Calendar OAuth, Maps Static, reCAPTCHA v3 en portal cliente.
+        </p>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Mapas e identidad</h4>
+        <p class="text-nexo-dark/60 text-xs leading-relaxed">
+          OpenStreetMap tiles, Nominatim geocoding; consulta cédula VE vía API configurada en panel.
+        </p>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Backups en nube</h4>
+        <p class="text-nexo-dark/60 text-xs leading-relaxed">Dropbox y Box (OAuth + upload).</p>
+      </div>
+      <div class="doc-card !py-4 !px-5">
+        <h4 class="font-bold text-nexo-dark text-sm mb-2">Monitoreo</h4>
+        <p class="text-nexo-dark/60 text-xs leading-relaxed">HetrixTools blacklist; IP pública (ipify); NO-IP DDNS.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Licencia y actualizaciones Nexo</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead><tr><th>Host</th><th>Rutas</th></tr></thead>
+          <tbody>
+            {licencia.map(l => (
+              <tr><td><code>{l.host}</code></td><td>{l.rutas}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-nexo-dark/45 text-xs leading-relaxed">
+      Otros HTTP: agenda deportiva (hotspot), Cashea BNPL, Ath Movil (consulta transacciones PR), entre otros según módulos activos.
+    </p>
+  </div>
+</section>

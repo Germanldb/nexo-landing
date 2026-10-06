@@ -7,6 +7,12 @@ export default defineConfig({
   vite: {
     server: {
       proxy: {
+        // Doc API: Vercel serverless en producción; en local usar `vercel dev` o dejar DOC_API_PASSWORD vacío.
+        '/api/doc': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/doc/, '/doc'),
+        },
         '/api': {
           target: 'http://localhost:3000',
           changeOrigin: true,

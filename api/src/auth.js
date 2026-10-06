@@ -1,11 +1,17 @@
 import crypto from 'crypto';
 
 const SESSION_COOKIE = 'nexo_admin_session';
+const DOC_SESSION_COOKIE = 'nexo_doc_session';
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 const adminUser = process.env.ADMIN_USERNAME ?? 'admin';
 const adminPassword = process.env.ADMIN_PASSWORD ?? 'lmujica';
 const sessionSecret = process.env.ADMIN_SESSION_SECRET ?? 'nexo-dev-session-secret';
+
+const docUser = process.env.DOC_API_USERNAME ?? 'doc';
+const docPassword = process.env.DOC_API_PASSWORD ?? '';
+/** Si hay contraseña configurada, /doc/api exige login (cookie o sesión admin). */
+const docApiProtectEnabled = docPassword.length > 0;
 
 function parseCookies(req) {
   const header = req.headers.cookie;
@@ -56,16 +62,45 @@ function createSessionToken(username) {
   });
 }
 
-function setSessionCookie(res, token) {
+function setSessionCookie(res, token, cookieName = SESSION_COOKIE) {
   const maxAge = Math.floor(SESSION_TTL_MS / 1000);
   res.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
+    `${cookieName}=${encodeURIComponent(token)}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
   );
 }
 
-function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax`);
+function clearSessionCookie(res, cookieName = SESSION_COOKIE) {
+  res.setHeader('Set-Cookie', `${cookieName}=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax`);
+}
+
+function getDocSessionFromRequest(req) {
+  const cookies = parseCookies(req);
+  return verifySessionToken(cookies[DOC_SESSION_COOKIE]);
+}
+
+function validateDocCredentials(username, password) {
+  if (!docApiProtectEnabled) return false;
+  return username === docUser && password === docPassword;
+}
+
+/** Acceso a documentación API: abierto si no hay DOC_API_PASSWORD; si no, cookie doc o sesión admin. */
+function getDocApiAccess(req) {
+  if (!docApiProtectEnabled) {
+    return { ok: true, user: null, mode: 'open' };
+  }
+
+  const adminSession = getSessionFromRequest(req);
+  if (adminSession) {
+    return { ok: true, user: adminSession.user, mode: 'admin' };
+  }
+
+  const docSession = getDocSessionFromRequest(req);
+  if (docSession) {
+    return { ok: true, user: docSession.user, mode: 'doc' };
+  }
+
+  return { ok: false };
 }
 
 function getSessionFromRequest(req) {
@@ -89,10 +124,15 @@ function requireAdmin(req, res, next) {
 
 export {
   SESSION_COOKIE,
+  DOC_SESSION_COOKIE,
   clearSessionCookie,
   createSessionToken,
+  docApiProtectEnabled,
+  getDocApiAccess,
+  getDocSessionFromRequest,
   getSessionFromRequest,
   requireAdmin,
   setSessionCookie,
   validateAdminCredentials,
+  validateDocCredentials,
 };

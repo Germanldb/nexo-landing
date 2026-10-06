@@ -1,12 +1,15 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import {
+  DOC_SESSION_COOKIE,
   clearSessionCookie,
   createSessionToken,
+  getDocApiAccess,
   getSessionFromRequest,
   requireAdmin,
   setSessionCookie,
   validateAdminCredentials,
+  validateDocCredentials,
 } from './auth.js';
 import { RETENTION_DAYS, ensureSchema, purgeExpiredCaptaciones } from './migrate.js';
 
@@ -189,6 +192,41 @@ app.get('/admin/session', (req, res) => {
   }
 
   return res.json({ ok: true, user: session.user });
+});
+
+app.post('/doc/login', (req, res) => {
+  const username = typeof req.body?.username === 'string' ? req.body.username.trim() : '';
+  const password = typeof req.body?.password === 'string' ? req.body.password : '';
+
+  const viaDoc = validateDocCredentials(username, password);
+  const viaAdmin = validateAdminCredentials(username, password);
+
+  if (!viaDoc && !viaAdmin) {
+    return res.status(401).json({ ok: false, message: 'Usuario o contraseña incorrectos.' });
+  }
+
+  const token = createSessionToken(username);
+  setSessionCookie(res, token, DOC_SESSION_COOKIE);
+  return res.json({ ok: true, user: username });
+});
+
+app.post('/doc/logout', (_req, res) => {
+  clearSessionCookie(res, DOC_SESSION_COOKIE);
+  return res.json({ ok: true });
+});
+
+app.get('/doc/session', (req, res) => {
+  const access = getDocApiAccess(req);
+  if (!access.ok) {
+    return res.status(401).json({ ok: false, protected: true });
+  }
+
+  return res.json({
+    ok: true,
+    user: access.user,
+    mode: access.mode,
+    protected: access.mode !== 'open',
+  });
 });
 
 app.get('/captaciones', requireAdmin, async (req, res) => {

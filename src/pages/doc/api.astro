@@ -1,0 +1,73 @@
+---
+import DocPageLayout, { type DocNavGroup } from '../../components/doc/DocPageLayout.astro';
+import ApiIntro from '../../components/doc/api-intro.astro';
+import ApiAuth from '../../components/doc/api-auth.astro';
+import ApiServicios from '../../components/doc/api-servicios.astro';
+import ApiPlanes from '../../components/doc/api-planes.astro';
+import ApiPromociones from '../../components/doc/api-promociones.astro';
+import ApiRed from '../../components/doc/api-red.astro';
+import ApiCampo from '../../components/doc/api-campo.astro';
+import ApiErrores from '../../components/doc/api-errores.astro';
+import ApiArquitectura from '../../components/doc/api-arquitectura.astro';
+import ApiCatalogo from '../../components/doc/api-catalogo.astro';
+import ApiAutomatizacion from '../../components/doc/api-automatizacion.astro';
+import ApiIntegraciones from '../../components/doc/api-integraciones.astro';
+import ApiPasarelasIndice from '../../components/doc/api-pasarelas-indice.astro';
+import DocAuthGate from '../../components/doc/DocAuthGate.astro';
+
+const navGroups: DocNavGroup[] = [
+  {
+    label: 'API y servicios',
+    items: [
+      { title: 'Empezar', id: 'api-intro' },
+      { title: 'Autenticación', id: 'api-auth' },
+      { title: 'Servicios', id: 'api-servicios' },
+      { title: 'Planes', id: 'api-planes' },
+      { title: 'Promociones', id: 'api-promociones' },
+      { title: 'Sucursales, zonas y NAP', id: 'api-red' },
+      { title: 'Planificación y vehículos', id: 'api-campo' },
+      { title: 'Errores y seguridad', id: 'api-errores' },
+    ],
+  },
+  {
+    label: 'Catálogo e integraciones',
+    items: [
+      { title: 'Arquitectura', id: 'api-arquitectura' },
+      { title: 'Catálogo API v2', id: 'api-catalogo' },
+      { title: 'Agente, webhooks y CRM', id: 'api-automatizacion' },
+      { title: 'Integraciones externas', id: 'api-integraciones' },
+      { title: 'Índice pasarelas', id: 'api-pasarelas-indice' },
+    ],
+  },
+];
+---
+
+<DocAuthGate returnPath="/doc/api">
+<DocPageLayout
+  title="API — Documentación Nexo"
+  description="Referencia técnica de la API pública de Nexo para integraciones con ISPs."
+  kicker="Documentación técnica"
+  sidebarTitle="Nexo API"
+  sidebarSubtitle="Integraciones y endpoints"
+  navGroups={navGroups}
+  alternateDoc={{
+    href: '/doc/docpage',
+    label: 'Manual de usuario',
+    description: 'Guía del panel, módulos y flujos operativos.',
+  }}
+>
+  <ApiIntro id="api-intro" />
+  <ApiAuth id="api-auth" />
+  <ApiServicios id="api-servicios" />
+  <ApiPlanes id="api-planes" />
+  <ApiPromociones id="api-promociones" />
+  <ApiRed id="api-red" />
+  <ApiCampo id="api-campo" />
+  <ApiErrores id="api-errores" />
+  <ApiArquitectura id="api-arquitectura" />
+  <ApiCatalogo id="api-catalogo" />
+  <ApiAutomatizacion id="api-automatizacion" />
+  <ApiIntegraciones id="api-integraciones" />
+  <ApiPasarelasIndice id="api-pasarelas-indice" />
+</DocPageLayout>
+</DocAuthGate>

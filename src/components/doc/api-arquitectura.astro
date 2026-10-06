@@ -1,0 +1,78 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const routes = [
+  { prefix: '/api/v2/*', handler: 'Router v2', note: 'Recursos REST documentados en el catálogo' },
+  { prefix: '/api/v1/{comando}', handler: 'API v1 legacy', note: 'POST JSON con token; comandos según panel del operador (Token API)' },
+  { prefix: '/api/v11/*', handler: 'Proxy JWT → v1', note: 'Reenvía a v1 e inyecta token en el body' },
+  { prefix: '/api/v21/*', handler: 'Proxy JWT → v2', note: 'Reenvía a v2; en GET el token puede ir en query' },
+  { prefix: '/api/auth.php', handler: 'JWT', note: 'Login y renovación de token' },
+];
+
+const routerRules = [
+  'GET /{recurso} → listado (getAll)',
+  'GET /{recurso}/{id} → detalle o slug (disponibles, tickets, …)',
+  'POST /{recurso} → alta (create)',
+  'POST /{recurso}/{subacción} → método del controlador si existe',
+  'PUT / DELETE → update / delete (muchos recursos son solo lectura → 405)',
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Arquitectura de la API</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Nexo expone varias capas HTTP sobre la misma instalación: REST v2 (recomendada), comandos v1 para integraciones heredadas
+      y proxies que traducen JWT a <code class="doc-code-inline">token_api</code>.
+    </p>
+  </div>
+
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-3">Prefijos y enrutado</h3>
+      <div class="overflow-x-auto">
+        <table class="doc-api-table">
+          <thead>
+            <tr>
+              <th>Prefijo</th>
+              <th>Rol</th>
+              <th>Notas</th>
+            </tr>
+          </thead>
+          <tbody>
+            {routes.map(r => (
+              <tr>
+                <td><code>{r.prefix}</code></td>
+                <td>{r.handler}</td>
+                <td class="text-nexo-dark/60">{r.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-nexo-dark mb-2">Router API v2</h3>
+      <p class="text-nexo-dark/60 text-sm mb-3 leading-relaxed">
+        Base: <code class="doc-code-inline">https://{'{TU_DOMINIO}'}/api/v2/{'{recurso}'}</code>.
+        Las respuestas son JSON UTF-8; v2 envía CORS <code class="doc-code-inline">Access-Control-Allow-Origin: *</code>.
+      </p>
+      <ul class="space-y-1.5 text-sm text-nexo-dark/65 leading-relaxed list-disc pl-5">
+        {routerRules.map(rule => <li>{rule}</li>)}
+      </ul>
+    </div>
+
+    <div class="doc-card !py-4 !px-5">
+      <h3 class="font-bold text-nexo-dark text-sm mb-2">API v1 (legacy)</h3>
+      <p class="text-nexo-dark/60 text-xs leading-relaxed">
+        URL típica: <code class="doc-code-inline">POST /api/v1/{'{comando}'}</code> con cuerpo JSON
+        (<code class="doc-code-inline">token</code> + parámetros del comando). El identificador
+        <code class="doc-code-inline">comando</code> usa solo letras minúsculas, números y guiones.
+        Consulte en su panel la lista de comandos disponibles para el operador API o pruebe contra su instalación.
+      </p>
+    </div>
+  </div>
+</section>

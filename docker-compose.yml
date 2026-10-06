@@ -18,6 +18,8 @@ services:
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-lmujica}
       ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-nexo-dev-session-secret}
+      DOC_API_USERNAME: ${DOC_API_USERNAME:-doc}
+      DOC_API_PASSWORD: ${DOC_API_PASSWORD:-}
     depends_on:
       db:
         condition: service_healthy

@@ -1,0 +1,41 @@
+---
+interface Props { id?: string; }
+const { id } = Astro.props;
+
+const areas = [
+  { area: 'API v2 conciliación / C2P', rutas: 'pagomovil, pagomovilbdv, bdvc2p, c2p, pagoc2p, hotspotventas, pagos' },
+  { area: 'Webhooks', rutas: 'api/webhooks/bdv.php, bbva.php, evertec.php' },
+  { area: 'Listeners admin', rutas: 'admin/bdv_listener.php, banesco_listener.php' },
+  { area: 'Portal cliente', rutas: 'PayU, PayPal, Transbank, Mercantil, BioPago, Wompi, Toku, Kushki, Instapago, Evertec, BBVA, BDV, Banco Plaza, Bancaribe, Conekta, Ath Movil, …' },
+];
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-6">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Pasarelas de pago — índice</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Las integraciones bancarias y de checkout no se detallan en esta documentación pública.
+      Use esta tabla para ubicar módulos en su instalación o solicite guías específicas a soporte Nexo.
+    </p>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="doc-api-table">
+      <thead><tr><th>Área</th><th>Rutas / archivos</th></tr></thead>
+      <tbody>
+        {areas.map(a => (
+          <tr>
+            <td class="font-medium text-nexo-dark">{a.area}</td>
+            <td><code class="text-[11px]">{a.rutas}</code></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-nexo-dark/45 text-xs mt-4 leading-relaxed">
+    Admin pasarelas y UI por país viven bajo <code class="doc-code-inline">admin/ajax/pagomovil/</code>,
+    <code class="doc-code-inline">admin/ajax/evertec/</code> y el portal en <code class="doc-code-inline">cliente/ajax/</code>.
+  </p>
+</section>

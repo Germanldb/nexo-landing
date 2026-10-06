@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocPageLayout, { type DocNavGroup } from '../../components/doc/DocPageLayout.astro';
 import Intro from '../../components/doc/intro.astro';
 import Glosario from '../../components/doc/glosario.astro';
 import Acceso from '../../components/doc/acceso.astro';
@@ -22,16 +22,8 @@ import PortalCliente from '../../components/doc/portal-cliente.astro';
 import Flujos from '../../components/doc/flujos.astro';
 import Permisos from '../../components/doc/permisos.astro';
 import FaqDoc from '../../components/doc/faq-doc.astro';
-import ApiIntro from '../../components/doc/api-intro.astro';
-import ApiAuth from '../../components/doc/api-auth.astro';
-import ApiServicios from '../../components/doc/api-servicios.astro';
-import ApiPlanes from '../../components/doc/api-planes.astro';
-import ApiPromociones from '../../components/doc/api-promociones.astro';
-import ApiRed from '../../components/doc/api-red.astro';
-import ApiCampo from '../../components/doc/api-campo.astro';
-import ApiErrores from '../../components/doc/api-errores.astro';
 
-const navGroups = [
+const navGroups: DocNavGroup[] = [
   {
     label: 'Introducción',
     items: [
@@ -89,217 +81,42 @@ const navGroups = [
       { title: 'Preguntas frecuentes', id: 'faq-doc' },
     ],
   },
-  {
-    label: 'API y servicios',
-    items: [
-      { title: 'Empezar', id: 'api-intro' },
-      { title: 'Autenticación', id: 'api-auth' },
-      { title: 'Servicios', id: 'api-servicios' },
-      { title: 'Planes', id: 'api-planes' },
-      { title: 'Promociones', id: 'api-promociones' },
-      { title: 'Sucursales, zonas y NAP', id: 'api-red' },
-      { title: 'Planificación y vehículos', id: 'api-campo' },
-      { title: 'Errores y seguridad', id: 'api-errores' },
-    ],
-  },
 ];
 ---
 
-<BaseLayout title="Documentación — Nexo" description="Manual completo de usuario para la plataforma Nexo.">
-  <div class="doc-page flex min-h-screen">
-    <!-- Sidebar -->
-    <aside id="doc-sidebar" class="doc-sidebar w-72 xl:w-80 shrink-0 fixed top-0 left-0 h-screen overflow-y-auto px-4 pt-4 pb-4 z-40 hidden lg:block transition-transform duration-300">
-      <div class="mb-2 px-1">
-        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary">Documentación</span>
-        <h2 class="text-xl font-extrabold text-nexo-dark mt-0.5">Nexo</h2>
-        <p class="text-[11px] text-nexo-dark/40 mt-0.5 leading-snug">Manual de usuario e integraciones</p>
-      </div>
-      <nav class="doc-nav" aria-label="Contenido del manual">
-        {navGroups.map((group, groupIndex) => (
-          <div class="doc-nav-group is-collapsed" data-nav-group={groupIndex}>
-            <button
-              type="button"
-              class="doc-nav-group-toggle"
-              aria-expanded="false"
-              aria-controls={`doc-nav-group-${groupIndex}`}
-            >
-              <span>{group.label}</span>
-              <svg class="doc-nav-group-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </button>
-            <div id={`doc-nav-group-${groupIndex}`} class="doc-nav-group-items" role="region">
-              {group.items.map(item => (
-                <a
-                  href={`#${item.id}`}
-                  class="doc-nav-link"
-                  data-section-id={item.id}
-                >
-                  {item.title}
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
-    </aside>
-
-    <!-- Mobile sidebar toggle -->
-    <button
-      id="doc-sidebar-toggle"
-      class="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-nexo-dark text-white shadow-xl flex items-center justify-center hover:bg-nexo-primary hover:text-nexo-dark transition-all"
-      aria-label="Abrir navegación"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-    </button>
-
-    <!-- Mobile sidebar overlay -->
-    <div id="doc-sidebar-overlay" class="lg:hidden fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
-
-    <!-- Content -->
-    <main class="flex-1 lg:ml-72 xl:ml-80 min-w-0">
-      <div class="px-6 sm:px-10 lg:px-16 xl:px-20 pt-4 pb-12 lg:pt-4 lg:pb-16">
-        <Intro id="intro" />
-        <Glosario id="glosario" />
-        <Acceso id="acceso" />
-        <BarraSuperior id="barra-superior" />
-        <Dashboard id="dashboard" />
-        <GestionRed id="gestion-red" />
-        <Servicios id="servicios" />
-        <Promociones id="promociones" />
-        <Clientes id="clientes" />
-        <FichaCliente id="ficha-cliente" />
-        <FichasHotspot id="fichas-hotspot" />
-        <Tareas id="tareas" />
-        <Finanzas id="finanzas" />
-        <Almacen id="almacen" />
-        <Reportes id="reportes" />
-        <Soporte id="soporte" />
-        <Mensajeria id="mensajeria" />
-        <Ajustes id="ajustes" />
-        <PortalCliente id="portal-cliente" />
-        <Flujos id="flujos" />
-        <Permisos id="permisos" />
-        <FaqDoc id="faq-doc" />
-        <ApiIntro id="api-intro" />
-        <ApiAuth id="api-auth" />
-        <ApiServicios id="api-servicios" />
-        <ApiPlanes id="api-planes" />
-        <ApiPromociones id="api-promociones" />
-        <ApiRed id="api-red" />
-        <ApiCampo id="api-campo" />
-        <ApiErrores id="api-errores" />
-
-        <div class="mt-8 pt-6 border-t border-nexo-dark/10 text-center">
-          <a href="#intro" class="inline-flex items-center gap-2 text-xs font-semibold text-nexo-dark/35 hover:text-nexo-primary transition-colors">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
-            Volver al inicio
-          </a>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <style>
-    .doc-section-divider {
-      border-top: 1px solid var(--nexo-border);
-    }
-  </style>
-
-  <script>
-    const links = document.querySelectorAll('.doc-nav-link');
-    const sections = document.querySelectorAll('section[id]');
-    const sidebar = document.getElementById('doc-sidebar');
-    const toggle = document.getElementById('doc-sidebar-toggle');
-    const overlay = document.getElementById('doc-sidebar-overlay');
-    const navGroups = document.querySelectorAll('.doc-nav-group');
-
-    function setGroupExpanded(group, expanded) {
-      const btn = group.querySelector('.doc-nav-group-toggle');
-      if (!btn) return;
-      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-      group.classList.toggle('is-collapsed', !expanded);
-    }
-
-    function openOnlyGroup(targetGroup) {
-      navGroups.forEach(group => {
-        setGroupExpanded(group, group === targetGroup);
-      });
-    }
-
-    function setActiveLink(sectionId) {
-      links.forEach(l => l.classList.remove('active'));
-      navGroups.forEach(g => g.classList.remove('is-active-group'));
-
-      const active = document.querySelector(`.doc-nav-link[data-section-id="${sectionId}"]`);
-      const group = active?.closest('.doc-nav-group');
-      active?.classList.add('active');
-      if (group) {
-        group.classList.add('is-active-group');
-        openOnlyGroup(group);
-      }
-      active?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-
-    navGroups.forEach(group => {
-      const btn = group.querySelector('.doc-nav-group-toggle');
-      btn?.addEventListener('click', () => {
-        const isOpen = btn.getAttribute('aria-expanded') === 'true';
-        if (isOpen) {
-          setGroupExpanded(group, false);
-        } else {
-          openOnlyGroup(group);
-        }
-      });
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActiveLink(entry.target.id);
-        }
-      });
-    }, { rootMargin: '-80px 0px -70% 0px' });
-
-    sections.forEach(s => observer.observe(s));
-
-    links.forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth < 1024) {
-          sidebar?.classList.add('hidden');
-          overlay?.classList.add('hidden');
-          overlay?.classList.remove('opacity-100');
-          overlay?.classList.add('opacity-0');
-          setTimeout(() => overlay?.classList.add('hidden'), 300);
-        }
-      });
-    });
-
-    toggle?.addEventListener('click', () => {
-      const isHidden = sidebar?.classList.contains('hidden');
-      sidebar?.classList.toggle('hidden');
-      overlay?.classList.toggle('hidden');
-      if (isHidden) {
-        requestAnimationFrame(() => {
-          overlay?.classList.remove('opacity-0');
-          overlay?.classList.add('opacity-100');
-        });
-      } else {
-        overlay?.classList.remove('opacity-100');
-        overlay?.classList.add('opacity-0');
-      }
-    });
-
-    overlay?.addEventListener('click', () => {
-      sidebar?.classList.add('hidden');
-      overlay?.classList.remove('opacity-100');
-      overlay?.classList.add('opacity-0');
-      setTimeout(() => overlay?.classList.add('hidden'), 300);
-    });
-
-    if (window.location.hash) {
-      const id = window.location.hash.slice(1);
-      if (document.getElementById(id)) setActiveLink(id);
-    }
-  </script>
-</BaseLayout>
+<DocPageLayout
+  title="Documentación — Nexo"
+  description="Manual de usuario para la plataforma Nexo."
+  kicker="Documentación"
+  sidebarTitle="Nexo"
+  sidebarSubtitle="Manual de usuario del panel"
+  navGroups={navGroups}
+  alternateDoc={{
+    href: '/doc/api',
+    label: 'API y servicios',
+    description: 'Referencia técnica, autenticación y endpoints.',
+  }}
+>
+  <Intro id="intro" />
+  <Glosario id="glosario" />
+  <Acceso id="acceso" />
+  <BarraSuperior id="barra-superior" />
+  <Dashboard id="dashboard" />
+  <GestionRed id="gestion-red" />
+  <Servicios id="servicios" />
+  <Promociones id="promociones" />
+  <Clientes id="clientes" />
+  <FichaCliente id="ficha-cliente" />
+  <FichasHotspot id="fichas-hotspot" />
+  <Tareas id="tareas" />
+  <Finanzas id="finanzas" />
+  <Almacen id="almacen" />
+  <Reportes id="reportes" />
+  <Soporte id="soporte" />
+  <Mensajeria id="mensajeria" />
+  <Ajustes id="ajustes" />
+  <PortalCliente id="portal-cliente" />
+  <Flujos id="flujos" />
+  <Permisos id="permisos" />
+  <FaqDoc id="faq-doc" />
+</DocPageLayout>
