@@ -1,0 +1,35 @@
+---
+interface Props { id?: string; }
+const { id = 'api-readme-intro' } = Astro.props;
+---
+
+<section id={id} class="doc-section mb-14 doc-readme-hero">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-nexo-dark tracking-tight mb-3">
+    Introducción
+  </h1>
+  <p class="text-lg text-nexo-dark/70 mb-8">
+    Bienvenido a la API Nexo
+  </p>
+
+  <div class="prose-nexo text-sm text-nexo-dark/65 space-y-4 max-w-2xl leading-relaxed mb-8">
+    <p>
+      <span class="font-semibold text-nexo-dark">Base URL</span>
+      {' '}
+      (API v1): https://{'{tu-dominio}'}/api/v1
+    </p>
+    <p class="text-nexo-dark/55">
+      REST v2: /api/v2/{'{modulo}'} · JWT: /api/auth · Proxies con Bearer: /api/v11 y /api/v21.
+    </p>
+  </div>
+
+  <div class="prose-nexo text-sm text-nexo-dark/65 space-y-4 max-w-2xl leading-relaxed">
+    <p>
+      La API Nexo permite integrar facturación, clientes, tickets, red, pagos, hotspot e IPTV con su stack
+      (CRM, app móvil, chatbot o conciliación). Las respuestas son JSON UTF-8.
+    </p>
+    <p>
+      En el menú lateral elija un endpoint: verá método, ruta, parámetros y ejemplos como en una referencia
+      técnica estándar. Use un operador con <strong class="text-nexo-dark">API = 1</strong> y token generado en el panel.
+    </p>
+  </div>
+</section>

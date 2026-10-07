@@ -85,16 +85,16 @@ const params = [
       title="Promociones activas por sucursal"
       method="GET"
       path="/api/v2/promociones/activas?id_sucursal=1"
-      http={`GET https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1 HTTP/1.1
+      http={`GET  .com/api/v2/promociones/activas?id_sucursal=1 HTTP/1.1
 Authorization: Bearer TOKEN_API
 Accept: application/json`}
       javascript={`const res = await fetch(
-  "https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1",
+  " .com/api/v2/promociones/activas?id_sucursal=1",
   { headers: { Authorization: "Bearer TOKEN_API", Accept: "application/json" } }
 );
 const { paquetes } = await res.json();`}
       php={`<?php
-$ch = curl_init("https://tu-dominio.com/api/v2/promociones/activas?id_sucursal=1");
+$ch = curl_init(" .com/api/v2/promociones/activas?id_sucursal=1");
 curl_setopt_array($ch, [
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_HTTPHEADER => ["Authorization: Bearer TOKEN_API", "Accept: application/json"],

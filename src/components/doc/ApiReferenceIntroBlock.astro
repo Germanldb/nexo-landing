@@ -1,0 +1,58 @@
+---
+import ApiReferenceIntroSegments from './ApiReferenceIntroSegments.astro';
+import { sanitizePublicDiagram } from '../../lib/api-doc-public-scope';
+
+interface Props {
+  block: string;
+  diagram: boolean;
+}
+
+const { block, diagram } = Astro.props;
+
+function splitArchitectureBlock(text: string) {
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  const lead: string[] = [];
+  const bullets: string[] = [];
+  for (const line of lines) {
+    if (/^API v\d+\s*[—–-]/i.test(line)) {
+      bullets.push(line);
+    } else if (bullets.length === 0) {
+      lead.push(line);
+    } else {
+      bullets[bullets.length - 1] += ` ${line}`;
+    }
+  }
+  return { lead, bullets };
+}
+
+const hasArchitectureList = /^API v\d+\s*[—–-]/im.test(block);
+const { lead, bullets } = hasArchitectureList ? splitArchitectureBlock(block) : { lead: [], bullets: [] };
+const isBareUrl =
+  !diagram &&
+  !hasArchitectureList &&
+  block.trim().split('\n').filter(Boolean).length === 1 &&
+  /^https?:\/\//i.test(block.trim());
+---
+
+{diagram ? (
+  <pre class="doc-ref-diagram">{sanitizePublicDiagram(block)}</pre>
+) : hasArchitectureList ? (
+  <div class="doc-ref-intro-text prose-nexo">
+    {lead.map((line) => (
+      <p>{line}</p>
+    ))}
+    {bullets.length > 0 && (
+      <ul class="doc-ref-intro-list">
+        {bullets.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+) : isBareUrl ? (
+  <p class="doc-ref-intro-text prose-nexo doc-base-url-lead">
+    <span class="font-semibold text-nexo-dark">{block.trim()}</span>
+  </p>
+) : (
+  <ApiReferenceIntroSegments block={block} />
+)}

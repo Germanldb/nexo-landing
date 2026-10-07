@@ -1,0 +1,64 @@
+---
+interface Props {
+  intro: string[];
+}
+
+const { intro } = Astro.props;
+
+const fullText = intro.join('\n');
+const lines = fullText.split('\n').map((l) => l.trim()).filter(Boolean);
+
+const urlLines = lines.filter((l) => /^https?:\/\//i.test(l));
+
+const rowRe =
+  /^(API v1|API v11|API v2|API v21|Auth|Webhooks|Recaudadores)\s+(\S+)\s+(.+)$/i;
+
+function isPublicBaseUrlRow(family: string) {
+  return !/webhook|recaudador/i.test(family);
+}
+
+const rows: { family: string; base: string; usage: string }[] = [];
+for (const line of lines) {
+  const m = line.match(rowRe);
+  if (m && isPublicBaseUrlRow(m[1])) {
+    rows.push({ family: m[1], base: m[2], usage: m[3] });
+  }
+}
+---
+
+<div class="doc-ref-intro-text prose-nexo doc-base-url-section">
+  {urlLines.length > 0 && (
+    <p class="doc-base-url-lead">
+      Sustituya el dominio por el de su operador. Ejemplo:
+      {' '}
+      <span class="font-semibold text-nexo-dark">{urlLines[urlLines.length - 1]}</span>
+    </p>
+  )}
+
+  {rows.length > 0 && (
+    <div class="mt-4 overflow-x-auto">
+      <table class="doc-api-table">
+        <thead>
+          <tr>
+            <th>Familia</th>
+            <th>Base</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr>
+              <td>{row.family}</td>
+              <td><code>{row.base}</code></td>
+              <td>{row.usage}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+  {rows.length === 0 && urlLines.length === 0 && (
+    <p>{fullText}</p>
+  )}
+</div>

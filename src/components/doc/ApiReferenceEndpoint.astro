@@ -1,0 +1,119 @@
+---
+import ApiReferenceIntroSegments from './ApiReferenceIntroSegments.astro';
+
+export interface ReferenceEndpoint {
+  id: string;
+  method: string;
+  path: string;
+  title: string;
+  description: string[];
+  params: { name: string; type: string; required: string; description: string }[];
+  notes?: string[];
+  examples: string[];
+}
+
+interface Props {
+  endpoint: ReferenceEndpoint;
+}
+
+const { endpoint } = Astro.props;
+
+const pathOnly = endpoint.path.split(' · ')[0].split(/\s+/)[0];
+const commandMatch = pathOnly.match(/^\/api\/v1\/([A-Za-z0-9-]+)/);
+const v11Path = commandMatch ? `/api/v11/${commandMatch[1]}` : null;
+const publicUrl =
+  pathOnly.startsWith('/api/') && !pathOnly.includes('?')
+    ? ` ${pathOnly}`
+    : null;
+const urlLabel = pathOnly.startsWith('/api/v1/') ? 'URL v1' : 'URL';
+
+const methodNorm = endpoint.method.replace(/\s+/g, ' ').toUpperCase();
+const methodClass =
+  methodNorm === 'GET' || methodNorm.startsWith('GET/')
+    ? 'is-get'
+    : methodNorm === 'POST' || methodNorm.startsWith('POST') || methodNorm.includes('POST')
+      ? 'is-post'
+      : methodNorm.includes('WEBHOOK')
+        ? 'is-webhook'
+        : 'is-other';
+---
+
+<article id={endpoint.id} class="doc-endpoint-card">
+  <div class="doc-endpoint-card__head">
+    <span class:list={['doc-method-badge', methodClass]}>{endpoint.method}</span>
+    <code class="doc-endpoint-card__path">{endpoint.path}</code>
+  </div>
+  {endpoint.title && endpoint.title !== '{' && endpoint.title !== '}' && (
+    <h4 class="doc-endpoint-card__title">{endpoint.title}</h4>
+  )}
+  {publicUrl && (
+    <div class="doc-endpoint-urls text-sm text-nexo-dark/70 space-y-1 mb-3">
+      <p>
+        <span class="font-semibold text-nexo-dark">{urlLabel}:</span>{' '}
+        {publicUrl}
+      </p>
+      {v11Path && (
+        <p>
+          <span class="font-semibold text-nexo-dark">URL v11:</span>{' '}
+           {v11Path}
+          <span class="text-nexo-dark/50"> (Bearer; omita <code class="doc-code-inline">token</code> en el body)</span>
+        </p>
+      )}
+    </div>
+  )}
+  {endpoint.description.length > 0 && (
+    <div class="doc-endpoint-card__desc">
+      <ApiReferenceIntroSegments block={endpoint.description.join('\n')} />
+    </div>
+  )}
+  {endpoint.params.length > 0 && (
+    <div class="mt-4 overflow-x-auto">
+      <table class="doc-api-table">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Tipo</th>
+            <th>Req.</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {endpoint.params.map((row) => (
+            <tr>
+              <td><code>{row.name}</code></td>
+              <td>{row.type}</td>
+              <td>{row.required}</td>
+              <td>{row.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+  {endpoint.notes && endpoint.notes.length > 0 && (
+    <ul class="doc-ref-intro-list mt-2">
+      {endpoint.notes.map((note) => (
+        <li>{note}</li>
+      ))}
+    </ul>
+  )}
+  {endpoint.examples.length > 0 && (
+    <div class="mt-4 space-y-3">
+      {endpoint.examples.map((ex, idx) => {
+        const label = ex.trimStart().startsWith('curl')
+          ? 'Ejemplo curl'
+          : ex.includes('"status"') && ex.includes('token')
+            ? 'Respuesta'
+            : idx === 0
+              ? 'Ejemplo'
+              : 'Respuesta';
+        return (
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-nexo-dark/40 mb-1.5">{label}</p>
+            <pre class="doc-code-block" tabindex="0"><code>{ex}</code></pre>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</article>

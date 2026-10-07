@@ -619,8 +619,8 @@ body.nexo-landing .doc-method {
 }
 
 body.nexo-landing .doc-method[data-method="post"] {
-  background: color-mix(in srgb, #3b82f6 75%, #fff);
-  color: #0f172a;
+  background: var(--nexo-s, #1a3a3a);
+  color: #fff;
 }
 
 body.nexo-landing .doc-method[data-method="put"],
@@ -903,6 +903,131 @@ body.nexo-landing .doc-reference-prose pre.doc-code-block {
   font-size: 0.75rem;
 }
 
+body.nexo-landing .doc-reference-layout {
+  max-width: 52rem;
+}
+
+body.nexo-landing .doc-endpoint-card {
+  border: 1px solid var(--nexo-border);
+  border-radius: 1rem;
+  padding: 1.15rem 1.25rem;
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 2%, transparent);
+  scroll-margin-top: 6rem;
+}
+
+body.nexo-landing .doc-endpoint-card:hover {
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 35%, var(--nexo-border));
+}
+
+body.nexo-landing .doc-endpoint-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+body.nexo-landing .doc-method-badge {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+}
+
+body.nexo-landing .doc-method-badge.is-post {
+  background: var(--nexo-s, #1a3a3a);
+  color: #fff;
+}
+
+body.nexo-landing .doc-method-badge.is-get {
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 28%, transparent);
+  color: var(--nexo-dark, #0D2E34);
+}
+
+body.nexo-landing .doc-method-badge.is-webhook {
+  background: color-mix(in srgb, #9333ea 15%, transparent);
+  color: #7e22ce;
+}
+
+body.nexo-landing .doc-method-badge.is-other {
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 8%, transparent);
+  color: color-mix(in srgb, var(--nexo-text) 70%, transparent);
+}
+
+body.nexo-landing .doc-endpoint-card__path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  word-break: break-word;
+  color: var(--nexo-text);
+}
+
+body.nexo-landing .doc-endpoint-card__title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--nexo-text);
+  margin-bottom: 0.35rem;
+}
+
+body.nexo-landing .doc-endpoint-card__desc p {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--nexo-text) 68%, transparent);
+  margin: 0.35rem 0;
+}
+
+body.nexo-landing .doc-ref-intro-text p {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--nexo-text) 72%, transparent);
+  margin: 0.4rem 0;
+}
+
+body.nexo-landing .doc-ref-diagram {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  padding: 0.85rem 1rem;
+  margin: 0.75rem 0 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--nexo-border);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 4%, transparent);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: color-mix(in srgb, var(--nexo-text) 75%, transparent);
+}
+
+body.nexo-landing .doc-ref-h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--nexo-text);
+  margin: 0 0 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--nexo-primary, #B3CD1D) 45%, transparent);
+  scroll-margin-top: 6rem;
+  letter-spacing: -0.02em;
+}
+
+body.nexo-landing .doc-ref-h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--nexo-text);
+  margin: 0 0 0.85rem;
+  scroll-margin-top: 6rem;
+}
+
+html.theme-dark body.nexo-landing .doc-method-badge.is-post {
+  background: var(--nexo-s, #1a3a3a);
+  color: #fff;
+}
+
+html.theme-dark body.nexo-landing .doc-method-badge.is-get {
+  color: var(--nexo-primary, #B3CD1D);
+}
+
 body.nexo-landing .doc-badge {
   display: inline-flex;
   align-items: center;
@@ -1053,14 +1178,14 @@ body.nexo-landing .doc-nav-group-items {
   flex-direction: column;
   gap: 0.125rem;
   padding: 0.125rem 0 0.375rem 0.125rem;
-  overflow: hidden;
-  max-height: 40rem;
+  overflow: visible;
+  max-height: none;
   opacity: 1;
-  transition: max-height 0.25s ease, opacity 0.18s ease, padding 0.2s ease;
 }
 
 body.nexo-landing .doc-nav-group.is-collapsed .doc-nav-group-items {
   max-height: 0;
+  overflow: hidden;
   opacity: 0;
   padding-top: 0;
   padding-bottom: 0;
@@ -1089,6 +1214,285 @@ body.nexo-landing .doc-nav-link.active {
   color: var(--nexo-text);
   border-left-color: var(--nexo-primary);
   background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 10%, transparent);
+}
+
+body.nexo-landing .doc-nav-subgroup {
+  margin: 0.15rem 0 0.35rem;
+}
+
+body.nexo-landing .doc-nav-subgroup-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.65rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--nexo-text) 78%, transparent);
+  cursor: pointer;
+  border-radius: 0.375rem;
+  text-align: left;
+}
+
+body.nexo-landing .doc-nav-subgroup-toggle:hover {
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 4%, transparent);
+}
+
+body.nexo-landing .doc-nav-subgroup-chevron {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+  opacity: 0.45;
+}
+
+body.nexo-landing .doc-nav-subgroup:not(.is-collapsed) .doc-nav-subgroup-chevron {
+  transform: rotate(90deg);
+}
+
+body.nexo-landing .doc-nav-subgroup-items {
+  padding-left: 0.35rem;
+  margin-left: 0.5rem;
+  border-left: 1px solid color-mix(in srgb, var(--nexo-border) 80%, transparent);
+}
+
+body.nexo-landing .doc-nav-subgroup.is-collapsed .doc-nav-subgroup-items {
+  display: none;
+}
+
+body.nexo-landing .doc-nav-link--endpoint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-right: 0.35rem;
+  font-weight: 500;
+}
+
+body.nexo-landing .doc-nav-link__text {
+  min-width: 0;
+  line-clamp: 2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.nexo-landing .doc-nav-method,
+body.nexo-landing .doc-nav-method.is-post {
+  flex-shrink: 0;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  color: #fff;
+  background: var(--nexo-s, #1a3a3a);
+}
+
+body.nexo-landing .doc-nav-method.is-get {
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 85%, #0d2e34 15%);
+  color: var(--nexo-dark, #0d2e34);
+}
+
+body.nexo-landing .doc-base-url-lead {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--nexo-text) 72%, transparent);
+  margin: 0 0 0.5rem;
+}
+
+body.nexo-landing .doc-page--readme main {
+  max-width: none;
+}
+
+body.nexo-landing .doc-page--readme main > div {
+  max-width: 56rem;
+}
+
+body.nexo-landing .doc-sidebar--readme {
+  background: var(--nexo-bg-elevated);
+  border-right: 1px solid var(--nexo-border);
+  padding-top: 1rem;
+}
+
+body.nexo-landing .doc-nav-filter-wrap {
+  position: relative;
+  display: block;
+}
+
+body.nexo-landing .doc-nav-filter {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 4.25rem 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  border: 1px solid #d8d8d8;
+  border-radius: 0.375rem;
+  background: #fff;
+  color: var(--nexo-text);
+  outline: none;
+}
+
+body.nexo-landing .doc-nav-filter:focus {
+  border-color: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 55%, var(--nexo-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--nexo-primary, #B3CD1D) 22%, transparent);
+}
+
+body.nexo-landing .doc-nav-filter-kbd {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.35rem;
+  background: #f9fafb;
+  pointer-events: none;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-group-toggle {
+  padding: 0.65rem 0.5rem 0.35rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  font-weight: 700;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-group.is-active-group .doc-nav-group-toggle,
+body.nexo-landing .doc-sidebar--readme .doc-nav-group:not(.is-collapsed) .doc-nav-group-toggle {
+  color: var(--nexo-primary);
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-link {
+  border-left: 2px solid transparent;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 0.4rem 0.625rem 0.4rem 0.75rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--nexo-text) 55%, transparent);
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-link:hover {
+  color: var(--nexo-text);
+  background: color-mix(in srgb, var(--nexo-dark, #0D2E34) 4%, transparent);
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-link.active {
+  color: var(--nexo-text);
+  border-left-color: var(--nexo-primary, #B3CD1D);
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 10%, transparent);
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-subgroup-items {
+  margin-left: 0.65rem;
+  padding-left: 0.5rem;
+  border-left-color: #ececec;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-subgroup-toggle {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #374151;
+  padding: 0.35rem 0.5rem;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-link--endpoint {
+  font-size: 0.8125rem;
+  padding: 0.35rem 0.4rem 0.35rem 0.55rem;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-method,
+body.nexo-landing .doc-sidebar--readme .doc-nav-method.is-post {
+  font-size: 0.5625rem;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  background: var(--nexo-s, #1a3a3a);
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-method.is-get {
+  background: color-mix(in srgb, var(--nexo-primary, #B3CD1D) 28%, transparent);
+  color: var(--nexo-dark, #0D2E34);
+}
+
+body.nexo-landing .doc-nav-link.is-filter-hidden,
+body.nexo-landing .doc-nav-subgroup.is-filter-hidden {
+  display: none !important;
+}
+
+body.nexo-landing .doc-ref-intro-list {
+  margin: 0.75rem 0 1rem 1.25rem;
+  padding: 0;
+  list-style: disc;
+}
+
+body.nexo-landing .doc-ref-intro-list li {
+  margin: 0.35rem 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--nexo-text) 72%, transparent);
+}
+
+body.nexo-landing .doc-ref-bullets {
+  margin: 0.5rem 0 1rem 1.25rem;
+  padding: 0;
+  list-style: disc;
+}
+
+body.nexo-landing .doc-ref-bullets li {
+  margin: 0.35rem 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--nexo-text) 72%, transparent);
+}
+
+body.nexo-landing .doc-endpoint-urls code.doc-code-inline {
+  font-size: 0.75rem;
+  padding: 0.05rem 0.25rem;
+}
+
+body.nexo-landing .doc-ref-curl {
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+}
+
+body.nexo-landing .doc-ref-h4 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--nexo-text);
+}
+
+body.nexo-landing .doc-api-table .doc-table-json {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  word-break: break-word;
+  white-space: normal;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-group-chevron,
+body.nexo-landing .doc-sidebar--readme .doc-nav-subgroup-chevron {
+  display: none;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-subgroup-toggle::after {
+  content: '›';
+  opacity: 0.45;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+body.nexo-landing .doc-sidebar--readme .doc-nav-subgroup:not(.is-collapsed) .doc-nav-subgroup-toggle::after {
+  transform: rotate(90deg);
+  display: inline-block;
 }
 
 @media (min-width: 1024px) {

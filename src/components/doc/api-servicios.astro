@@ -130,11 +130,11 @@ const fields = [
         title="Consultar servicios"
         method="GET"
         path="/api/v2/servicios?cedula=12345678"
-        http={`GET https://tu-dominio.com/api/v2/servicios?cedula=12345678 HTTP/1.1
+        http={`GET  .com/api/v2/servicios?cedula=12345678 HTTP/1.1
 Authorization: Bearer TOKEN_API
 Accept: application/json`}
         javascript={`const res = await fetch(
-  "https://tu-dominio.com/api/v2/servicios?cedula=12345678",
+  " .com/api/v2/servicios?cedula=12345678",
   {
     headers: {
       Authorization: "Bearer TOKEN_API",
@@ -145,7 +145,7 @@ Accept: application/json`}
 const data = await res.json();
 // data.ok · data.cliente · data.servicios[]`}
         php={`<?php
-$ch = curl_init("https://tu-dominio.com/api/v2/servicios?cedula=12345678");
+$ch = curl_init(" .com/api/v2/servicios?cedula=12345678");
 curl_setopt_array($ch, [
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_HTTPHEADER => [

@@ -93,15 +93,15 @@ const params = [
       title="Listar planes"
       method="GET"
       path="/api/v2/planes"
-      http={`GET https://tu-dominio.com/api/v2/planes HTTP/1.1
+      http={`GET  .com/api/v2/planes HTTP/1.1
 Authorization: Bearer TOKEN_API
 Accept: application/json`}
-      javascript={`const res = await fetch("https://tu-dominio.com/api/v2/planes", {
+      javascript={`const res = await fetch(" .com/api/v2/planes", {
   headers: { Authorization: "Bearer TOKEN_API", Accept: "application/json" },
 });
 const { ok, conteo, planes } = await res.json();`}
       php={`<?php
-$ch = curl_init("https://tu-dominio.com/api/v2/planes");
+$ch = curl_init(" .com/api/v2/planes");
 curl_setopt_array($ch, [
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_HTTPHEADER => ["Authorization: Bearer TOKEN_API", "Accept: application/json"],

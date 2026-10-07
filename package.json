@@ -7,9 +7,10 @@
     "dev": "node scripts/dev.mjs",
     "dev:astro": "astro dev",
     "start": "node scripts/dev.mjs",
-    "build": "node scripts/generate-geo.mjs && astro build",
+    "build": "node scripts/generate-geo.mjs && node scripts/build-api-reference-json.mjs && astro build",
     "generate:geo": "node scripts/generate-geo.mjs",
-    "sanitize:api-doc": "node scripts/extract-pdf.mjs && node scripts/sanitize-api-pdf.mjs",
+    "sanitize:api-doc": "node scripts/extract-pdf.mjs && node scripts/sanitize-api-pdf.mjs && node scripts/build-api-reference-json.mjs",
+    "build:api-reference": "node scripts/build-api-reference-json.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

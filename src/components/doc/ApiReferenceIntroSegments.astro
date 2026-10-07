@@ -1,0 +1,87 @@
+---
+import { splitIntroBlock, type IntroSegment } from '../../lib/doc-intro-format';
+
+interface Props {
+  block: string;
+  diagram?: boolean;
+}
+
+const { block, diagram = false } = Astro.props;
+
+const segments: IntroSegment[] = diagram ? [] : splitIntroBlock(block);
+---
+
+{diagram ? (
+  <pre class="doc-ref-diagram">{block}</pre>
+) : (
+  <div class="doc-ref-intro-segments prose-nexo">
+    {segments.map((seg) => {
+      if (seg.type === 'prose') {
+        return (
+          <div class="doc-ref-intro-text">
+            {seg.lines.map((line) => (
+              <p>{line}</p>
+            ))}
+          </div>
+        );
+      }
+      if (seg.type === 'heading') {
+        return <h4 class="doc-ref-h4 mt-6 mb-3">{seg.text}</h4>;
+      }
+      if (seg.type === 'list') {
+        return (
+          <div class="doc-ref-intro-list-block mb-4">
+            {seg.title && (
+              <p class="text-xs font-bold uppercase tracking-widest text-nexo-dark/45 mb-2">{seg.title}</p>
+            )}
+            <ul class="doc-ref-bullets">
+              {seg.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+      if (seg.type === 'curl') {
+        return (
+          <pre class="doc-code-block doc-ref-curl mb-4" tabindex="0"><code>{seg.code}</code></pre>
+        );
+      }
+      if (seg.type === 'table') {
+        return (
+          <div class="my-4 overflow-x-auto">
+            <table class="doc-api-table">
+              <thead>
+                <tr>
+                  {seg.headers.map((h) => (
+                    <th>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {seg.rows.map((row) => (
+                  <tr>
+                    {row.map((cell, ci) => (
+                      <td>
+                        {cell.startsWith('{') ? (
+                          <code class="doc-table-json">{cell}</code>
+                        ) : ci === 0 && seg.headers.length > 1 ? (
+                          <code>{cell}</code>
+                        ) : (
+                          cell
+                        )}
+                      </td>
+                    ))}
+                    {row.length < seg.headers.length &&
+                      Array.from({ length: seg.headers.length - row.length }).map(() => <td />)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      return null;
+    })}
+  </div>
+)}

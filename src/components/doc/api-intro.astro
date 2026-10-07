@@ -98,7 +98,7 @@ const uses = [
           <li class="flex items-start gap-3">
             <span class="w-6 h-6 rounded-lg bg-nexo-primary text-nexo-dark flex items-center justify-center text-xs font-bold shrink-0">2</span>
             <span class="text-nexo-dark/70 text-sm leading-relaxed pt-0.5">
-              La base es <code class="doc-code-inline">https://tu-dominio.com/api/v2</code> (cambie el dominio por el de su instalación).
+              La base es <code class="doc-code-inline"> .com/api/v2</code> (cambie el dominio por el de su instalación).
             </span>
           </li>
           <li class="flex items-start gap-3">
@@ -123,13 +123,13 @@ const uses = [
         title="Servicios de un abonado"
         method="GET"
         path="/api/v2/servicios?cedula=12345678"
-        http={`GET https://tu-dominio.com/api/v2/servicios?cedula=12345678 HTTP/1.1
+        http={`GET  .com/api/v2/servicios?cedula=12345678 HTTP/1.1
 Host: tu-dominio.com
 Authorization: Bearer TOKEN_API
 Accept: application/json`}
         javascript={`const cedula = "12345678";
 const res = await fetch(
-  \`https://tu-dominio.com/api/v2/servicios?cedula=\${cedula}\`,
+  \` .com/api/v2/servicios?cedula=\${cedula}\`,
   {
     headers: {
       Authorization: "Bearer TOKEN_API",
@@ -140,7 +140,7 @@ const res = await fetch(
 const data = await res.json();
 // data.cliente · data.servicios[]`}
         php={`<?php
-$url = "https://tu-dominio.com/api/v2/servicios?cedula=12345678";
+$url = " .com/api/v2/servicios?cedula=12345678";
 $ch = curl_init($url);
 curl_setopt_array($ch, [
   CURLOPT_RETURNTRANSFER => true,

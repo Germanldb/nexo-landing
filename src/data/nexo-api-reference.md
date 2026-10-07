@@ -1,6 +1,6 @@
 # Referencia API Nexo
 
-Documentación completa de endpoints, autenticación, webhooks y recaudadores. Sustituya `https://tu-dominio.com` por el host de su instalación.
+Documentación completa de endpoints, autenticación, webhooks y recaudadores. Sustituya ` .com` por el host de su instalación.
 
 ## 1. Cómo usar este documento
 Este PDF es la fuente de verdad de todo lo que un integrador puede consumir en este servidor.
@@ -28,7 +28,6 @@ Recomendación: para integraciones nuevas usa /api/v21 (NEXO) y /api/v11 (API v1
 Bearer. Evita meter el token en query string en producción.
 
 
-
 ## 2. Introducción y arquitectura
 Nexo es la plataforma de gestión para ISPs. Expone dos mundos de API que conviven en el
 mismo dominio:
@@ -38,9 +37,9 @@ v11 añadido por NEXO.
 API v2 — módulos propios de NEXO (pago móvil, C2P BDV, hotspot, Social WiFi, NAP, sucursales,
 vehículos, métricas, IPTV, etc.).
 ### 2.1 Base URL
-https://TU-DOMINIO
+ 
 # Instancia actual:
-https://tu-dominio.com
+ .com
 Familia Base Uso
 API v1 /api/v1/{Comando} API v1 (núcleo Nexo). POST JSON con campo token.
 API v11 /api/v11/{Comando} Mismos comandos que v1, acepta Bearer (JWT o token API).
@@ -73,12 +72,13 @@ Petición Método PHP Uso
 #### POST /api/v2/{modulo} create() Acción principal
 
 #### POST /api/v2/{modulo}/{accion} {accion}() Acción nombrada (pago, registro, events…)
-PUT /api/v2/{modulo}/{id} update(id) Actualizar
-DELETE /api/v2/{modulo}/{id} delete(id) Eliminar (ver aviso Apache)
+
+#### PUT /api/v2/{modulo}/{id} update(id) Actualizar
+
+#### DELETE /api/v2/{modulo}/{id} delete(id) Eliminar (ver aviso Apache)
 OPTIONS /api/v2/... — CORS preflight, 200
 El segmento {modulo} se convierte en clase {Modulo}Controller (hotspotfichas → HotspotfichasController).
 Módulo inexistente: 404 {"message":"Not Found"}.
-
 
 
 DELETE bloqueado. El .htaccess del servidor responde 403 a HEAD, TRACE, DELETE, TRACK y DEBUG. Los
@@ -86,17 +86,16 @@ DELETE documentados no funcionan hasta que se habilite el método. Usa la altern
 cada módulo (por ejemplo activo: 0 en hotspotwifi).
 
 
-
 ## 3. Autenticación
 Hay tres formas de autenticarse. El usuario debe existir en la tabla `login`, estar activo (estado = 1) y, para
 token API, tener api = 1 y un token_api generado en Ajustes → Gestión personal / Usuarios
 administradores → API.
 ### 3.1 Token API en el cuerpo (legacy, v1 y varios v2)
-curl -X POST https://TU-DOMINIO/api/v1/GetClientsDetails \
+curl -X POST  /api/v1/GetClientsDetails \
 -H "Content-Type: application/json" \
 -d '{"token":"TU_TOKEN_API","idcliente":1}'
 ### 3.2 Bearer con token API (v11 / v21)
-curl -X POST https://TU-DOMINIO/api/v11/GetClientsDetails \
+curl -X POST  /api/v11/GetClientsDetails \
 -H "Authorization: Bearer TU_TOKEN_API" \
 -H "Content-Type: application/json" \
 -d '{"idcliente":1}'
@@ -110,7 +109,7 @@ Sin autenticación previa. Credenciales de un operador administrador Nexo.
 Campo Dónde Tipo Req. Descripción
 username body / query string Sí Usuario administrador
 password body / query string Sí Contraseña (se compara con hash en BD)
-curl -X POST https://TU-DOMINIO/api/auth \
+curl -X POST  /api/auth \
 -H "Content-Type: application/json" \
 -d '{"username":"admin","password":"TU_PASSWORD"}'
 {
@@ -127,9 +126,8 @@ curl -X POST https://TU-DOMINIO/api/auth \
 Renovar JWT
 Requiere un JWT todavía válido en Authorization: Bearer o en el campo token del cuerpo. Un token
 expirado no se renueva: hay que hacer login otra vez.
-curl -X POST "https://TU-DOMINIO/api/auth?action=refresh" \
+curl -X POST " /api/auth?action=refresh" \
 -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
-
 
 
 ### 3.4 Cómo distinguen v11/v21 JWT vs token API
@@ -145,7 +143,6 @@ HTTP Mensaje típico Causa
 403 Usuario autorizado, pero no tiene token_api configurado. JWT OK pero falta token API para el proxy
 500 Dependencia JWT no disponible. Falta firebase/php-jwt
 502 Error conectando con API legacy El proxy no pudo hablar con v1/v2
-
 
 
 ## 4. Convenciones, CORS y códigos HTTP
@@ -179,7 +176,6 @@ Código Significado en este servidor
 500 Error interno
 502 Fallo al contactar v1/v2, banco o servicio externo
 503 Pasarela o módulo no configurado / no migrado
-
 
 
 ## 5. API v1 — API v1 (núcleo Nexo)
@@ -220,8 +216,6 @@ Datos de una factura
 Campo Tipo Req. Descripción
 token string Sí Token API
 idfactura number Sí ID de la factura
-
-
 
 
 #### POST /api/v1/GetPlantillasFacturacion
@@ -267,8 +261,6 @@ Revierte / elimina el pago de una factura. Úsalo con cuidado: puede volver a de
 afectar el estado del servicio.
 
 
-
-
 #### POST /api/v1/ReportesPago
 Reportes de pago del portal cliente
 Lista los reportes que el abonado cargó desde el portal (comprobantes pendientes de conciliar).
@@ -301,8 +293,6 @@ direccion_principal string No Dirección
 Puedes enviar campos personalizados del resumen de cliente como claves extra en el JSON (N_orden, Alias,
 …).
 {"estado":"exito","mensaje":"El cliente fué registrado correctamente.","idcliente":100}
-
-
 
 
 #### POST /api/v1/GetClientsDetails
@@ -350,8 +340,6 @@ Ajusta ciclo, plantilla, día de pago u otros parámetros de facturación asocia
 e idcliente más los campos de configuración definidos en el panel.
 
 
-
-
 #### POST /api/v1/ActiveService
 Activar cliente suspendido
 Reactiva los servicios cuando el estado es SUSPENDIDO (Mikrotik / RADIUS / OLT según el nodo).
@@ -388,8 +376,6 @@ adjunto.nombre / file object No Archivo en base64
 propiedad number No 0 ninguno, 1 BAJA, 2 MEDIA, 3 ALTA
 idtecnico number No Asignar a un operador
 {"estado":"exito","idticket":"100","mensaje":"Ticket Registrado correctamente."}
-
-
 
 
 #### POST /api/v1/ListTicket
@@ -432,8 +418,6 @@ Rangos IPv4 registrados
 Obtener IPv6 mediante DUID
 
 
-
-
 #### POST /api/v1/NewService
 Crear servicio de internet
 Campo Tipo Req. Descripción
@@ -467,7 +451,9 @@ Los filtros son acumulativos: id, descripcion, puertos, ubicacion, coordenadas, 
 Organización y tareas de campo
 Listan operadores, departamentos y tareas, o crean una tarea nueva. Todas requieren token. CreateTarea
 espera los campos del módulo de tareas (operador, descripción, fechas).
-SmartOLT (vía Nexo)
+
+### SmartOLT (vía Nexo)
+
 Si SmartOLT está integrado en el panel, estos comandos leen catálogos y autorizan ONU. Equivalente
 conceptual a consumir https://api.smartolt.com/ pero a través de la API v1 de Nexo.
 Comando Propósito Params clave
@@ -480,9 +466,7 @@ onu_mode (Bridging|Routing), modo_operacion (0 internet / 1
 internet+CATV), zone, odb, dns1/dns2
 
 
-
 {"code":"200","mensaje":"Onu autorizado correctamente"}
-
 
 
 ## 6. API v11 — Proxy Bearer de v1
@@ -490,7 +474,6 @@ Rutas: /api/v11 o /api/v11/{Comando}. El sufijo se reenvía a http://localhost/a
 el JSON. Errores del proxy (no de Nexo) usan {"estado":"error","salida":"..."} con 401/403/500/502.
 Para el portal de documentación, puedes listar una sola vez cada comando v1 y anotar: “también disponible en
 /api/v11/{Comando} con Bearer”.
-
 
 
 ## 7. API v2 / v21 — Módulos NEXO
@@ -527,8 +510,6 @@ está activo.
 404 si no existe el usuario. 500 error interno.
 
 
-
-
 #### POST /api/v2/facturacion
 Registrar pagos de una o varias facturas
 Llama a módulo de facturación Nexo->addPago(). Valida montos y tasa dolarprice de la fecha de pago. El controlador
@@ -562,8 +543,7 @@ fecha No (hoy)
 referencia no hallada, ya validada, monto distinto).
 
 
-
-GET / POST /api/v2/pagomovil
+#### GET/POST /api/v2/pagomovil
 Consulta de deuda y conciliación de pago móvil
 Consulta por nfactura (id, lista o token de portal) o cedula/documento. POST sin referencia/monto = consulta.
 POST con referencia + monto = concilia contra pagos_bdv (últimos 6 dígitos + monto + fecha) y ejecuta
@@ -578,7 +558,8 @@ pm_tel, cedula, pm_banco_origen, descripcion, chatbot No
 "monto_total_moneda_factura":10,"monto_total_bs":365,
 "facturas_pendientes":[],"saldo_otros_no_cobrado":0}
 409 si no concilia. getOne → 404. update/delete → 405.
-GET / POST /api/v2/pagomovilbdv
+
+#### GET/POST /api/v2/pagomovilbdv
 Pago móvil validado en vivo con API BDV
 Misma consulta que pagomovil. El POST valida el movimiento con getMovement de Banco de Venezuela
 (pasarela bancodevenezuela). Una sola factura por request.
@@ -587,7 +568,8 @@ pm_ced / cedula Sí
 pm_tel Sí (≥10 dígitos)
 pm_banco_origen Sí (≤4 dígitos)
 400 si hay más de una factura. 503 pasarela inactiva. 409 el banco no valida el movimiento.
-GET / POST /api/v2/c2p y /api/v2/bdvc2p
+
+#### GET/POST /api/v2/c2p y /api/v2/bdvc2p
 Pago C2P Banco de Venezuela
 Alias del mismo flujo. Pagador solo banco0102. GET/POST resumen con token de factura de portal. POST
 con accion:
@@ -600,11 +582,11 @@ c2p_pay Debita y registra pago banco=0102, pagador_id, telefono_pagador, otp_c2p
 "banco_pagador_c2p_bdv":"0102","tiene_telefono_cobrador":true}
 403 pasarela inactiva. 409 validación OTP/banco. 503 falta X-API-Key BDV. Efectos de c2p_pay: addPago,
 ajuste de bolívares en facturas USD, autorización Cashea si aplica.
-GET / POST /api/v2/pagoc2p
+
+#### GET/POST /api/v2/pagoc2p
 Consulta estilo pagomovil + flujo C2P
 Permite consultar por nfactura o cédula (incluye montos C2P) y luego request_otp / c2p_pay. Rechaza un
 POST que solo traiga referencia+monto: eso va a pagomovil.
-
 
 
 ### 7.3 Catálogo, tasas y métricas
@@ -643,8 +625,7 @@ mes es el intervalo [día 1 00:00, día 1 del mes siguiente).
 ### 7.4 Hotspot
 
 
-
-GET / POST /api/v2/hotspotfichas
+#### GET/POST /api/v2/hotspotfichas
 Inventario de fichas disponibles
 Solo fichas estado = 0 (nuevas). Nunca expone user/password. Filtra por sucursal del operador cuando
 aplica.
@@ -671,7 +652,8 @@ fecha, cedula, pm_tel, pm_banco_origen, notas, chatbot No
 accion (en /c2p) Sí resumen | request_otp | c2p_pay
 {"pago_efectivo":true,"id_venta":55,"fichas":[{"user":"...","pass":"..."}],"notif_whatsapp":{}}
 409 no conciliado. 503 módulo ventas no migrado. Efectos: marca fichas vendidas y provisiona en Mikrotik.
-GET / PUT / POST /api/v2/hotspotwifi/{usuario} · /cambiar
+
+#### GET/PUT/POST /api/v2/hotspotwifi/{usuario} · /cambiar
 Usuario Wi-Fi recurrente (RADIUS)
 GET consulta usuario, rate, activo, presencia en radcheck/radreply. PUT o POST /cambiar:nuevo_usuario,
 rate, activo: 0 (desactivar). DELETE está bloqueado por Apache: usa activo: 0.
@@ -683,8 +665,7 @@ Requiere token. Caché 300 s. refresh=1 ignora caché. 502 si falla la red y no 
 ### 7.5 Operación de campo, mapa y flota
 
 
-
-GET / POST /api/v2/planificaciontareas
+#### GET/POST /api/v2/planificaciontareas
 Calendario de tareas y consulta por cédula
 Feed tipo FullCalendar. Auth token/Bearer. Requierestart y end. action: events, planning_feed,
 events_por_tecnico, planning_feed_operador. Si action es por técnico, operador = id de login.
@@ -725,21 +706,20 @@ Verificar seguidor y sincronizar lista
 remota, inserta faltantes y elimina a quienes dejaron de seguir.
 
 
-
-GET / POST /api/v2/socialwifiregistro
+#### GET/POST /api/v2/socialwifiregistro
 Registro Social WiFi por teléfono + OTP
 Método Ruta Acción
 GET ?telefono= · /estado Estado del registro
 POST / · /registro Guardar registro
 POST /enviar_codigo Enviar OTP
 POST /verificar_codigo telefono + codigo/otp
-GET / POST /api/v2/iptvsetplex
+
+#### GET/POST /api/v2/iptvsetplex
 IPTV Setplex / Nora
 GET / o /planes — lista perfiles IPTV. GET /{idperfil} — un plan.
 POST /credenciales o raíz — cedula/documento → credenciales Setplex.
 POST /cambiar_plan — cedula, opcional idperfil / idservicio.
 502 si NEXO actualizó pero falla Nora. PUT/DELETE → 405.
-
 
 
 ## 8. Webhooks (notificaciones entrantes)
@@ -776,14 +756,14 @@ PlaceToPay / Evertec checkout
 Firma del SDK PlaceToPay. Credenciales de pasarela tipo = placetopay y estado on. Responde ok de
 inmediato y procesa en segundo plano: si la referencia es un id de factura y está aprobado → addPago; si
 empieza por SUBS_ → tokenización de tarjeta. URL de notificationURL en el checkout del portal.
-WEBHOOK GET / POST /api/webhooks/serdimpre.php
+
+#### WEBHOOK GET/POST /api/webhooks/serdimpre.php
 Serdimpre — estado fiscal del documento
 Auth: header X-Api-Key, Bearer, o query token/api_key = ajuste serdimpre_webhook_token. Si is serdimpre !==
 on → 503. El id de factura llega por query, form o JSON. Consulta a Serdimpre; en etapa 4 (Facturado)
 puede registrar el pago.
 {"status":"ok","code":200,"message":"...","data":{}}
 401 no autorizado, 400 id inválido, 404 factura, 500 API Serdimpre.
-
 
 
 Flujo de cobro (resumen)
@@ -794,19 +774,20 @@ PlaceToPay --> /api/webhooks/evertec.php --> addPago / token tarjeta
 Serdimpre --> /api/webhooks/serdimpre.php --> cache fiscal + addPago opcional
 
 
-
 ## 9. Recaudadores y pasarelas bancarias
 Scripts de recaudación (ionCube) que consume el recaudador. Contrato oficial: POST JSON, campotoken = token
 API del operador. Las rutas sin .php también resuelven por el rewrite del sitio.
 En este servidor sí están Facilito, Punto Ágil, Evertec recaudador y BancoEstado.No están desplegados
 Bancard ni Diceltecsa (aunque existen en otras ediciones del producto).
-POST /facilito/consultadeuda
+
+#### POST /facilito/consultadeuda
 Facilito — consultar deuda por cédula
 {"token":"TU_TOKEN","cedula":4034567651}
 {"code":"000","IDFactura":2161,
 "detalle":"Pago de comprobante Nº 00002161 - Vencimiento: 28/02/2022",
 "valor":"500.00","mensaje":"Operación exitosa."}
-POST /facilito/registrarpago
+
+#### POST /facilito/registrarpago
 Facilito — registrar pago en caja
 Campo Req. Descripción
 token Sí Token API
@@ -815,37 +796,40 @@ valor Sí Monto
 fecha Sí YYYY-MM-DD
 secuencial Sí Secuencial Facilito
 {"code":"000","autorizacion":16401,"valor":"500.00","mensaje":"Operación exitosa."}
-POST /facilito/reversopago
+
+#### POST /facilito/reversopago
 Facilito — reverso
 token, IDFactura, secuencial. Se usa si Facilito no recibió respuesta a tiempo o para ajuste automático.
-POST /facilito/consultapago
+
+#### POST /facilito/consultapago
 Facilito — conciliación del día
 token + fecha (YYYY-MM-DD). Devuelve el listado de { IDFactura, valor, secuencial }.
 Punto Ágil usa el mismo contrato cambiando el prefijo:
 Ruta Equivalente Facilito
-POST /puntoagil/consultadeuda consulta por cédula
-POST /puntoagil/registrarpago registrar pago
-POST /puntoagil/reversopago reverso
-POST /puntoagil/consultapago pagos del día
-POST /evertec/consultadeuda.php · /evertec/registrarpago.php
+
+#### POST /puntoagil/consultadeuda consulta por cédula
+
+#### POST /puntoagil/registrarpago registrar pago
+
+#### POST /puntoagil/reversopago reverso
+
+#### POST /puntoagil/consultapago pagos del día
+
+#### POST /evertec/consultadeuda.php · /evertec/registrarpago.php
 Evertec recaudador (red de cajas)
 Distinto del webhook PlaceToPay. Archivos ionCube; el contrato lo entrega Evertec (no está en llms.txt de
 Nexo). Trátalo como integración de vendor: consulta deuda + registro de pago.
 
 
-
-
 #### SOAP /bancoestado/web/?wsdl
 BancoEstado Caja Vecina (Chile)
-
-#### SOAP 1.x. Métodos: consultarCliente(rutCliente) y registrarPago(rutCliente, factura, monto,
+SOAP 1.x. Métodos: consultarCliente(rutCliente) y registrarPago(rutCliente, factura, monto,
 descripcion, pasarela, transaccion). La respuesta es XML <RESPUESTA> con ESTADO (aceptado, …) y
 MENSAJE.
 
 
-
 ## 10. Catálogo rápido de rutas
-Úsalo como índice del futuro portal (sidebar). Todas relativas a https://TU-DOMINIO.
+Úsalo como índice del futuro portal (sidebar). Todas relativas a  .
 Auth y proxies
 Método Ruta Auth
 
@@ -893,15 +877,15 @@ Ruta Quién llama
 
 #### POST /api/webhooks/evertec.php PlaceToPay
 GET/POST /api/webhooks/serdimpre.php Serdimpre
-POST /facilito/{consultadeuda|registrarpago|reversopago|consultapago} Facilito
-POST /puntoagil/{…} Punto Ágil
-POST /evertec/{consultadeuda|registrarpago}.php Evertec cajas
 
+#### POST /facilito/{consultadeuda|registrarpago|reversopago|consultapago} Facilito
 
+#### POST /puntoagil/{…} Punto Ágil
+
+#### POST /evertec/{consultadeuda|registrarpago}.php Evertec cajas
 
 
 #### SOAP /bancoestado/web/?wsdl BancoEstado
-
 
 
 ## 11. Errores frecuentes y checklist de integración
@@ -929,7 +913,7 @@ Página “Introducción” = capítulos 2–4. Página “Authentication” = c
 Un grupo por familia: API v1, NEXO v2, Webhooks, Recaudadores.	3.
 Cada Endpoint de este PDF = una página con OpenAPI 3 (paths, requestBody, responses) como en	4.
 esta documentación y api.smartolt.com.
-Añade “Try it” apuntando a https://tu-dominio.com (o el dominio del cliente) y variable {{token}}.	5.
+Añade “Try it” apuntando a  .com (o el dominio del cliente) y variable {{token}}.	5.
 Los archivos fuente en /root/api-docs/specs/ (introducción + inventarios) sirven como markdown	6.
 intermedio.
 Siguiente paso sugerido. Cuando quieras el portal, pide convertir este PDF en un sitio estático con sidebar,

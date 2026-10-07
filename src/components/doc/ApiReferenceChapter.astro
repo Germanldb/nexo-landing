@@ -1,0 +1,83 @@
+---
+import ApiReferenceEndpoint from './ApiReferenceEndpoint.astro';
+import ApiReferenceIntroBlock from './ApiReferenceIntroBlock.astro';
+import ApiReferenceBaseUrlSection from './ApiReferenceBaseUrlSection.astro';
+import type { ReferenceEndpoint } from './ApiReferenceEndpoint.astro';
+import { formatPublicDocHeadingTitle } from '../../lib/api-doc-display-titles';
+export interface ReferenceSection {
+  id: string;
+  title: string;
+  intro: string[];
+  endpoints: ReferenceEndpoint[];
+}
+
+export interface ReferenceChapter {
+  id: string;
+  title: string;
+  intro: string[];
+  sections: ReferenceSection[];
+  endpoints: ReferenceEndpoint[];
+  prose: string[];
+}
+
+interface Props {
+  chapter: ReferenceChapter;
+}
+
+const { chapter } = Astro.props;
+
+/** Flujos ASCII (--> o columnas con |), no JSON con pipe tipo "exito"|"ok" */
+function isDiagramBlock(block: string) {
+  if (block.includes('-->')) return true;
+  const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length < 2) return false;
+  const pipeRows = lines.filter((l) => {
+    if (l.includes('{') && l.includes('|')) return false;
+    return /^\||\|\s*$/.test(l) || (l.includes('|') && !l.includes('{'));
+  });
+  return pipeRows.length >= 2;
+}
+
+---
+
+<div class="doc-ref-chapter">
+  <h2 id={chapter.id} class="doc-ref-h2">{formatPublicDocHeadingTitle(chapter.title)}</h2>
+
+  {chapter.intro.length > 0 && (
+    <div class="doc-ref-chapter-intro mb-8">
+      {chapter.intro.map((block) => (
+        <ApiReferenceIntroBlock block={block} diagram={isDiagramBlock(block)} />
+      ))}
+    </div>
+  )}
+
+  {chapter.sections.map((section) => (
+    <div class="doc-ref-section mb-10">
+      <h3 id={section.id} class="doc-ref-h3">{formatPublicDocHeadingTitle(section.title)}</h3>
+      {section.intro.length > 0 && (
+        <div class="mb-6">
+          {section.id === 'ref-21-base-url' ? (
+            <ApiReferenceBaseUrlSection intro={section.intro} />
+          ) : (
+            section.intro.map((block) => (
+              <ApiReferenceIntroBlock block={block} diagram={isDiagramBlock(block)} />
+            ))
+          )}
+        </div>
+      )}
+      <div class="space-y-5">
+        {section.endpoints.map((ep) => (
+          <ApiReferenceEndpoint endpoint={ep} />
+        ))}
+      </div>
+    </div>
+  ))}
+
+  {chapter.endpoints.length > 0 && (
+    <div class="space-y-5 mb-8">
+      {chapter.endpoints.map((ep) => (
+        <ApiReferenceEndpoint endpoint={ep} />
+      ))}
+    </div>
+  )}
+</div>

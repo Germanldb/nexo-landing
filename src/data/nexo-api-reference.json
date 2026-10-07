@@ -1,0 +1,2267 @@
+{
+  "generatedFrom": "src/data/nexo-api-reference.md",
+  "chapters": [
+    {
+      "id": "ref-1-como-usar-este-documento",
+      "title": "1. Cómo usar este documento",
+      "intro": [
+        "Este PDF es la fuente de verdad de todo lo que un integrador puede consumir en este servidor.\nEstá escrito con el mismo nivel de detalle que un portal tipo ReadMe / Mintlify / Redoc, para\nque más adelante cada sección se convierta en una página del sitio de documentación."
+      ],
+      "sections": [
+        {
+          "id": "ref-11-que-cubre-y-que-no",
+          "title": "1.1 Qué cubre y qué no",
+          "intro": [
+            "Sí: APIs HTTP públicas o de integración (v1, v11, v2, v21, /api/auth), webhooks que llaman bancos y\nproveedores, y recaudadores (Facilito, Punto Ágil, Evertec, BancoEstado).\nSí: parámetros, autenticación, ejemplos curl, respuestas JSON, efectos de negocio (pago, activación,\nRADIUS, Mikrotik).\nNo: el panel admin, AJAX interno del navegador, cron, ni scripts de diagnóstico no pensados para\nterceros."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-12-como-mapear-esto-a-un-portal-smartolt-nexo",
+          "title": "1.2 Cómo mapear esto a un portal (SmartOLT / Nexo)",
+          "intro": [
+            "Cuando construyas la página, replica esta taxonomía. Cada bloque Endpoint de este PDF debe convertirse en\nuna ficha con: método, ruta, descripción, auth, tabla de parámetros, ejemplo de request, ejemplo de response\ny errores.\nSección de este PDF Página del portal\nCap. 2 Introducción Home / Getting started\nCap. 3 Autenticación Guía “Authentication”\nCap. 5 API v1 Grupo “API v1 (núcleo)” — un item por comando\nCap. 7 API v2 Grupo “NEXO” — un item por módulo/acción\nCap. 8 Webhooks Grupo “Webhooks” (incoming)\nCap. 9 Recaudadores Grupo “Collectors / Banks”\nRecomendación: para integraciones nuevas usa /api/v21 (NEXO) y /api/v11 (API v1) con Authorization:\nBearer. Evita meter el token en query string en producción."
+          ],
+          "endpoints": []
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-2-introduccion-y-arquitectura",
+      "title": "2. Introducción y arquitectura",
+      "intro": [
+        "Nexo es la plataforma de gestión para ISPs. Expone dos mundos de API que conviven en el\nmismo dominio:\nAPI v1 — API v1 legacy del núcleo Nexo (clientes, facturas, tickets, servicios, SmartOLT). El archivo está\nofuscado (ionCube); el contrato público es el de la documentación de comandos v1 en el panel del operador, más el proxy\nv11 añadido por NEXO.\nAPI v2 — módulos propios de NEXO (pago móvil, C2P BDV, hotspot, Social WiFi, NAP, sucursales,\nvehículos, métricas, IPTV, etc.)."
+      ],
+      "sections": [
+        {
+          "id": "ref-21-base-url",
+          "title": "2.1 Base URL",
+          "intro": [
+            ".com\nFamilia Base Uso\nAPI v1 /api/v1/{Comando} API v1 (núcleo Nexo). POST JSON con campo token.\nAPI v11 /api/v11/{Comando} Mismos comandos que v1, acepta Bearer (JWT o token API).\nAPI v2 /api/v2/{modulo}/{id|accion} REST NEXO. Token en query, body o header según módulo.\nAPI v21 /api/v21/{modulo}/{id|accion} Igual que v2 + Bearer. Recomendada.\nAuth /api/auth Emite y renueva JWT (1 hora).\nWebhooks /api/webhooks/{proveedor} El banco/proveedor llama al servidor.\nRecaudadores /{recaudador}/{operacion} Consulta de deuda, pago y reverso (Facilito, Punto Ágil, …)."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-22-diagrama",
+          "title": "2.2 Diagrama",
+          "intro": [
+            "Cliente / App / Banco\n|\n+--> POST /api/auth --> JWT (3600 s)\n|\n+--> Bearer JWT o token_api\n|\n+--> /api/v11/{cmd} --proxy--> /api/v1/{cmd} (API v1)\n+--> /api/v21/{mod} --proxy--> /api/v2/{mod} (NEXO)\n|\n+--> POST /api/webhooks/{banco} --> conciliación / addPago\n+--> POST /facilito|puntoagil|evertec/... --> recaudación\nv11 y v21 no añaden lógica de negocio: validan el Bearer, resuelven el token_api del operador y reenvían a\nv1/v2. Por eso la respuesta de v11 es idéntica a v1, y la de v21 es idéntica a v2."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-23-enrutamiento-v2",
+          "title": "2.3 Enrutamiento v2",
+          "intro": [
+            "Petición Método PHP Uso"
+          ],
+          "endpoints": [
+            {
+              "id": "ref-get-apiv2modulo-getall-listar",
+              "method": "GET",
+              "path": "/api/v2/{modulo} getAll() Listar",
+              "title": "",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2moduloid-getoneid-detalle-o-subrecurso",
+              "method": "GET",
+              "path": "/api/v2/{modulo}/{id} getOne(id) Detalle o subrecurso",
+              "title": "",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv2modulo-create-accion-principal",
+              "method": "POST",
+              "path": "/api/v2/{modulo} create() Acción principal",
+              "title": "",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv2moduloaccion-accion-accion-nombrada-pago-registro-events",
+              "method": "POST",
+              "path": "/api/v2/{modulo}/{accion} {accion}() Acción nombrada (pago, registro, events…)",
+              "title": "",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-put-apiv2moduloid-updateid-actualizar",
+              "method": "PUT",
+              "path": "/api/v2/{modulo}/{id} update(id) Actualizar",
+              "title": "",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-delete-apiv2moduloid-deleteid-eliminar-ver-aviso-apache",
+              "method": "DELETE",
+              "path": "/api/v2/{modulo}/{id} delete(id) Eliminar (ver aviso Apache)",
+              "title": "OPTIONS /api/v2/... — CORS preflight, 200",
+              "description": [
+                "El segmento {modulo} se convierte en clase {Modulo}Controller (hotspotfichas → HotspotfichasController).",
+                "Módulo inexistente: 404 {\"message\":\"Not Found\"}.",
+                "DELETE bloqueado. El .htaccess del servidor responde 403 a HEAD, TRACE, DELETE, TRACK y DEBUG. Los",
+                "DELETE documentados no funcionan hasta que se habilite el método. Usa la alternativa POST/PUT que se indica en",
+                "cada módulo (por ejemplo activo: 0 en hotspotwifi)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-3-autenticacion",
+      "title": "3. Autenticación",
+      "intro": [
+        "Hay tres formas de autenticarse. El usuario debe existir en la tabla `login`, estar activo (estado = 1) y, para\ntoken API, tener api = 1 y un token_api generado en Ajustes → Gestión personal / Usuarios\nadministradores → API."
+      ],
+      "sections": [
+        {
+          "id": "ref-31-token-api-en-el-cuerpo-legacy-v1-y-varios-v2",
+          "title": "3.1 Token API en el cuerpo (legacy, v1 y varios v2)",
+          "intro": [
+            "curl -X POST  /api/v1/GetClientsDetails \\\n-H \"Content-Type: application/json\" \\\n-d '{\"token\":\"TU_TOKEN_API\",\"idcliente\":1}'"
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-32-bearer-con-token-api-v11-v21",
+          "title": "3.2 Bearer con token API (v11 / v21)",
+          "intro": [
+            "curl -X POST  /api/v11/GetClientsDetails \\\n-H \"Authorization: Bearer TU_TOKEN_API\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\"idcliente\":1}'"
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-33-jwt-recomendado",
+          "title": "3.3 JWT (recomendado)",
+          "intro": [
+            "El JWT se firma HS256, dura 3600 segundos y se puede renovar solo si todavía está vigente. El objeto `user`\nnunca incluye password, token_api ni secretos 2FA."
+          ],
+          "endpoints": [
+            {
+              "id": "ref-post-apiauth",
+              "method": "POST",
+              "path": "/api/auth",
+              "title": "Obtener token JWT",
+              "description": [
+                "Sin autenticación previa. Credenciales de un operador administrador Nexo."
+              ],
+              "params": [
+                {
+                  "name": "username body / query",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Usuario administrador"
+                },
+                {
+                  "name": "password body / query",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Contraseña (se compara con hash en BD)"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "curl -X POST  /api/auth \\\n-H \"Content-Type: application/json\" \\\n-d '{\"username\":\"admin\",\"password\":\"TU_PASSWORD\"}'",
+                "{\n\"status\": \"success\",\n\"user\": { \"id\": 1, \"username\": \"admin\", \"nombre\": \"Administrador\",\n\"email\": \"admin@tu-dominio.com\", \"estado\": 1 },\n\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n\"token_type\": \"Bearer\",\n\"expires_in\": 3600,\n\"expires_at\": 1791334951\n}"
+              ]
+            },
+            {
+              "id": "ref-post-apiauthactionrefresh",
+              "method": "POST",
+              "path": "/api/auth?action=refresh",
+              "title": "Renovar JWT",
+              "description": [
+                "Requiere un JWT todavía válido en Authorization: Bearer o en el campo token del cuerpo. Un token",
+                "expirado no se renueva: hay que hacer login otra vez."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "curl -X POST \" /api/auth?action=refresh\" \\\n-H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIs...\""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ref-34-como-distinguen-v11v21-jwt-vs-token-api",
+          "title": "3.4 Cómo distinguen v11/v21 JWT vs token API",
+          "intro": [
+            "El proxy busca el valor, en este orden, en los encabezados Authorization, BearerToken y Bearer-Token. Si el valor\ntiene forma JWT (tres segmentos separados por punto) se trata como JWT; si no, como token API. El usuario JWT debe tener\ntoken_api configurado porque el proxy lo inyecta al reenviar a v1/v2."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-35-errores-de-autenticacion",
+          "title": "3.5 Errores de autenticación",
+          "intro": [
+            "HTTP Mensaje típico Causa\n400 Usuario y contraseña son requeridos. Faltó username o password\n401 Usuario o contraseña incorrectos Credenciales inválidas o usuario inactivo\n401 Token requerido. / Token expirado. / Token inválido. Refresh o Bearer ausente/vencido\n403 Usuario no autorizado. / Token Bearer no autorizado. Usuario desactivado o API no habilitada\n403 Usuario autorizado, pero no tiene token_api configurado. JWT OK pero falta token API para el proxy\n500 Dependencia JWT no disponible. Falta firebase/php-jwt\n502 Error conectando con API legacy El proxy no pudo hablar con v1/v2"
+          ],
+          "endpoints": []
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-4-convenciones-cors-y-codigos-http",
+      "title": "4. Convenciones, CORS y códigos HTTP",
+      "intro": [
+        "Content-Type: application/json en peticiones con cuerpo. Algunos módulos aceptan también\napplication/x-www-form-urlencoded.\nCodificación: UTF-8. Las respuestas no escapan Unicode (JSON_UNESCAPED_UNICODE).\nFechas: YYYY-MM-DD o YYYY-MM-DD HH:MM:SS, zona horaria del servidor.\nMontos: decimales con punto (10.50). Varios módulos trabajan USD y VES (bolívares) usando la tasa\nde dolarprice.\nCORS: v2 envía Access-Control-Allow-Origin: *. El /api/.htaccess fija además origen\nhttps://plano.com.ve.\nChatbot: envía chatbot=1 o \"chatbot\": true en pago móvil / C2P / ventas hotspot para recibir un\nobjeto chatbot con pasos sugeridos y ejemplos.\nFormatos de respuesta\nFamilia Éxito Error\nAPI v1 / v11 {\"estado\":\"exito\", ...} {\"estado\":\"error\",\"mensaje\"|\"salida\":\"...\"}\nMuchos v2 NEXO {\"ok\":true,\"salida\":\"...\"} {\"ok\":false,\"salida\":\"...\"}\nPagos / C2P / planificación {\"estado\":\"exito\"|\"ok\"} {\"estado\":\"error\",\"salida\":\"...\"}\n/api/auth {\"status\":\"success\"} {\"status\":\"error\",\"message\":\"...\"}\nCódigos HTTP\nCódigo Significado en este servidor\n200 Operación exitosa (a veces también errores de negocio en JSON)\n201 Recurso creado (telemetría de vehículos)\n400 Parámetros faltantes o formato inválido\n401 No autenticado\n403 Sin permiso, API deshabilitada, o método bloqueado por Apache\n404 Módulo, cliente, factura o recurso inexistente\n405 Método HTTP no permitido para esa ruta\n409 Conflicto: referencia ya usada, movimiento no concilia, OTP inválido\n422 Datos sintácticamente válidos pero rechazados por regla de negocio\n500 Error interno\n502 Fallo al contactar v1/v2, banco o servicio externo\n503 Pasarela o módulo no configurado / no migrado"
+      ],
+      "sections": [],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-5-api-v1-api-v1-nucleo-nexo",
+      "title": "5. API v1 — API v1 (núcleo Nexo)",
+      "intro": [
+        "Todos los comandos v1 son POST a /api/v1/{Comando} (también /api/v11/{Comando} con Bearer). Cuerpo JSON.\nEl campo token es obligatorio en v1; en v11 se omite si ya va el Bearer.\nEl enrutado acepta letras, números y guiones ([a-z-0-9]+), sin distinguir mayúsculas. Usa el nombre exacto del\ncomando (GetClientsDetails, PaidInvoice, …)."
+      ],
+      "sections": [
+        {
+          "id": "ref-51-facturacion",
+          "title": "5.1 Facturación",
+          "intro": [],
+          "endpoints": [
+            {
+              "id": "ref-post-apiv1createinvoice",
+              "method": "POST",
+              "path": "/api/v1/CreateInvoice",
+              "title": "Crear factura de servicio",
+              "description": [
+                "Genera una nueva factura de servicio del cliente. Requiere token, idcliente y vencimiento."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "ID del cliente"
+                },
+                {
+                  "name": "vencimiento",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "YYYY-MM-DD"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"token\":\"TU_TOKEN\",\"idcliente\":6,\"vencimiento\":\"2026-11-01\"}",
+                "{\"estado\":\"exito\",\"idfactura\":130,\"mensaje\":\"Nueva factura de servicios creado vía API - Factura ID: 130\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1createinvoicelibre",
+              "method": "POST",
+              "path": "/api/v1/CreateInvoiceLibre",
+              "title": "Crear factura libre",
+              "description": [
+                "Crea una factura libre (no ligada al ciclo automático de servicio). Mismos principios: POST JSON + token.",
+                "Consulta el portal oficial para ítems/desglose si tu flujo lo requiere."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getinvoices",
+              "method": "POST",
+              "path": "/api/v1/GetInvoices",
+              "title": "Lista de facturas",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "estado",
+                  "type": "number",
+                  "required": "No",
+                  "description": "0 = pagadas, 1 = no pagadas, 2 = anuladas; vacío = todas"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Filtrar por cliente"
+                },
+                {
+                  "name": "limit",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Tamaño de página (ej. 25)"
+                },
+                {
+                  "name": "pagina",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Offset de página"
+                },
+                {
+                  "name": "fechapago",
+                  "type": "string",
+                  "required": "No",
+                  "description": "YYYY-MM-DD cuando se pagó"
+                },
+                {
+                  "name": "formapago",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Pasarela o forma de pago"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getinvoice",
+              "method": "POST",
+              "path": "/api/v1/GetInvoice",
+              "title": "Datos de una factura",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idfactura",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "ID de la factura"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getplantillasfacturacion",
+              "method": "POST",
+              "path": "/api/v1/GetPlantillasFacturacion",
+              "title": "Plantillas de configuración de facturación",
+              "description": [
+                "Lista las plantillas generadas en el sistema. Solo requiere token. En NEXO también existe el equivalente",
+                "REST GET /api/v2/plantillasfacturacion."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1promesapago",
+              "method": "POST",
+              "path": "/api/v1/PromesaPago",
+              "title": "Promesa de pago",
+              "description": [
+                "Registra una promesa sobre una factura. La fecha límite máxima documentada para Nexo es 20 días."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idfactura",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Factura"
+                },
+                {
+                  "name": "fechalimite",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "YYYY-MM-DD"
+                },
+                {
+                  "name": "descripcion",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Motivo de la promesa"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"mensaje\":\"Promesa de pago registrado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1paidinvoice",
+              "method": "POST",
+              "path": "/api/v1/PaidInvoice",
+              "title": "Pagar factura (y activar si está suspendido)",
+              "description": [
+                "Registra el pago. Si el cliente estaba SUSPENDIDO y el pago cubre lo necesario, Nexo puede reactivar",
+                "el servicio."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idfactura",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Factura a pagar"
+                },
+                {
+                  "name": "pasarela",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Nombre visible (Paypal, Pago móvil, Efectivo…)"
+                },
+                {
+                  "name": "cantidad",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Si se omite, toma el total de la factura"
+                },
+                {
+                  "name": "comision",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Comisión del cobro"
+                },
+                {
+                  "name": "idtransaccion",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Referencia / nro. de operación"
+                },
+                {
+                  "name": "fechalimite",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Fecha-hora del pago; default ahora"
+                },
+                {
+                  "name": "nota",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Notas del pago"
+                },
+                {
+                  "name": "afip",
+                  "type": "boolean",
+                  "required": "No",
+                  "description": "Emisión electrónica Argentina (si está configurado)"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"token\":\"TU_TOKEN\",\"idfactura\":130,\"pasarela\":\"Pago móvil\",\n\"cantidad\":20,\"idtransaccion\":\"001234\",\"nota\":\"Ref. 001234\"}",
+                "{\"estado\":\"exito\",\"mensaje\":\"Pago registrado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1deleteinvoice",
+              "method": "POST",
+              "path": "/api/v1/DeleteInvoice",
+              "title": "Eliminar factura no pagada",
+              "description": [
+                "Solo facturas en estado no pagado. Requiere token e identificador de factura (idfactura)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1deletetransaccion",
+              "method": "POST",
+              "path": "/api/v1/DeleteTransaccion",
+              "title": "Eliminar un pago",
+              "description": [
+                "Revierte / elimina el pago de una factura. Úsalo con cuidado: puede volver a dejar al cliente en deuda y",
+                "afectar el estado del servicio."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1reportespago",
+              "method": "POST",
+              "path": "/api/v1/ReportesPago",
+              "title": "Reportes de pago del portal cliente",
+              "description": [
+                "Lista los reportes que el abonado cargó desde el portal (comprobantes pendientes de conciliar)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1basefacturas",
+              "method": "POST",
+              "path": "/api/v1/BaseFacturas",
+              "title": "Base / listado de facturas con filtros",
+              "description": [
+                "Listado amplio de facturas (exportes, conciliaciones). Filtros similares a GetInvoices (estado, cliente,",
+                "fechas)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getpaymentlink",
+              "method": "POST",
+              "path": "/api/v1/GetPaymentLink",
+              "title": "Links o referencias de pasarelas",
+              "description": [
+                "Pasarelas admitidas por Nexo: MercadoPago, Siro, CobroDigital, OxxoPay, Toku. La respuesta cambia",
+                "según la pasarela (url_pago, ticket_pdf, codigo_barras, redirect_url)."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "pasarela",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "MercadoPago | Siro | CobroDigital | OxxoPay | Toku"
+                },
+                {
+                  "name": "idfactura",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Factura"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-52-clientes",
+          "title": "5.2 Clientes",
+          "intro": [
+            "}]}"
+          ],
+          "endpoints": [
+            {
+              "id": "ref-post-apiv1newuser",
+              "method": "POST",
+              "path": "/api/v1/NewUser",
+              "title": "Registrar cliente",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "nombre",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Nombre completo"
+                },
+                {
+                  "name": "cedula",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Cédula / DNI / RIF"
+                },
+                {
+                  "name": "correo",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Email"
+                },
+                {
+                  "name": "telefono",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Fijo"
+                },
+                {
+                  "name": "movil",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Celular"
+                },
+                {
+                  "name": "direccion_principal",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Dirección"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"mensaje\":\"El cliente fué registrado correctamente.\",\"idcliente\":100}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1getclientsdetails",
+              "method": "POST",
+              "path": "/api/v1/GetClientsDetails",
+              "title": "Datos de cliente (con servicios y facturación)",
+              "description": [
+                "Busca por idcliente, cedula, telefono o movil. Devuelve ficha, servicios de internet (PPP, IP, ONU, NAP),",
+                "otros servicios y resumen de deuda."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "No*",
+                  "description": "ID interno"
+                },
+                {
+                  "name": "cedula",
+                  "type": "string",
+                  "required": "No*",
+                  "description": "Identificación"
+                },
+                {
+                  "name": "telefono",
+                  "type": "string",
+                  "required": "No*",
+                  "description": "Fijo"
+                },
+                {
+                  "name": "movil",
+                  "type": "string",
+                  "required": "No*",
+                  "description": "Móvil"
+                }
+              ],
+              "notes": [
+                "*Al menos un criterio de búsqueda además del token."
+              ],
+              "examples": [
+                "{\"estado\":\"exito\",\"datos\":[{\n\"id\":1775,\"nombre\":\"...\",\"estado\":\"ACTIVO\",\"cedula\":\"...\",\"movil\":\"...\",\n\"servicios\":[{ \"id\":8002,\"perfil\":\"...\",\"ip\":\"...\",\"pppuser\":\"...\",\"onu_sn\":\"...\" }],\n\"facturacion\":{\"facturas_nopagadas\":2,\"total_facturas\":\"40.00\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1getallclients",
+              "method": "POST",
+              "path": "/api/v1/GetAllClients",
+              "title": "Lista de clientes por estado",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "estado",
+                  "type": "number",
+                  "required": "No",
+                  "description": "0 = ACTIVOS, 1 = SUSPENDIDOS, 2 = RETIRADOS"
+                },
+                {
+                  "name": "limit",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Default 25"
+                },
+                {
+                  "name": "pagina",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Página"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1updateuser",
+              "method": "POST",
+              "path": "/api/v1/UpdateUser",
+              "title": "Actualizar cliente",
+              "description": [
+                "Los cambios van dentro del objeto datos. Campos personalizados también se envían ahí."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Cliente a editar"
+                },
+                {
+                  "name": "datos.nombre",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Nombre"
+                },
+                {
+                  "name": "datos.correo",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Email"
+                },
+                {
+                  "name": "datos.telefono / movil",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Teléfonos"
+                },
+                {
+                  "name": "datos.cedula",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Identificación"
+                },
+                {
+                  "name": "datos.codigo",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Contraseña del portal cliente"
+                },
+                {
+                  "name": "datos.direccion_principal",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Dirección"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"mensaje\":\"Datos actualizados correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1changefacturacionconfig",
+              "method": "POST",
+              "path": "/api/v1/ChangeFacturacionConfig",
+              "title": "Cambiar configuración de facturación del cliente",
+              "description": [
+                "Ajusta ciclo, plantilla, día de pago u otros parámetros de facturación asociados al abonado. Requiere token",
+                "e idcliente más los campos de configuración definidos en el panel."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1activeservice",
+              "method": "POST",
+              "path": "/api/v1/ActiveService",
+              "title": "Activar cliente suspendido",
+              "description": [
+                "Reactiva los servicios cuando el estado es SUSPENDIDO (Mikrotik / RADIUS / OLT según el nodo)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"token\":\"TU_TOKEN\",\"idcliente\":33}",
+                "{\"estado\":\"exito\",\"mensaje\":\"Cliente Activado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1suspendservice",
+              "method": "POST",
+              "path": "/api/v1/SuspendService",
+              "title": "Suspender cliente activo",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"token\":\"TU_TOKEN\",\"idcliente\":33}",
+                "{\"estado\":\"exito\",\"mensaje\":\"Cliente Suspendido correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1newpreregistro",
+              "method": "POST",
+              "path": "/api/v1/NewPreRegistro",
+              "title": "Pre-registro de instalación",
+              "description": [
+                "Crea un pre-registro en el módulo de instalaciones (lead / prospecto) para que un técnico lo gestione."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1listinstall",
+              "method": "POST",
+              "path": "/api/v1/ListInstall",
+              "title": "Lista de instalaciones",
+              "description": [
+                "Devuelve instalaciones (pendientes, agendadas, ejecutadas) según filtros del módulo de instalaciones."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-53-tickets-y-sms",
+          "title": "5.3 Tickets y SMS",
+          "intro": [],
+          "endpoints": [
+            {
+              "id": "ref-post-apiv1newticket",
+              "method": "POST",
+              "path": "/api/v1/NewTicket",
+              "title": "Crear ticket de soporte",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Cliente"
+                },
+                {
+                  "name": "dp string/number",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "ID departamento (1 = Soporte técnico)"
+                },
+                {
+                  "name": "asunto",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Asunto"
+                },
+                {
+                  "name": "fechavisita",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "YYYY-MM-DD"
+                },
+                {
+                  "name": "turno",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "MAÑANA | TARDE"
+                },
+                {
+                  "name": "agendado",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "VIA TELEFONICA | PRESENCIAL | PAGINA WEB | RED SOCIAL"
+                },
+                {
+                  "name": "solicitante",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Si no es el mismo cliente"
+                },
+                {
+                  "name": "contenido",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Detalle (acepta HTML)"
+                },
+                {
+                  "name": "adjunto.nombre / file",
+                  "type": "object",
+                  "required": "No",
+                  "description": "Archivo en base64"
+                },
+                {
+                  "name": "propiedad",
+                  "type": "number",
+                  "required": "No",
+                  "description": "0 ninguno, 1 BAJA, 2 MEDIA, 3 ALTA"
+                },
+                {
+                  "name": "idtecnico",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Asignar a un operador"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"idticket\":\"100\",\"mensaje\":\"Ticket Registrado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1listticket",
+              "method": "POST",
+              "path": "/api/v1/ListTicket",
+              "title": "Listar tickets de un cliente",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idcliente",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Cliente"
+                },
+                {
+                  "name": "idsoporte",
+                  "type": "number",
+                  "required": "No",
+                  "description": "Un ticket concreto"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1closeticket",
+              "method": "POST",
+              "path": "/api/v1/CloseTicket",
+              "title": "Cerrar ticket",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "idticket",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Ticket"
+                },
+                {
+                  "name": "motivo_cierre",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Motivo"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"mensaje\":\"Ticket cerrado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1newsms",
+              "method": "POST",
+              "path": "/api/v1/NewSMS",
+              "title": "Enviar SMS",
+              "description": [
+                "Encola un SMS al cliente. Nexo documenta que el envío ocurre aproximadamente un minuto después",
+                "de la orden. Requiere token y datos del destinatario/mensaje configurados en el módulo SMS."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-54-red-servicios-y-olt",
+          "title": "5.4 Red, servicios y OLT",
+          "intro": [
+            "}]}"
+          ],
+          "endpoints": [
+            {
+              "id": "ref-post-apiv1getrouters",
+              "method": "POST",
+              "path": "/api/v1/GetRouters",
+              "title": "Lista de routers (o uno por ID)",
+              "description": [
+                "Recupera nodos Mikrotik / routers registrados. Filtro opcional por ID."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getmonitoreo",
+              "method": "POST",
+              "path": "/api/v1/GetMonitoreo",
+              "title": "Equipos en monitoreo",
+              "description": [
+                "Lista equipos (APs, antenas, etc.) del módulo de monitoreo."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getmacfromip",
+              "method": "POST",
+              "path": "/api/v1/GetMacFromIp",
+              "title": "Obtener MAC a partir de una IPv4",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getredesipv4",
+              "method": "POST",
+              "path": "/api/v1/GetRedesIpv4",
+              "title": "Rangos IPv4 registrados",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getipv6fromduid",
+              "method": "POST",
+              "path": "/api/v1/GetIpv6FromDuid",
+              "title": "Obtener IPv6 mediante DUID",
+              "description": [],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1newservice",
+              "method": "POST",
+              "path": "/api/v1/NewService",
+              "title": "Crear servicio de internet",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Token API"
+                },
+                {
+                  "name": "id_cliente",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Cliente"
+                },
+                {
+                  "name": "id_router",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Nodo / Mikrotik"
+                },
+                {
+                  "name": "id_perfil",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Plan"
+                },
+                {
+                  "name": "id_red_ipv4",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Red IPv4"
+                },
+                {
+                  "name": "ipv4",
+                  "type": "string[]",
+                  "required": "Cond.",
+                  "description": "Obligatorio si la red es estática"
+                },
+                {
+                  "name": "mac",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Única"
+                },
+                {
+                  "name": "userppp / passppp",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Si se omiten, Nexo los genera"
+                },
+                {
+                  "name": "caja_nap.id_caja / puerto",
+                  "type": "object",
+                  "required": "No",
+                  "description": "Asignación NAP"
+                },
+                {
+                  "name": "coordenadas, direccion, costo, ipv6… —",
+                  "type": "—",
+                  "required": "No",
+                  "description": "Opcionales de instalación"
+                },
+                {
+                  "name": "equipo_receptor",
+                  "type": "object",
+                  "required": "No",
+                  "description": "Antena: id, ip, tipo 0–4, comunidad, user/pass"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"code\":\"200\",\"servicio_id\":10045,\"mensaje\":\"Servicio registrado correctamente.\"}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1editservice",
+              "method": "POST",
+              "path": "/api/v1/EditService",
+              "title": "Editar servicio de internet",
+              "description": [
+                "Modifica plan, IP, PPP, NAP u otros campos del servicio existente. Requiere token e identificador de servicio",
+                "/ cliente según el contrato oficial."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv1getcajasnap",
+              "method": "POST",
+              "path": "/api/v1/GetCajasNap",
+              "title": "Cajas NAP (una o todas)",
+              "description": [
+                "Los filtros son acumulativos: id, descripcion, puertos, ubicacion, coordenadas, limit."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"code\":\"200\",\"mensaje\":\"Operación exitosa\",\"datos\":[{\n\"id\":1,\"descripcion\":\"CAJA NAP PRINCIPAL\",\"puertos\":16,\n\"coordenadas\":\"-12.03,-76.93\",\"resumen_puertos\":{\"total\":16,\"usados\":2,\"libres\":14}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv1getoperadores-getdepartamentos-gettareas-createtarea",
+              "method": "POST",
+              "path": "/api/v1/GetOperadores · /GetDepartamentos · /GetTareas · /CreateTarea",
+              "title": "Organización y tareas de campo",
+              "description": [
+                "Listan operadores, departamentos y tareas, o crean una tarea nueva. Todas requieren token. CreateTarea",
+                "espera los campos del módulo de tareas (operador, descripción, fechas)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-smartolt-via-nexo",
+          "title": "SmartOLT (vía Nexo)",
+          "intro": [
+            "Si SmartOLT está integrado en el panel, estos comandos leen catálogos y autorizan ONU. Equivalente\nconceptual a consumir https://api.smartolt.com/ pero a través de la API v1 de Nexo.\nComando Propósito Params clave\nSmartOltGetVlans VLANs registradas token\nSmartOltGetZonas Zonas OLT token\nSmartOltGetProfiles Profiles de velocidad token\nSmartOltGetODB ODBs token\nSmartOltAuthorizeONU Autorizar ONU por id de servicio token, id_servicio, sn, vlan_id, profile_up, profile_down; opc.\nonu_mode (Bridging|Routing), modo_operacion (0 internet / 1\ninternet+CATV), zone, odb, dns1/dns2",
+            "{\"code\":\"200\",\"mensaje\":\"Onu autorizado correctamente\"}"
+          ],
+          "endpoints": []
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-6-api-v11-proxy-bearer-de-v1",
+      "title": "6. API v11 — Proxy Bearer de v1",
+      "intro": [
+        "Rutas: /api/v11 o /api/v11/{Comando}. El sufijo se reenvía a http://localhost/api/v1/{Comando}. Inyecta token en\nel JSON. Errores del proxy (no de Nexo) usan {\"estado\":\"error\",\"salida\":\"...\"} con 401/403/500/502.\nPara el portal de documentación, puedes listar una sola vez cada comando v1 y anotar: “también disponible en\n/api/v11/{Comando} con Bearer”."
+      ],
+      "sections": [],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-7-api-v2-v21-modulos-nexo",
+      "title": "7. API v2 / v21 — Módulos NEXO",
+      "intro": [
+        "Base: /api/v2/{modulo} y /api/v21/{modulo}. Salvo que se indique lo contrario, autentica con token API (query\n?token=, body o Authorization: Bearer). v21 acepta JWT o token API.\nMódulos registrados: facturacion, pagos, consultafactura, promociones, pagomovil, pagomovilbdv, bdvc2p,\nc2p, pagoc2p, planificaciontareas, dolarprice, planes, metrics, hotspotfichas, hotspotwifi, hotspotventas,\nhotspotpartido, socialwifi, socialwifiregistro, sucursales, ubicaciones, nap, vehiculos, plantillasfacturacion,\niptvsetplex.\nUsuarioController existe como stub y no está cableado en el router: no es invocable."
+      ],
+      "sections": [
+        {
+          "id": "ref-71-autenticacion-jwt-tambien-via-authcontroller-en-v2",
+          "title": "7.1 Autenticación JWT (también vía AuthController en v2)",
+          "intro": [
+            "El login JWT no pasa por el router v2: usa/api/auth (capítulo 3). Si llamaras/api/v2/auth,\ngetAll/getOne/update/delete responden 405."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-72-consulta-de-deuda-y-pagos",
+          "title": "7.2 Consulta de deuda y pagos",
+          "intro": [
+            "409 si no concilia. getOne → 404. update/delete → 405.",
+            "403 pasarela inactiva. 409 validación OTP/banco. 503 falta X-API-Key BDV. Efectos de c2p_pay: addPago,\najuste de bolívares en facturas USD, autorización Cashea si aplica."
+          ],
+          "endpoints": [
+            {
+              "id": "ref-get-apiv2consultafactura-apiv2consultafacturacedula",
+              "method": "GET",
+              "path": "/api/v2/consultafactura · /api/v2/consultafactura/{cedula}",
+              "title": "Consulta pública de deuda por cédula",
+              "description": [
+                "No exige token en el código actual. Pensada para portales / chatbots. Sin cédula responde que el servicio",
+                "está activo.",
+                "404 si no existe el usuario. 500 error interno."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "GET /api/v2/consultafactura?cedula=V12345678\n{\n\"estado\": \"exito\",\n\"cliente\": \"Nombre\",\n\"cedula_cliente\": \"V12345678\",\n\"pasarela\": { \"banco\": \"...\", \"telefono\": \"...\", \"cedula\": \"...\", \"tasa_dia\": 36.5 },\n\"conteo\": 1,\n\"resultados\": [{\n\"id_factura\": 100, \"nfactura_token\": \"...\",\n\"monto_usd\": 10.0, \"monto_bs\": 365.0,\n\"vencimiento\": \"2026-06-01\", \"descripcion_sugerida\": \"...\"\n}]"
+              ]
+            },
+            {
+              "id": "ref-post-apiv2facturacion",
+              "method": "POST",
+              "path": "/api/v2/facturacion",
+              "title": "Registrar pagos de una o varias facturas",
+              "description": [
+                "Llama a módulo de facturación Nexo->addPago(). Valida montos y tasa dolarprice de la fecha de pago. El controlador",
+                "no valida token_api: protégelo por red o usa v21 detrás de un gateway.",
+                "GET /api/v2/facturacion — responde texto plano working."
+              ],
+              "params": [
+                {
+                  "name": "idsFacturas",
+                  "type": "array",
+                  "required": "Sí",
+                  "description": "IDs en tabla facturas"
+                },
+                {
+                  "name": "moneda",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "VEF/VEB/VED o USD"
+                },
+                {
+                  "name": "amount",
+                  "type": "number",
+                  "required": "Sí",
+                  "description": "Debe coincidir con la suma (±0.01)"
+                },
+                {
+                  "name": "transactionId",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Referencia externa"
+                },
+                {
+                  "name": "formaPago",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Etiqueta de pasarela"
+                },
+                {
+                  "name": "descripcion",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Descripción"
+                },
+                {
+                  "name": "fechaPago",
+                  "type": "string",
+                  "required": "Sí",
+                  "description": "Para buscar la tasa"
+                },
+                {
+                  "name": "idcoin, comision —",
+                  "type": "—",
+                  "required": "No",
+                  "description": "Moneda interna / comisión"
+                },
+                {
+                  "name": "pmtel, pmced, pmBancoOrigen",
+                  "type": "string",
+                  "required": "No",
+                  "description": "Metadata pago móvil"
+                },
+                {
+                  "name": "conciliarPagoMovil",
+                  "type": "bool",
+                  "required": "No",
+                  "description": "Intentar conciliación"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"success\":true,\"message\":\"Facturación agregada correctamente\",\"facturasPagadas\":2}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv2pagos",
+              "method": "POST",
+              "path": "/api/v2/pagos",
+              "title": "Conciliar pago móvil (legacy)",
+              "description": [
+                "Busca el movimiento en pagos_bdv (referencia ≥ 6 dígitos + monto + fecha) y registra el pago. Variante",
+                "anterior de pagomovil."
+              ],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "(body)"
+                },
+                {
+                  "name": "nfactura",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": ""
+                },
+                {
+                  "name": "referencia",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "(≥6 dígitos)"
+                },
+                {
+                  "name": "monto",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": ""
+                },
+                {
+                  "name": "fecha",
+                  "type": "—",
+                  "required": "No",
+                  "description": "(hoy)"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-getpost-apiv2pagomovil",
+              "method": "GET/POST",
+              "path": "/api/v2/pagomovil",
+              "title": "Consulta de deuda y conciliación de pago móvil",
+              "description": [
+                "Consulta por nfactura (id, lista o token de portal) o cedula/documento. POST sin referencia/monto = consulta.",
+                "POST con referencia + monto = concilia contra pagos_bdv (últimos 6 dígitos + monto + fecha) y ejecuta",
+                "addPago. Puede reactivar el servicio."
+              ],
+              "params": [
+                {
+                  "name": "token / Bearer",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "Operador API"
+                },
+                {
+                  "name": "nfactura o cedula",
+                  "type": "—",
+                  "required": "Sí*",
+                  "description": "Uno de los dos en consulta"
+                },
+                {
+                  "name": "referencia, monto",
+                  "type": "—",
+                  "required": "Sí en pago",
+                  "description": ""
+                },
+                {
+                  "name": "fecha / pm_fecha",
+                  "type": "—",
+                  "required": "No",
+                  "description": ""
+                },
+                {
+                  "name": "pm_tel, cedula, pm_banco_origen, descripcion, chatbot",
+                  "type": "—",
+                  "required": "No",
+                  "description": ""
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"ids_facturas\":[10],\"idcliente\":5,\n\"monto_total_moneda_factura\":10,\"monto_total_bs\":365,\n\"facturas_pendientes\":[],\"saldo_otros_no_cobrado\":0}"
+              ]
+            },
+            {
+              "id": "ref-getpost-apiv2pagomovilbdv",
+              "method": "GET/POST",
+              "path": "/api/v2/pagomovilbdv",
+              "title": "Pago móvil validado en vivo con API BDV",
+              "description": [
+                "Misma consulta que pagomovil. El POST valida el movimiento con getMovement de Banco de Venezuela",
+                "(pasarela bancodevenezuela). Una sola factura por request."
+              ],
+              "params": [
+                {
+                  "name": "pm_ced / cedula",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": ""
+                },
+                {
+                  "name": "pm_tel",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "(≥10 dígitos)"
+                },
+                {
+                  "name": "pm_banco_origen",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "(≤4 dígitos)"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-getpost-apiv2c2p-y-apiv2bdvc2p",
+              "method": "GET/POST",
+              "path": "/api/v2/c2p y /api/v2/bdvc2p",
+              "title": "Pago C2P Banco de Venezuela",
+              "description": [
+                "Alias del mismo flujo. Pagador solo banco0102. GET/POST resumen con token de factura de portal. POST",
+                "con accion:",
+                "accion Qué hace Campos",
+                "(vacío) / resumen Igual que GET token, nfactura",
+                "request_otp Pide OTP al BDV pagador_id, telefono_pagador",
+                "c2p_pay Debita y registra pago banco=0102, pagador_id, telefono_pagador, otp_c2p"
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"exito\",\"pasarela_activa\":true,\"ids_facturas\":[1,2],\n\"monto_bs\":100,\"comision_bs\":2,\"monto_total_bs\":102,\n\"banco_pagador_c2p_bdv\":\"0102\",\"tiene_telefono_cobrador\":true}"
+              ]
+            },
+            {
+              "id": "ref-getpost-apiv2pagoc2p",
+              "method": "GET/POST",
+              "path": "/api/v2/pagoc2p",
+              "title": "Consulta estilo pagomovil + flujo C2P",
+              "description": [
+                "Permite consultar por nfactura o cédula (incluye montos C2P) y luego request_otp / c2p_pay. Rechaza un",
+                "POST que solo traiga referencia+monto: eso va a pagomovil."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-73-catalogo-tasas-y-metricas",
+          "title": "7.3 Catálogo, tasas y métricas",
+          "intro": [
+            "POST/PUT/DELETE → 405 Solo lectura."
+          ],
+          "endpoints": [
+            {
+              "id": "ref-get-apiv2dolarprice-apiv2dolarpriceid",
+              "method": "GET",
+              "path": "/api/v2/dolarprice · /api/v2/dolarprice/{id}",
+              "title": "Tasa del dólar",
+              "description": [
+                "Auth: encabezado Authorization con el token_api crudo (la implementación actual no exige el prefijo",
+                "Bearer). Query opcional date=YYYY-MM-DD."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"ok\",\"salida\":\"\",\"data\":[{\"id\":1,\"bolivares_value\":36.5,\"recorded_at\":\"...\"}],\n\"fecha_consultada\":\"2026-06-01\"}"
+              ]
+            },
+            {
+              "id": "ref-get-apiv2planes-apiv2planesid",
+              "method": "GET",
+              "path": "/api/v2/planes · /api/v2/planes/{id}",
+              "title": "Planes / perfiles ISP",
+              "description": [
+                "Lectura de perfiles. POST create() es alias de la lista. Filtros:incluir_deshabilitados (todos), router /",
+                "id_router / id_mikrotik / nodo."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"ok\":true,\"conteo\":3,\"planes\":[{ \"...fila perfiles...\" }]}"
+              ]
+            },
+            {
+              "id": "ref-get-apiv2promociones-activas-id",
+              "method": "GET",
+              "path": "/api/v2/promociones · /activas · /{id}",
+              "title": "Paquetes promocionales",
+              "description": [
+                "Tablas promo_paquetes. Flags: solo_activos, solo_vigentes, id_zona / sucursal, incluir_etiquetas (default true).",
+                "Si las tablas no existen: tablas_instaladas: false. Escritura → 405."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2plantillasfacturacion-id",
+              "method": "GET",
+              "path": "/api/v2/plantillasfacturacion · /{id}",
+              "title": "Plantillas de facturación NEXO",
+              "description": [
+                "Flags resumen e incluir_config. Devuelve plantillas[] con config e impuestos deserializados."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2metrics-tickets-customers-dashboard",
+              "method": "GET",
+              "path": "/api/v2/metrics · /tickets · /customers · /dashboard",
+              "title": "Métricas de soporte y clientes",
+              "description": [
+                "Solo GET. Query: mes (1–12), anio (2000–2100). En tickets/dashboard: agente_id / idtecnico / idsoporte. El",
+                "mes es el intervalo [día 1 00:00, día 1 del mes siguiente).",
+                "/metrics — índice con rutas[].",
+                "/metrics/tickets — creados, por estado, cerrados por técnico, top asuntos, interacciones del log.",
+                "/metrics/customers (alias /clientes) — activos, suspendidos, retirados, nuevos del mes.",
+                "/metrics/dashboard — tickets + clientes."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-74-hotspot",
+          "title": "7.4 Hotspot",
+          "intro": [
+            "409 no conciliado. 503 módulo ventas no migrado. Efectos: marca fichas vendidas y provisiona en Mikrotik."
+          ],
+          "endpoints": [
+            {
+              "id": "ref-getpost-apiv2hotspotfichas",
+              "method": "GET/POST",
+              "path": "/api/v2/hotspotfichas",
+              "title": "Inventario de fichas disponibles",
+              "description": [
+                "Solo fichas estado = 0 (nuevas). Nunca expone user/password. Filtra por sucursal del operador cuando",
+                "aplica.",
+                "Ruta Función",
+                "GET/POST /hotspotfichas Agrupado por plan",
+                "GET /por-sucursal · ?agrupar=sucursal Por sede",
+                "GET /lista · /list Listado paginado (limit máx. 500)",
+                "GET /{id} · /ficha?id= Una ficha (sin credenciales)",
+                "Filtros: router, perfil, sucursal / sucursales, detalle, incluir_sucursal, grupo, user (solo filtro)."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2hotspotventas-instrucciones",
+              "method": "GET",
+              "path": "/api/v2/hotspotventas · /instrucciones",
+              "title": "Datos para pagar una venta de fichas",
+              "description": [
+                "Sin token. Devuelve banco, código, teléfono y cédula/RIF de pago móvil. 503 si no está configurado."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-post-apiv2hotspotventas-pago-c2p",
+              "method": "POST",
+              "path": "/api/v2/hotspotventas · /pago · /c2p",
+              "title": "Vender fichas (pago móvil o C2P)",
+              "description": [
+                "Tras un pago efectivo sí devuelve user/pass de las fichas. Opcional WhatsApp (notif_whatsapp)."
+              ],
+              "params": [
+                {
+                  "name": "token / Bearer",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "Operador API"
+                },
+                {
+                  "name": "id_router / router",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "Router hotspot"
+                },
+                {
+                  "name": "ficha_ids[] / id_ficha",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "Fichas a vender"
+                },
+                {
+                  "name": "referencia, monto",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "(PM) monto = total_bs"
+                },
+                {
+                  "name": "fecha, cedula, pm_tel, pm_banco_origen, notas, chatbot",
+                  "type": "—",
+                  "required": "No",
+                  "description": ""
+                },
+                {
+                  "name": "accion (en /c2p)",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "resumen | request_otp | c2p_pay"
+                }
+              ],
+              "notes": [],
+              "examples": [
+                "{\"pago_efectivo\":true,\"id_venta\":55,\"fichas\":[{\"user\":\"...\",\"pass\":\"...\"}],\"notif_whatsapp\":{}}"
+              ]
+            },
+            {
+              "id": "ref-getputpost-apiv2hotspotwifiusuario-cambiar",
+              "method": "GET/PUT/POST",
+              "path": "/api/v2/hotspotwifi/{usuario} · /cambiar",
+              "title": "Usuario Wi-Fi recurrente (RADIUS)",
+              "description": [
+                "GET consulta usuario, rate, activo, presencia en radcheck/radreply. PUT o POST /cambiar:nuevo_usuario,",
+                "rate, activo: 0 (desactivar). DELETE está bloqueado por Apache: usa activo: 0."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2hotspotpartido-agenda",
+              "method": "GET",
+              "path": "/api/v2/hotspotpartido · /agenda",
+              "title": "Agenda deportiva para portal hotspot",
+              "description": [
+                "Requiere token. Caché 300 s. refresh=1 ignora caché. 502 si falla la red y no hay caché."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"activo\":true,\"partidos\":[],\"actualizado\":\"...\",\"fuente\":\"...\",\"desde_cache\":true}"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ref-75-operacion-de-campo-mapa-y-flota",
+          "title": "7.5 Operación de campo, mapa y flota",
+          "intro": [
+            "POST /consulta_cliente o /por_cedula con cedula/documento. Respuesta: cliente, tiene_planificacion,\ntareas[]. GET en consulta_cliente → 405."
+          ],
+          "endpoints": [
+            {
+              "id": "ref-getpost-apiv2planificaciontareas",
+              "method": "GET/POST",
+              "path": "/api/v2/planificaciontareas",
+              "title": "Calendario de tareas y consulta por cédula",
+              "description": [
+                "Feed tipo FullCalendar. Auth token/Bearer. Requierestart y end. action: events, planning_feed,",
+                "events_por_tecnico, planning_feed_operador. Si action es por técnico, operador = id de login."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"estado\":\"ok\",\"events\":[],\"source\":\"...\",\"supervisor_view\":true}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv2vehiculos-registro",
+              "method": "POST",
+              "path": "/api/v2/vehiculos · /registro",
+              "title": "Telemetría GPS / OBD",
+              "description": [],
+              "params": [
+                {
+                  "name": "token",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "Operador API"
+                },
+                {
+                  "name": "id_dispositivo",
+                  "type": "—",
+                  "required": "Sí",
+                  "description": "String ≤ 100"
+                },
+                {
+                  "name": "ubicaciones[] o latitud/longitud",
+                  "type": "—",
+                  "required": "Sí*",
+                  "description": "Al menos una ubicación o un log"
+                },
+                {
+                  "name": "comando, parametro, unidad, formula, datetime",
+                  "type": "—",
+                  "required": "No",
+                  "description": "Log de sensor"
+                }
+              ],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2sucursales-activas-id",
+              "method": "GET",
+              "path": "/api/v2/sucursales · /activas · /{id}",
+              "title": "Sedes visibles para el operador",
+              "description": [
+                "Respeta login_sucursales. Flags: detalle, incluir_zonas, incluir_routers. 404/{id} si no hay permiso. POST",
+                "create() = lista. Escritura → 405."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\"ok\":true,\"sucursales\":[{\"id\":1,\"nombre\":\"...\"}]}"
+              ]
+            },
+            {
+              "id": "ref-get-apiv2ubicaciones-zonas-id",
+              "method": "GET",
+              "path": "/api/v2/ubicaciones · /zonas · /{id}",
+              "title": "Zonas / ubicaciones",
+              "description": [
+                "Tabla zonas. Filtros: id_sucursal, detalle, incluir_sucursales. Respuesta ubicaciones[] con id, nombre, zona,",
+                "id_sucursal."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-get-apiv2nap-coordenadas-id",
+              "method": "GET",
+              "path": "/api/v2/nap · /coordenadas · /{id}",
+              "title": "Cajas NAP (API NEXO)",
+              "description": [
+                "Por defecto solo cajas con coordenadas. Filtros: id_sucursal, solo_con_coordenadas, detalle. 403 si el",
+                "operador no puede esa sucursal. cajas_nap[] con latitude/longitude parseados."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        },
+        {
+          "id": "ref-76-social-wifi-e-iptv",
+          "title": "7.6 Social WiFi e IPTV",
+          "intro": [],
+          "endpoints": [
+            {
+              "id": "ref-get-apiv2socialwifiusuario-username-followers",
+              "method": "GET",
+              "path": "/api/v2/socialwifi/@usuario · ?username= · /followers",
+              "title": "Verificar seguidor y sincronizar lista",
+              "description": [
+                "200 si el usuario sigue la cuenta (existe: true + data). 404 si no sigue. GET /followers sincroniza la lista",
+                "remota, inserta faltantes y elimina a quienes dejaron de seguir."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-getpost-apiv2socialwifiregistro",
+              "method": "GET/POST",
+              "path": "/api/v2/socialwifiregistro",
+              "title": "Registro Social WiFi por teléfono + OTP",
+              "description": [
+                "Método Ruta Acción",
+                "GET ?telefono= · /estado Estado del registro",
+                "POST / · /registro Guardar registro",
+                "POST /enviar_codigo Enviar OTP",
+                "POST /verificar_codigo telefono + codigo/otp"
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            },
+            {
+              "id": "ref-getpost-apiv2iptvsetplex",
+              "method": "GET/POST",
+              "path": "/api/v2/iptvsetplex",
+              "title": "IPTV Setplex / Nora",
+              "description": [
+                "GET / o /planes — lista perfiles IPTV. GET /{idperfil} — un plan.",
+                "POST /credenciales o raíz — cedula/documento → credenciales Setplex.",
+                "POST /cambiar_plan — cedula, opcional idperfil / idservicio.",
+                "502 si NEXO actualizó pero falla Nora. PUT/DELETE → 405."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": []
+            }
+          ]
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    },
+    {
+      "id": "ref-8-webhooks-notificaciones-entrantes",
+      "title": "8. Webhooks (notificaciones entrantes)",
+      "intro": [
+        "Estos endpoints los llama el banco o el proveedor\t, no tu app. Debes configurar la URL en el panel del\nproveedor. No hay rewrite dedicado: se alcanzan como PHP bajo /api/webhooks/.\nEn el portal de documentación, crea un grupo “Webhooks” separado de “REST API”. Cada ficha debe explicar:\nquién llama, cómo se autentica, qué hace el servidor y qué JSON debe devolver para que el banco no reintente en\nloop.",
+        "No POST → 200 {\"error\":\"Solo se permiten peticiones POST\"}.",
+        "401 no autorizado, 400 id inválido, 404 factura, 500 API Serdimpre.",
+        "Flujo de cobro (resumen)\nBDV push --> /api/webhooks/bdv.php --> pagos_bdv\n--> /api/v2/pagomovil | pagos | pagomovilbdv --> addPago\nBBVA push --> /api/webhooks/bbva.php --> addPago directo\nPlaceToPay --> /api/webhooks/evertec.php --> addPago / token tarjeta\nSerdimpre --> /api/webhooks/serdimpre.php --> cache fiscal + addPago opcional"
+      ],
+      "sections": [],
+      "endpoints": [
+        {
+          "id": "ref-webhook-post-apiwebhooksbbvaphp",
+          "method": "WEBHOOK POST",
+          "path": "/api/webhooks/bbva.php",
+          "title": "BBVA Provincial — botón de pago",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": [
+            "{\"estado\":\"exito\",\"salida\":\"...\",\"resultados\":[]}"
+          ]
+        },
+        {
+          "id": "ref-webhook-post-apiwebhooksbdvphp",
+          "method": "WEBHOOK POST",
+          "path": "/api/webhooks/bdv.php",
+          "title": "Banco de Venezuela — push de pago móvil recibido",
+          "description": [
+            "No cobra la factura. Inserta en notificaciones_banco y pagos_bdv para que luego /api/v2/pagomovil (u otra",
+            "pantalla) concilie. Auth: lista de IPs fijas + header x-api-key o api-key = pin decodificado de una pasarela",
+            "notificacionbdv activa."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-webhook-post-apiwebhooksevertecphp",
+          "method": "WEBHOOK POST",
+          "path": "/api/webhooks/evertec.php",
+          "title": "PlaceToPay / Evertec checkout",
+          "description": [
+            "Firma del SDK PlaceToPay. Credenciales de pasarela tipo = placetopay y estado on. Responde ok de",
+            "inmediato y procesa en segundo plano: si la referencia es un id de factura y está aprobado → addPago; si",
+            "empieza por SUBS_ → tokenización de tarjeta. URL de notificationURL en el checkout del portal."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-webhook-getpost-apiwebhooksserdimprephp",
+          "method": "WEBHOOK GET/POST",
+          "path": "/api/webhooks/serdimpre.php",
+          "title": "Serdimpre — estado fiscal del documento",
+          "description": [
+            "Auth: header X-Api-Key, Bearer, o query token/api_key = ajuste serdimpre_webhook_token. Si is serdimpre !==",
+            "on → 503. El id de factura llega por query, form o JSON. Consulta a Serdimpre; en etapa 4 (Facturado)",
+            "puede registrar el pago."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": [
+            "{\"status\":\"ok\",\"code\":200,\"message\":\"...\",\"data\":{}}"
+          ]
+        }
+      ],
+      "prose": []
+    },
+    {
+      "id": "ref-9-recaudadores-y-pasarelas-bancarias",
+      "title": "9. Recaudadores y pasarelas bancarias",
+      "intro": [
+        "Scripts de recaudación (ionCube) que consume el recaudador. Contrato oficial: POST JSON, campotoken = token\nAPI del operador. Las rutas sin .php también resuelven por el rewrite del sitio.\nEn este servidor sí están Facilito, Punto Ágil, Evertec recaudador y BancoEstado.No están desplegados\nBancard ni Diceltecsa (aunque existen en otras ediciones del producto)."
+      ],
+      "sections": [],
+      "endpoints": [
+        {
+          "id": "ref-post-facilitoconsultadeuda",
+          "method": "POST",
+          "path": "/facilito/consultadeuda",
+          "title": "Facilito — consultar deuda por cédula",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": [
+            "{\"token\":\"TU_TOKEN\",\"cedula\":4034567651}",
+            "{\"code\":\"000\",\"IDFactura\":2161,\n\"detalle\":\"Pago de comprobante Nº 00002161 - Vencimiento: 28/02/2022\",\n\"valor\":\"500.00\",\"mensaje\":\"Operación exitosa.\"}"
+          ]
+        },
+        {
+          "id": "ref-post-facilitoregistrarpago",
+          "method": "POST",
+          "path": "/facilito/registrarpago",
+          "title": "Facilito — registrar pago en caja",
+          "description": [],
+          "params": [
+            {
+              "name": "token",
+              "type": "—",
+              "required": "Sí",
+              "description": "Token API"
+            },
+            {
+              "name": "IDFactura",
+              "type": "—",
+              "required": "Sí",
+              "description": "Factura"
+            },
+            {
+              "name": "valor",
+              "type": "—",
+              "required": "Sí",
+              "description": "Monto"
+            },
+            {
+              "name": "fecha",
+              "type": "—",
+              "required": "Sí",
+              "description": "YYYY-MM-DD"
+            },
+            {
+              "name": "secuencial",
+              "type": "—",
+              "required": "Sí",
+              "description": "Secuencial Facilito"
+            }
+          ],
+          "notes": [],
+          "examples": [
+            "{\"code\":\"000\",\"autorizacion\":16401,\"valor\":\"500.00\",\"mensaje\":\"Operación exitosa.\"}"
+          ]
+        },
+        {
+          "id": "ref-post-facilitoreversopago",
+          "method": "POST",
+          "path": "/facilito/reversopago",
+          "title": "Facilito — reverso",
+          "description": [
+            "token, IDFactura, secuencial. Se usa si Facilito no recibió respuesta a tiempo o para ajuste automático."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-facilitoconsultapago",
+          "method": "POST",
+          "path": "/facilito/consultapago",
+          "title": "Facilito — conciliación del día",
+          "description": [
+            "token + fecha (YYYY-MM-DD). Devuelve el listado de { IDFactura, valor, secuencial }.",
+            "Punto Ágil usa el mismo contrato cambiando el prefijo:",
+            "Ruta Equivalente Facilito"
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-puntoagilconsultadeuda-consulta-por-cedula",
+          "method": "POST",
+          "path": "/puntoagil/consultadeuda consulta por cédula",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-puntoagilregistrarpago-registrar-pago",
+          "method": "POST",
+          "path": "/puntoagil/registrarpago registrar pago",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-puntoagilreversopago-reverso",
+          "method": "POST",
+          "path": "/puntoagil/reversopago reverso",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-puntoagilconsultapago-pagos-del-dia",
+          "method": "POST",
+          "path": "/puntoagil/consultapago pagos del día",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-evertecconsultadeudaphp-evertecregistrarpagophp",
+          "method": "POST",
+          "path": "/evertec/consultadeuda.php · /evertec/registrarpago.php",
+          "title": "Evertec recaudador (red de cajas)",
+          "description": [
+            "Distinto del webhook PlaceToPay. Archivos ionCube; el contrato lo entrega Evertec (no está en llms.txt de",
+            "Nexo). Trátalo como integración de vendor: consulta deuda + registro de pago."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-soap-bancoestadowebwsdl",
+          "method": "SOAP",
+          "path": "/bancoestado/web/?wsdl",
+          "title": "BancoEstado Caja Vecina (Chile)",
+          "description": [
+            "SOAP 1.x. Métodos: consultarCliente(rutCliente) y registrarPago(rutCliente, factura, monto,",
+            "descripcion, pasarela, transaccion). La respuesta es XML <RESPUESTA> con ESTADO (aceptado, …) y",
+            "MENSAJE."
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        }
+      ],
+      "prose": []
+    },
+    {
+      "id": "ref-10-catalogo-rapido-de-rutas",
+      "title": "10. Catálogo rápido de rutas",
+      "intro": [
+        "Úsalo como índice del futuro portal (sidebar). Todas relativas a  .\nAuth y proxies\nMétodo Ruta Auth"
+      ],
+      "sections": [],
+      "endpoints": [
+        {
+          "id": "ref-post-apiauth-usuarioclave",
+          "method": "POST",
+          "path": "/api/auth usuario/clave",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiauthactionrefresh-jwt-vigente",
+          "method": "POST",
+          "path": "/api/auth?action=refresh JWT vigente",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiv1comando-token-en-body",
+          "method": "POST",
+          "path": "/api/v1/{Comando} token en body",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiv11comando-bearer",
+          "method": "POST",
+          "path": "/api/v11/{Comando} Bearer",
+          "title": "* /api/v2/{modulo}/... token / Bearer según módulo",
+          "description": [
+            "* /api/v21/{modulo}/... Bearer JWT o token API",
+            "Comandos v1 (43)",
+            "CreateInvoice, CreateInvoiceLibre, GetInvoices, GetPlantillasFacturacion, GetInvoice, PromesaPago, PaidInvoice, DeleteInvoice,",
+            "DeleteTransaccion, ReportesPago, BaseFacturas, GetPaymentLink, NewUser, ChangeFacturacionConfig, GetClientsDetails,",
+            "UpdateUser, ActiveService, SuspendService, NewPreRegistro, ListInstall, GetAllClients, NewTicket, CloseTicket, ListTicket,",
+            "NewSMS, GetRouters, GetMonitoreo, GetMacFromIp, GetRedesIpv4, GetIpv6FromDuid, NewService, EditService, GetCajasNap,",
+            "GetOperadores, GetTareas, GetDepartamentos, CreateTarea, SmartOltGetVlans, SmartOltGetZonas, SmartOltGetProfiles,",
+            "SmartOltGetODB, SmartOltAuthorizeONU.",
+            "Módulos v2 / v21",
+            "Módulo Lectura Escritura",
+            "consultafactura GET deuda —",
+            "facturacion GET working POST pagos",
+            "pagos — POST conciliación PM",
+            "pagomovil GET/POST consulta POST pago",
+            "pagomovilbdv GET/POST consulta POST validado BDV",
+            "c2p / bdvc2p / pagoc2p resumen OTP + débito",
+            "dolarprice, planes, promociones, plantillasfacturacion, metrics GET —",
+            "hotspotfichas inventario —",
+            "hotspotventas instrucciones POST venta / C2P",
+            "hotspotwifi GET usuario PUT/POST cambiar",
+            "hotspotpartido agenda —",
+            "planificaciontareas events POST consulta_cliente",
+            "vehiculos ayuda POST telemetría",
+            "sucursales, ubicaciones, nap GET —",
+            "socialwifi GET / followers sync (GET)",
+            "socialwifiregistro estado registro + OTP",
+            "iptvsetplex planes credenciales / cambiar_plan",
+            "Webhooks y recaudadores",
+            "Ruta Quién llama"
+          ],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiwebhooksbbvaphp-bbva-provincial",
+          "method": "POST",
+          "path": "/api/webhooks/bbva.php BBVA Provincial",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiwebhooksbdvphp-bdv-pago-movil-recibido",
+          "method": "POST",
+          "path": "/api/webhooks/bdv.php BDV (pago móvil recibido)",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-apiwebhooksevertecphp-placetopay",
+          "method": "POST",
+          "path": "/api/webhooks/evertec.php PlaceToPay",
+          "title": "GET/POST /api/webhooks/serdimpre.php Serdimpre",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-facilitoconsultadeudaregistrarpagoreversopagoconsultapago-facilito",
+          "method": "POST",
+          "path": "/facilito/{consultadeuda|registrarpago|reversopago|consultapago} Facilito",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-puntoagil-punto-agil",
+          "method": "POST",
+          "path": "/puntoagil/{…} Punto Ágil",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-post-evertecconsultadeudaregistrarpagophp-evertec-cajas",
+          "method": "POST",
+          "path": "/evertec/{consultadeuda|registrarpago}.php Evertec cajas",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        },
+        {
+          "id": "ref-soap-bancoestadowebwsdl-bancoestado",
+          "method": "SOAP",
+          "path": "/bancoestado/web/?wsdl BancoEstado",
+          "title": "",
+          "description": [],
+          "params": [],
+          "notes": [],
+          "examples": []
+        }
+      ],
+      "prose": []
+    },
+    {
+      "id": "ref-11-errores-frecuentes-y-checklist-de-integracion",
+      "title": "11. Errores frecuentes y checklist de integración",
+      "intro": [],
+      "sections": [
+        {
+          "id": "ref-111-checklist",
+          "title": "11.1 Checklist",
+          "intro": [
+            "Crea un usuario operador con API = 1 y genera token_api.\t1.\nPrueba POST /api/auth y guarda el JWT.\t2.\nLlama v21 (NEXO) o v11 (API v1) con Authorization: Bearer.\t3.\nPara cobros VE: confirma pasarela bancodevenezuela / bdvc2p y tasa del día en dolarprice.\t4.\nSi usas pago móvil “offline”, el banco debe pegar a /api/webhooks/bdv.php antes de que el cliente\t5.\nenvíe la referencia.\nNo uses DELETE HTTP. No pongas el token en logs ni en URLs públicas.\t6.\nContent-Type: application/json. Fechas YYYY-MM-DD. Montos con punto.\t7."
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-112-errores-que-mas-se-ven",
+          "title": "11.2 Errores que más se ven",
+          "intro": [
+            "Síntoma Causa habitual Qué hacer\n403 Token Bearer no autorizado token_api mal copiado o api=0 Regenerar token y habilitar API\n403 … no tiene token_api Login JWT de un user sin token Generar token API a ese user\n409 / referencia no encontrada El push BDV no llegó o dígitos distintos Ver pagos_bdv; comparar últimos 6\n503 pasarela inactiva Pasarela off o sin X-API-Key Ajustes → Pasarelas\n403 en DELETE Apache bloquea DELETE Usar POST/PUT documentado\n502 proxy v1/v2 no respondió en localhost Revisar Apache / ionCube / PHP\nMonto no coincide Tasa del día distinta o factura ya pagada GET dolarprice + estado de factura"
+          ],
+          "endpoints": []
+        },
+        {
+          "id": "ref-113-como-armar-el-portal-a-partir-de-este-pdf",
+          "title": "11.3 Cómo armar el portal a partir de este PDF",
+          "intro": [
+            "Crea un sitio (Mintlify, Redocly, ReadMe, Docusaurus o VitePress).\t1.\nPágina “Introducción” = capítulos 2–4. Página “Authentication” = capítulo 3 con Try-it de /api/auth.\t2.\nUn grupo por familia: API v1, NEXO v2, Webhooks, Recaudadores.\t3.\nCada Endpoint de este PDF = una página con OpenAPI 3 (paths, requestBody, responses) como en\t4.\nesta documentación y api.smartolt.com.\nAñade “Try it” apuntando a  .com (o el dominio del cliente) y variable {{token}}.\t5.\nLos archivos fuente en /root/api-docs/specs/ (introducción + inventarios) sirven como markdown\t6.\nintermedio.\nSiguiente paso sugerido. Cuando quieras el portal, pide convertir este PDF en un sitio estático con sidebar,\nbuscador y ejemplos curl/JS/PHP por endpoint. El contrato ya está inventariado; falta solo la capa visual.\nDocumento generado el 6 de octubre de 2026 a partir del código desplegado en /var/www/html (API v2,\nwebhooks, proxies) y de la referencia API v1 Nexo. Sustituye TU-DOMINIO por el host real de cada\ninstalación."
+          ],
+          "endpoints": []
+        }
+      ],
+      "endpoints": [],
+      "prose": []
+    }
+  ]
+}

@@ -6,7 +6,7 @@ Referencia completa de endpoints, autenticación y webhooks
 Documento fuente para construir un portal de documentación
 al estilo de SmartOLT API y Mikrowisp API Reference.
 Instancia https://vente.rsgve.com
-Base URL https://TU-DOMINIO
+Base URL  
 Núcleo Mikrowisp 6.x + módulos NEXO
 Familias v1 / v11 · v2 / v21 · Auth JWT · Webhooks · Recaudadores
 Formato JSON UTF-8 (SOAP solo en BancoEstado)
@@ -72,7 +72,7 @@ v11 añadido por NEXO.
 API v2 — módulos propios de NEXO (pago móvil, C2P BDV, hotspot, Social WiFi, NAP, sucursales,
 vehículos, métricas, IPTV, etc.).
 2.1 Base URL
-https://TU-DOMINIO
+ 
 # Instancia actual:
 https://vente.rsgve.com
 Familia Base Uso
@@ -126,11 +126,11 @@ Hay tres formas de autenticarse. El usuario debe existir en la tablalogin, estar
 token API, tener api = 1 y un token_api generado en Ajustes → Gestión personal / Usuarios
 administradores → API.
 3.1 Token API en el cuerpo (legacy, v1 y varios v2)
-curl -X POST https://TU-DOMINIO/api/v1/GetClientsDetails \
+curl -X POST  /api/v1/GetClientsDetails \
 -H "Content-Type: application/json" \
 -d '{"token":"TU_TOKEN_API","idcliente":1}'
 3.2 Bearer con token API (v11 / v21)
-curl -X POST https://TU-DOMINIO/api/v11/GetClientsDetails \
+curl -X POST  /api/v11/GetClientsDetails \
 -H "Authorization: Bearer TU_TOKEN_API" \
 -H "Content-Type: application/json" \
 -d '{"idcliente":1}'
@@ -143,7 +143,7 @@ Sin autenticación previa. Credenciales de un administrador Mikrowisp.
 Campo Dónde Tipo Req. Descripción
 username body / query string Sí Usuario administrador
 password body / query string Sí Contraseña (se compara con hash en BD)
-curl -X POST https://TU-DOMINIO/api/auth \
+curl -X POST  /api/auth \
 -H "Content-Type: application/json" \
 -d '{"username":"admin","password":"TU_PASSWORD"}'
 {
@@ -159,7 +159,7 @@ POST /api/auth?action=refresh
 Renovar JWT
 Requiere un JWT todavía válido en Authorization: Bearer o en el campo token del cuerpo. Un token
 expirado no se renueva: hay que hacer login otra vez.
-curl -X POST "https://TU-DOMINIO/api/auth?action=refresh" \
+curl -X POST " /api/auth?action=refresh" \
 -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
 
 -- 6 of 31 --
@@ -866,7 +866,7 @@ MENSAJE.
 API NEXO · Documentación de referencia vente.rsgve.com
 Confidencial · Uso interno y de integradores autorizados Página 29 de 31
 10. Catálogo rápido de rutas
-Úsalo como índice del futuro portal (sidebar). Todas relativas a https://TU-DOMINIO.
+Úsalo como índice del futuro portal (sidebar). Todas relativas a  .
 Auth y proxies
 Método Ruta Auth
 POST /api/auth usuario/clave

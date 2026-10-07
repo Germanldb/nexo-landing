@@ -1,16 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { DocNavGroup, DocNavItem } from './doc-nav-types';
 
-export interface DocNavItem {
-  title: string;
-  id: string;
-  href?: string;
-}
-
-export interface DocNavGroup {
-  label: string;
-  items: DocNavItem[];
-}
+export type { DocNavGroup, DocNavItem };
 
 interface Props {
   title: string;
@@ -19,6 +11,7 @@ interface Props {
   sidebarTitle?: string;
   sidebarSubtitle?: string;
   navGroups: DocNavGroup[];
+  navVariant?: 'default' | 'readme';
   alternateDoc?: {
     href: string;
     label: string;
@@ -33,18 +26,38 @@ const {
   sidebarTitle = 'Nexo',
   sidebarSubtitle = 'Manual de usuario',
   navGroups,
+  navVariant = 'default',
   alternateDoc,
 } = Astro.props;
+
+const isReadmeNav = navVariant === 'readme';
 ---
 
 <BaseLayout title={title} description={description}>
-  <div class="doc-page flex min-h-screen">
-    <aside id="doc-sidebar" class="doc-sidebar w-72 xl:w-80 shrink-0 fixed top-0 left-0 h-screen overflow-y-auto px-4 pt-4 pb-4 z-40 hidden lg:block transition-transform duration-300">
-      <div class="mb-2 px-1">
-        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary">{kicker}</span>
-        <h2 class="text-xl font-extrabold text-nexo-dark mt-0.5">{sidebarTitle}</h2>
-        <p class="text-[11px] text-nexo-dark/40 mt-0.5 leading-snug">{sidebarSubtitle}</p>
-      </div>
+  <div class:list={['doc-page flex min-h-screen', isReadmeNav && 'doc-page--readme']}>
+    <aside id="doc-sidebar" class:list={['doc-sidebar w-72 xl:w-80 shrink-0 fixed top-0 left-0 h-screen overflow-y-auto px-4 pt-4 pb-4 z-40 hidden lg:block transition-transform duration-300', isReadmeNav && 'doc-sidebar--readme']}>
+      {isReadmeNav ? (
+        <div class="doc-sidebar-readme-head mb-3 px-0.5">
+          <label class="doc-nav-filter-wrap">
+            <span class="sr-only">Filtrar documentación</span>
+            <input
+              type="search"
+              id="doc-nav-filter"
+              class="doc-nav-filter"
+              placeholder="Filter"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <kbd class="doc-nav-filter-kbd" aria-hidden="true">Ctrl /</kbd>
+          </label>
+        </div>
+      ) : (
+        <div class="mb-2 px-1">
+          <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary">{kicker}</span>
+          <h2 class="text-xl font-extrabold text-nexo-dark mt-0.5">{sidebarTitle}</h2>
+          <p class="text-[11px] text-nexo-dark/40 mt-0.5 leading-snug">{sidebarSubtitle}</p>
+        </div>
+      )}
 
       {alternateDoc && (
         <a
@@ -58,11 +71,15 @@ const {
 
       <nav class="doc-nav" aria-label="Contenido del manual">
         {navGroups.map((group, groupIndex) => (
-          <div class="doc-nav-group is-collapsed" data-nav-group={groupIndex}>
+          <div
+            class:list={['doc-nav-group', !group.defaultOpen && 'is-collapsed']}
+            data-nav-group={groupIndex}
+            data-default-open={group.defaultOpen ? 'true' : 'false'}
+          >
             <button
               type="button"
               class="doc-nav-group-toggle"
-              aria-expanded="false"
+              aria-expanded={group.defaultOpen ? 'true' : 'false'}
               aria-controls={`doc-nav-group-${groupIndex}`}
             >
               <span>{group.label}</span>
@@ -71,15 +88,60 @@ const {
               </svg>
             </button>
             <div id={`doc-nav-group-${groupIndex}`} class="doc-nav-group-items" role="region">
-              {group.items.map(item => (
-                <a
-                  href={item.href ?? `#${item.id}`}
-                  class="doc-nav-link"
-                  data-section-id={item.id}
-                >
-                  {item.title}
-                </a>
-              ))}
+              {group.items.map((item) =>
+                item.children && item.children.length > 0 ? (
+                  <div
+                    class:list={['doc-nav-subgroup', !item.defaultOpen && 'is-collapsed']}
+                    data-nav-subgroup
+                    data-default-open={item.defaultOpen ? 'true' : 'false'}
+                  >
+                    <button
+                      type="button"
+                      class="doc-nav-subgroup-toggle"
+                      aria-expanded={item.defaultOpen ? 'true' : 'false'}
+                    >
+                      <span>{item.title}</span>
+                      <svg class="doc-nav-subgroup-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                    <div class="doc-nav-subgroup-items">
+                      {item.children.map((child) => (
+                        <a
+                          href={child.href ?? `#${child.id}`}
+                          class="doc-nav-link doc-nav-link--endpoint"
+                          data-section-id={child.id}
+                        >
+                          <span class="doc-nav-link__text">{child.title}</span>
+                          {child.method && (
+                            <span
+                              class:list={[
+                                'doc-nav-method',
+                                child.method === 'GET' || child.method?.startsWith('GET/') ? 'is-get' : '',
+                                child.method === 'POST' ||
+                                child.method?.includes('POST') ||
+                                child.method?.startsWith('WEBHOOK')
+                                  ? 'is-post'
+                                  : '',
+                              ]}
+                            >
+                              {child.method?.replace('WEBHOOK ', 'WH ')}
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <a
+                    href={item.href ?? `#${item.id}`}
+                    class="doc-nav-link"
+                    data-section-id={item.id}
+                  >
+                    {item.title}
+                  </a>
+                ),
+              )}
             </div>
           </div>
         ))}
@@ -112,7 +174,10 @@ const {
 
   <script>
     const links = document.querySelectorAll('.doc-nav-link');
-    const sections = document.querySelectorAll('section[id]');
+    const sections = document.querySelectorAll(
+      'section[id], .doc-ref-h2[id], .doc-endpoint-card[id]',
+    );
+    const subgroups = document.querySelectorAll('[data-nav-subgroup]');
     const sidebar = document.getElementById('doc-sidebar');
     const toggle = document.getElementById('doc-sidebar-toggle');
     const overlay = document.getElementById('doc-sidebar-overlay');
@@ -137,31 +202,94 @@ const {
       });
     }
 
+    function setSubgroupExpanded(subgroup, expanded) {
+      const btn = subgroup.querySelector('.doc-nav-subgroup-toggle');
+      if (!btn) return;
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      subgroup.classList.toggle('is-collapsed', !expanded);
+    }
+
     function setActiveLink(sectionId) {
-      links.forEach(l => l.classList.remove('active'));
-      navGroups.forEach(g => g.classList.remove('is-active-group'));
+      links.forEach((l) => l.classList.remove('active'));
+      navGroups.forEach((g) => g.classList.remove('is-active-group'));
 
       const active = document.querySelector(`.doc-nav-link[data-section-id="${sectionId}"]`);
+      const subgroup = active?.closest('[data-nav-subgroup]');
       const group = active?.closest('.doc-nav-group');
       active?.classList.add('active');
-      if (group) {
+      if (subgroup instanceof HTMLElement) setSubgroupExpanded(subgroup, true);
+      if (group instanceof HTMLElement) {
         group.classList.add('is-active-group');
-        openOnlyGroup(group);
+        setGroupExpanded(group, true);
       }
       active?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    navGroups.forEach(group => {
+    navGroups.forEach((group) => {
+      if (group.dataset.defaultOpen === 'true') {
+        setGroupExpanded(group, true);
+      }
       const btn = group.querySelector('.doc-nav-group-toggle');
       btn?.addEventListener('click', () => {
         const isOpen = btn.getAttribute('aria-expanded') === 'true';
-        if (isOpen) {
-          setGroupExpanded(group, false);
-        } else {
-          openOnlyGroup(group);
-        }
+        setGroupExpanded(group, !isOpen);
       });
     });
+
+    subgroups.forEach((subgroup) => {
+      if (subgroup instanceof HTMLElement && subgroup.dataset.defaultOpen === 'true') {
+        setSubgroupExpanded(subgroup, true);
+      }
+      const btn = subgroup.querySelector('.doc-nav-subgroup-toggle');
+      btn?.addEventListener('click', () => {
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        setSubgroupExpanded(subgroup, !isOpen);
+      });
+    });
+
+    const navFilter = document.getElementById('doc-nav-filter');
+    if (navFilter instanceof HTMLInputElement) {
+      const filterableLinks = Array.from(
+        document.querySelectorAll('.doc-nav-link[data-section-id]'),
+      );
+      const filterableSubgroups = Array.from(document.querySelectorAll('[data-nav-subgroup]'));
+
+      const applyNavFilter = (query: string) => {
+        const q = query.trim().toLowerCase();
+        filterableLinks.forEach((link) => {
+          const el = link as HTMLElement;
+          const text = el.textContent?.toLowerCase() ?? '';
+          const match = !q || text.includes(q);
+          el.classList.toggle('is-filter-hidden', !match);
+        });
+        filterableSubgroups.forEach((subgroup) => {
+          const visibleChild = subgroup.querySelector(
+            '.doc-nav-link--endpoint:not(.is-filter-hidden)',
+          );
+          const toggle = subgroup.querySelector('.doc-nav-subgroup-toggle') as HTMLElement | null;
+          subgroup.classList.toggle('is-filter-hidden', !visibleChild && !!q);
+          if (visibleChild && q && subgroup instanceof HTMLElement) {
+            setSubgroupExpanded(subgroup, true);
+          }
+          if (toggle) {
+            toggle.classList.toggle(
+              'is-filter-dim',
+              !!q && !subgroup.querySelector('.doc-nav-link--endpoint:not(.is-filter-hidden)'),
+            );
+          }
+        });
+      };
+
+      navFilter.addEventListener('input', () => applyNavFilter(navFilter.value));
+
+      document.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === '/') {
+          event.preventDefault();
+          navFilter.focus();
+          navFilter.select();
+        }
+      });
+    }
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

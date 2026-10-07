@@ -36,7 +36,7 @@ const replacements = [
   [/referencia oficial Mikrowisp API v1\.1/gi, 'referencia API v1 Nexo'],
   [/docs\.mikrosystem\.net/gi, 'esta documentación'],
   [/v11 \(Mikrowisp\)/gi, 'v11 (API v1)'],
-  [/https:\/\/vente\.rsgve\.com/g, 'https://tu-dominio.com'],
+  [/https:\/\/vente\.rsgve\.com/g, ' .com'],
   [/vente\.rsgve\.com/g, 'tu-dominio.com'],
   [/Confidencial · Uso interno y de integradores autorizados Página \d+ de \d+\n?/g, ''],
   [/API NEXO · Documentación de referencia tu-dominio\.com\n?/g, ''],
@@ -64,19 +64,39 @@ for (const [re, sub] of replacements) {
 const start = text.indexOf('1. Cómo usar este documento');
 const intro = `# Referencia API Nexo
 
-Documentación completa de endpoints, autenticación, webhooks y recaudadores. Sustituya \`https://tu-dominio.com\` por el host de su instalación.
+Documentación completa de endpoints, autenticación, webhooks y recaudadores. Sustituya \` .com\` por el host de su instalación.
 
 `;
 
 const body = start >= 0 ? text.slice(start) : text;
 
-const md = intro + body
-  .replace(/^(\d+)\. (.+)$/gm, '## $1. $2')
-  .replace(/^(\d+\.\d+) (.+)$/gm, '### $1 $2')
-  .replace(/^POST \/api/gm, '\n#### POST /api')
-  .replace(/^GET \/api/gm, '\n#### GET /api')
-  .replace(/^WEBHOOK POST/gm, '\n#### WEBHOOK POST')
-  .replace(/^SOAP /gm, '\n#### SOAP ')
+function prefixEndpointHeadings(source) {
+  return (
+    source
+      // Orden: variantes compuestas antes que GET/POST sueltos
+      .replace(/^WEBHOOK GET\s+\/\s*POST\s+/gm, '\n#### WEBHOOK GET/POST ')
+      .replace(/^WEBHOOK POST\s+/gm, '\n#### WEBHOOK POST ')
+      .replace(/^GET\s+\/\s*PUT\s+\/\s*POST\s+/gm, '\n#### GET/PUT/POST ')
+      .replace(/^GET\s+\/\s*POST\s+/gm, '\n#### GET/POST ')
+      .replace(/^POST\s+\/(facilito|puntoagil|evertec)\S[^\n]*/gm, (line) => `\n#### ${line.trim()}`)
+      .replace(/^POST\s+\/api/gm, '\n#### POST /api')
+      .replace(
+        /^GET\s+\/api(?!\/v2\/consultafactura\?cedula=)(?!\/v2\/facturacion responde)/gm,
+        '\n#### GET /api',
+      )
+      .replace(/^PUT\s+\/api/gm, '\n#### PUT /api')
+      .replace(/^DELETE\s+\/api/gm, '\n#### DELETE /api')
+      .replace(/^SOAP \/bancoestado\/web\/\?wsdl[^\n]*/gm, (line) => `\n#### ${line.trim()}`)
+  );
+}
+
+const md = intro + prefixEndpointHeadings(
+  body
+    .replace(/^(\d+)\. (.+)$/gm, '## $1. $2')
+    .replace(/^(\d+\.\d+) (.+)$/gm, '### $1 $2')
+    .replace(/^SmartOLT \(vía Nexo\)\s*$/gm, '\n### SmartOLT (vía Nexo)\n'),
+)
+  .replace(/\n{4,}/g, '\n\n\n')
   .trim();
 
 fs.mkdirSync('src/data', { recursive: true });

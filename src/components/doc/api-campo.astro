@@ -134,7 +134,7 @@ const vehiculosMethods = [
         title="¿Tiene visitas ese cliente?"
         method="POST"
         path="/api/v2/planificaciontareas/consulta_cliente"
-        http={`POST https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente HTTP/1.1
+        http={`POST  .com/api/v2/planificaciontareas/consulta_cliente HTTP/1.1
 Authorization: Bearer TOKEN_API
 Content-Type: application/json
 
@@ -144,7 +144,7 @@ Content-Type: application/json
   "end": "2026-09-30"
 }`}
         javascript={`const res = await fetch(
-  "https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente",
+  " .com/api/v2/planificaciontareas/consulta_cliente",
   {
     method: "POST",
     headers: {
@@ -165,7 +165,7 @@ $payload = json_encode([
   "start" => "2026-09-01",
   "end" => "2026-09-30",
 ]);
-$ch = curl_init("https://tu-dominio.com/api/v2/planificaciontareas/consulta_cliente");
+$ch = curl_init(" .com/api/v2/planificaciontareas/consulta_cliente");
 curl_setopt_array($ch, [
   CURLOPT_POST => true,
   CURLOPT_RETURNTRANSFER => true,
@@ -189,7 +189,7 @@ echo curl_exec($ch);`}
         title="Registrar telemetría"
         method="POST"
         path="/api/v2/vehiculos/registro"
-        http={`POST https://tu-dominio.com/api/v2/vehiculos/registro HTTP/1.1
+        http={`POST  .com/api/v2/vehiculos/registro HTTP/1.1
 Authorization: Bearer TOKEN_API
 Content-Type: application/json
 
@@ -206,7 +206,7 @@ Content-Type: application/json
     }
   ]
 }`}
-        javascript={`await fetch("https://tu-dominio.com/api/v2/vehiculos/registro", {
+        javascript={`await fetch(" .com/api/v2/vehiculos/registro", {
   method: "POST",
   headers: {
     Authorization: "Bearer TOKEN_API",
@@ -238,7 +238,7 @@ $payload = json_encode([
     "datetime" => "2026-09-25 08:30:00",
   ]],
 ]);
-$ch = curl_init("https://tu-dominio.com/api/v2/vehiculos/registro");
+$ch = curl_init(" .com/api/v2/vehiculos/registro");
 curl_setopt_array($ch, [
   CURLOPT_POST => true,
   CURLOPT_RETURNTRANSFER => true,
