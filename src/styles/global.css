@@ -505,7 +505,7 @@ body.nexo-landing .nexo-form-error {
   padding: 1rem 1.25rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #fecaca;
+  color: #530000;
   background: rgba(220, 38, 38, 0.15);
   border: 1px solid rgba(248, 113, 113, 0.4);
   border-radius: 0.75rem;
@@ -846,6 +846,61 @@ body.nexo-landing .doc-api-table code {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--nexo-text);
+}
+
+body.nexo-landing .doc-reference-prose {
+  max-width: 52rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--nexo-text) 78%, transparent);
+}
+
+body.nexo-landing .doc-reference-prose .doc-ref-h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--nexo-text);
+  margin: 2.5rem 0 1rem;
+  padding-top: 0.5rem;
+  scroll-margin-top: 6rem;
+  letter-spacing: -0.02em;
+}
+
+body.nexo-landing .doc-reference-prose .doc-ref-h2:first-child {
+  margin-top: 0;
+}
+
+body.nexo-landing .doc-reference-prose .doc-ref-h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--nexo-text);
+  margin: 1.75rem 0 0.65rem;
+  scroll-margin-top: 6rem;
+}
+
+body.nexo-landing .doc-reference-prose .doc-ref-h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--nexo-text) 92%, transparent);
+  margin: 1.25rem 0 0.5rem;
+  scroll-margin-top: 6rem;
+}
+
+body.nexo-landing .doc-reference-prose p {
+  margin: 0.65rem 0;
+}
+
+body.nexo-landing .doc-reference-prose ul,
+body.nexo-landing .doc-reference-prose ol {
+  margin: 0.5rem 0 0.75rem 1.25rem;
+}
+
+body.nexo-landing .doc-reference-prose li {
+  margin: 0.25rem 0;
+}
+
+body.nexo-landing .doc-reference-prose pre.doc-code-block {
+  margin: 0.75rem 0 1rem;
+  font-size: 0.75rem;
 }
 
 body.nexo-landing .doc-badge {

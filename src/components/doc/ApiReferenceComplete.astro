@@ -1,0 +1,58 @@
+---
+import { marked } from 'marked';
+import referenceMd from '../../data/nexo-api-reference.md?raw';
+import { slugifyReferenceTitle } from '../../lib/doc-reference-nav';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'api-referencia-completa' } = Astro.props;
+
+function refId(title: string) {
+  return `ref-${slugifyReferenceTitle(title)}`;
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const renderer = new marked.Renderer();
+renderer.code = ({ text }: { text: string }) =>
+  `<pre class="doc-code-block" tabindex="0"><code>${escapeHtml(text)}</code></pre>`;
+renderer.table = (token: { header: string; body: string }) =>
+  `<div class="overflow-x-auto my-4"><table class="doc-api-table">${token.header}${token.body}</table></div>`;
+
+marked.setOptions({ gfm: true, breaks: true, renderer });
+
+let html = marked.parse(referenceMd) as string;
+
+html = html.replace(/<h2>([^<]+)<\/h2>/g, (_match, rawTitle: string) => {
+  const idAttr = refId(rawTitle);
+  return `<h2 id="${idAttr}" class="doc-ref-h2">${rawTitle}</h2>`;
+});
+html = html.replace(/<h3>([^<]+)<\/h3>/g, (_match, rawTitle: string) => {
+  const idAttr = refId(rawTitle);
+  return `<h3 id="${idAttr}" class="doc-ref-h3">${rawTitle}</h3>`;
+});
+html = html.replace(/<h4>([^<]+)<\/h4>/g, (_match, rawTitle: string) => {
+  const idAttr = refId(rawTitle);
+  return `<h4 id="${idAttr}" class="doc-ref-h4">${rawTitle}</h4>`;
+});
+
+---
+
+<section id={id} class="doc-section mb-16">
+  <div class="mb-8">
+    <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-nexo-primary mb-2 block">Referencia oficial</span>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-nexo-dark tracking-tight">Documentación API Nexo (completa)</h2>
+    <p class="text-nexo-dark/60 text-sm mt-3 max-w-2xl leading-relaxed">
+      Inventario de endpoints v1, v11, v2, v21, webhooks y recaudadores. Use el índice del menú lateral para saltar a cada capítulo.
+    </p>
+  </div>
+  <div class="doc-reference-prose" set:html={html} />
+</section>

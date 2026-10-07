@@ -10,8 +10,38 @@ const sessionSecret = process.env.ADMIN_SESSION_SECRET ?? 'nexo-dev-session-secr
 
 const docUser = process.env.DOC_API_USERNAME ?? 'doc';
 const docPassword = process.env.DOC_API_PASSWORD ?? '';
-/** Si hay contraseña configurada, /doc/api exige login (cookie o sesión admin). */
-const docApiProtectEnabled = docPassword.length > 0;
+const docUsersEnv = (process.env.DOC_API_USERS ?? '').trim();
+
+function listDocApiAccountsExpress() {
+  if (docUsersEnv.length > 0) {
+    const accounts = docUsersEnv
+      .split(',')
+      .map((pair) => pair.trim())
+      .filter(Boolean)
+      .map((pair) => {
+        const sep = pair.indexOf(':');
+        if (sep <= 0) return null;
+        return {
+          username: pair.slice(0, sep).trim(),
+          password: pair.slice(sep + 1),
+        };
+      })
+      .filter(Boolean);
+    if (accounts.length > 0) return accounts;
+  }
+  if (!docPassword.length) return [];
+  if (docUser.includes(',') && docPassword.includes(',')) {
+    const users = docUser.split(',').map((s) => s.trim()).filter(Boolean);
+    const passwords = docPassword.split(',').map((s) => s.trim());
+    if (users.length === passwords.length && users.length > 0) {
+      return users.map((username, i) => ({ username, password: passwords[i] }));
+    }
+  }
+  return [{ username: docUser.trim(), password: docPassword }];
+}
+
+/** Si hay cuentas configuradas, /doc/api exige login (cookie o sesión admin). */
+const docApiProtectEnabled = listDocApiAccountsExpress().length > 0;
 
 function parseCookies(req) {
   const header = req.headers.cookie;
@@ -81,7 +111,9 @@ function getDocSessionFromRequest(req) {
 
 function validateDocCredentials(username, password) {
   if (!docApiProtectEnabled) return false;
-  return username === docUser && password === docPassword;
+  return listDocApiAccountsExpress().some(
+    (account) => account.username === username && account.password === password,
+  );
 }
 
 /** Acceso a documentación API: abierto si no hay DOC_API_PASSWORD; si no, cookie doc o sesión admin. */

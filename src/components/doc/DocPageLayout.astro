@@ -173,8 +173,27 @@ const {
 
     sections.forEach(s => observer.observe(s));
 
+    function scrollToSection(targetId: string) {
+      const el = document.getElementById(targetId);
+      if (!el) return false;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveLink(targetId);
+      return true;
+    }
+
     links.forEach(link => {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', (event) => {
+        const href = link.getAttribute('href') ?? '';
+        const targetId =
+          link.getAttribute('data-section-id') ??
+          (href.startsWith('#') ? href.slice(1) : '');
+
+        if (targetId && href.startsWith('#') && document.getElementById(targetId)) {
+          event.preventDefault();
+          history.replaceState(null, '', `#${targetId}`);
+          scrollToSection(targetId);
+        }
+
         if (window.innerWidth < 1024) {
           sidebar?.classList.add('hidden');
           overlay?.classList.add('hidden');
@@ -209,7 +228,9 @@ const {
 
     if (window.location.hash) {
       const id = window.location.hash.slice(1);
-      if (document.getElementById(id)) setActiveLink(id);
+      if (document.getElementById(id)) {
+        requestAnimationFrame(() => scrollToSection(id));
+      }
     }
   </script>
 </BaseLayout>

@@ -13,7 +13,9 @@ import ApiCatalogo from '../../components/doc/api-catalogo.astro';
 import ApiAutomatizacion from '../../components/doc/api-automatizacion.astro';
 import ApiIntegraciones from '../../components/doc/api-integraciones.astro';
 import ApiPasarelasIndice from '../../components/doc/api-pasarelas-indice.astro';
+import ApiReferenceComplete from '../../components/doc/ApiReferenceComplete.astro';
 import DocAuthGate from '../../components/doc/DocAuthGate.astro';
+import { referenceNavItems } from '../../lib/doc-reference-nav';
 
 const navGroups: DocNavGroup[] = [
   {
@@ -37,6 +39,17 @@ const navGroups: DocNavGroup[] = [
       { title: 'Agente, webhooks y CRM', id: 'api-automatizacion' },
       { title: 'Integraciones externas', id: 'api-integraciones' },
       { title: 'Índice pasarelas', id: 'api-pasarelas-indice' },
+    ],
+  },
+  {
+    label: 'Referencia completa',
+    items: [
+      { title: 'Ver todo el inventario', id: 'api-referencia-completa' },
+      ...referenceNavItems.map((item) => ({
+        title: item.title,
+        id: item.id,
+        href: `#${item.id}`,
+      })),
     ],
   },
 ];
@@ -69,5 +82,6 @@ const navGroups: DocNavGroup[] = [
   <ApiAutomatizacion id="api-automatizacion" />
   <ApiIntegraciones id="api-integraciones" />
   <ApiPasarelasIndice id="api-pasarelas-indice" />
+  <ApiReferenceComplete id="api-referencia-completa" />
 </DocPageLayout>
 </DocAuthGate>

@@ -133,7 +133,8 @@ const safeNext =
       window.location.href = nextPath;
     } catch {
       if (errorEl) {
-        errorEl.textContent = 'Error de conexión. Compruebe que el servicio API esté activo.';
+        errorEl.textContent =
+          'Error de conexión. En local use pnpm run dev (inicia la API de doc en el puerto 3099). En Vercel, configure las variables DOC_API_* y redeploy.';
         errorEl.classList.remove('hidden');
       }
     } finally {

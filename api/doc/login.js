@@ -3,9 +3,9 @@ import {
   createSessionToken,
   docApiProtectEnabled,
   DOC_SESSION_COOKIE,
-  getDocCredentials,
   getSessionSecret,
   SESSION_TTL_MS,
+  validateDocCredentials,
 } from '../../lib/doc-session.js';
 
 function readJsonBody(req) {
@@ -51,12 +51,11 @@ export default async function handler(req, res) {
 
   const username = typeof body.username === 'string' ? body.username.trim() : '';
   const password = typeof body.password === 'string' ? body.password : '';
-  const { username: docUser, password: docPassword } = getDocCredentials();
 
   const adminUser = process.env.ADMIN_USERNAME ?? 'admin';
   const adminPassword = process.env.ADMIN_PASSWORD ?? '';
 
-  const viaDoc = username === docUser && password === docPassword;
+  const viaDoc = validateDocCredentials(username, password);
   const viaAdmin =
     adminPassword.length > 0 && username === adminUser && password === adminPassword;
 

@@ -4,10 +4,12 @@
   "version": "0.0.1",
   "packageManager": "pnpm@10.13.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "node scripts/dev.mjs",
+    "dev:astro": "astro dev",
+    "start": "node scripts/dev.mjs",
     "build": "node scripts/generate-geo.mjs && astro build",
     "generate:geo": "node scripts/generate-geo.mjs",
+    "sanitize:api-doc": "node scripts/extract-pdf.mjs && node scripts/sanitize-api-pdf.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -16,6 +18,7 @@
     "astro": "^7.0.7",
     "gsap": "^3.14.2",
     "lucide-astro": "^0.363.0",
+    "marked": "^18.1.0",
     "sharp": "^0.33.5",
     "tailwindcss": "^3.4.1"
   },
@@ -26,6 +29,8 @@
     ]
   },
   "devDependencies": {
-    "country-state-city": "^3.2.1"
+    "country-state-city": "^3.2.1",
+    "dotenv": "^18.0.6",
+    "pdf-parse": "^2.4.5"
   }
 }
