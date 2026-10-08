@@ -102,11 +102,23 @@ const methodClass =
       {endpoint.examples.map((ex, idx) => {
         const label = ex.trimStart().startsWith('curl')
           ? 'Ejemplo curl'
-          : ex.includes('"status"') && ex.includes('token')
-            ? 'Respuesta'
-            : idx === 0
-              ? 'Ejemplo'
-              : 'Respuesta';
+          : ex.includes('"accion"') && ex.includes('request_otp')
+            ? 'Solicitar OTP'
+            : ex.includes('"accion"') && ex.includes('c2p_pay')
+              ? 'Confirmar pago C2P'
+              : ex.includes('"ok"') && ex.includes('usuario_anterior')
+                ? 'Respuesta (renombrar)'
+                : ex.includes('"ok"') && ex.includes('desactivado')
+                  ? 'Respuesta (desactivar)'
+                  : ex.includes('"ok"') && ex.includes('"usuario"')
+                    ? 'Respuesta'
+                    : ex.includes('"status"') && ex.includes('token')
+              ? 'Respuesta'
+              : idx === 0
+                ? 'Consulta (ejemplo)'
+                : ex.includes('"estado"') && ex.includes('exito')
+                  ? 'Respuesta'
+                  : 'Ejemplo';
         return (
           <div>
             <p class="text-[10px] font-bold uppercase tracking-widest text-nexo-dark/40 mb-1.5">{label}</p>

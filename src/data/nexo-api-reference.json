@@ -875,66 +875,6 @@
                   "type": "number",
                   "required": "Sí",
                   "description": "Cliente"
-                },
-                {
-                  "name": "dp string/number",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "ID departamento (1 = Soporte técnico)"
-                },
-                {
-                  "name": "asunto",
-                  "type": "string",
-                  "required": "Sí",
-                  "description": "Asunto"
-                },
-                {
-                  "name": "fechavisita",
-                  "type": "string",
-                  "required": "Sí",
-                  "description": "YYYY-MM-DD"
-                },
-                {
-                  "name": "turno",
-                  "type": "string",
-                  "required": "Sí",
-                  "description": "MAÑANA | TARDE"
-                },
-                {
-                  "name": "agendado",
-                  "type": "string",
-                  "required": "Sí",
-                  "description": "VIA TELEFONICA | PRESENCIAL | PAGINA WEB | RED SOCIAL"
-                },
-                {
-                  "name": "solicitante",
-                  "type": "string",
-                  "required": "No",
-                  "description": "Si no es el mismo cliente"
-                },
-                {
-                  "name": "contenido",
-                  "type": "string",
-                  "required": "No",
-                  "description": "Detalle (acepta HTML)"
-                },
-                {
-                  "name": "adjunto.nombre / file",
-                  "type": "object",
-                  "required": "No",
-                  "description": "Archivo en base64"
-                },
-                {
-                  "name": "propiedad",
-                  "type": "number",
-                  "required": "No",
-                  "description": "0 ninguno, 1 BAJA, 2 MEDIA, 3 ALTA"
-                },
-                {
-                  "name": "idtecnico",
-                  "type": "number",
-                  "required": "No",
-                  "description": "Asignar a un operador"
                 }
               ],
               "notes": [],
@@ -1138,18 +1078,6 @@
                   "type": "object",
                   "required": "No",
                   "description": "Asignación NAP"
-                },
-                {
-                  "name": "coordenadas, direccion, costo, ipv6… —",
-                  "type": "—",
-                  "required": "No",
-                  "description": "Opcionales de instalación"
-                },
-                {
-                  "name": "equipo_receptor",
-                  "type": "object",
-                  "required": "No",
-                  "description": "Antena: id, ip, tipo 0–4, comunidad, user/pass"
                 }
               ],
               "notes": [],
@@ -1313,24 +1241,6 @@
                   "type": "string",
                   "required": "Sí",
                   "description": "Para buscar la tasa"
-                },
-                {
-                  "name": "idcoin, comision —",
-                  "type": "—",
-                  "required": "No",
-                  "description": "Moneda interna / comisión"
-                },
-                {
-                  "name": "pmtel, pmced, pmBancoOrigen",
-                  "type": "string",
-                  "required": "No",
-                  "description": "Metadata pago móvil"
-                },
-                {
-                  "name": "conciliarPagoMovil",
-                  "type": "bool",
-                  "required": "No",
-                  "description": "Intentar conciliación"
                 }
               ],
               "notes": [],
@@ -1347,38 +1257,7 @@
                 "Busca el movimiento en pagos_bdv (referencia ≥ 6 dígitos + monto + fecha) y registra el pago. Variante",
                 "anterior de pagomovil."
               ],
-              "params": [
-                {
-                  "name": "token",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "(body)"
-                },
-                {
-                  "name": "nfactura",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": ""
-                },
-                {
-                  "name": "referencia",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "(≥6 dígitos)"
-                },
-                {
-                  "name": "monto",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": ""
-                },
-                {
-                  "name": "fecha",
-                  "type": "—",
-                  "required": "No",
-                  "description": "(hoy)"
-                }
-              ],
+              "params": [],
               "notes": [],
               "examples": []
             },
@@ -1392,38 +1271,7 @@
                 "POST con referencia + monto = concilia contra pagos_bdv (últimos 6 dígitos + monto + fecha) y ejecuta",
                 "addPago. Puede reactivar el servicio."
               ],
-              "params": [
-                {
-                  "name": "token / Bearer",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "Operador API"
-                },
-                {
-                  "name": "nfactura o cedula",
-                  "type": "—",
-                  "required": "Sí*",
-                  "description": "Uno de los dos en consulta"
-                },
-                {
-                  "name": "referencia, monto",
-                  "type": "—",
-                  "required": "Sí en pago",
-                  "description": ""
-                },
-                {
-                  "name": "fecha / pm_fecha",
-                  "type": "—",
-                  "required": "No",
-                  "description": ""
-                },
-                {
-                  "name": "pm_tel, cedula, pm_banco_origen, descripcion, chatbot",
-                  "type": "—",
-                  "required": "No",
-                  "description": ""
-                }
-              ],
+              "params": [],
               "notes": [],
               "examples": [
                 "{\"estado\":\"exito\",\"ids_facturas\":[10],\"idcliente\":5,\n\"monto_total_moneda_factura\":10,\"monto_total_bs\":365,\n\"facturas_pendientes\":[],\"saldo_otros_no_cobrado\":0}"
@@ -1438,26 +1286,7 @@
                 "Misma consulta que pagomovil. El POST valida el movimiento con getMovement de Banco de Venezuela",
                 "(pasarela bancodevenezuela). Una sola factura por request."
               ],
-              "params": [
-                {
-                  "name": "pm_ced / cedula",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": ""
-                },
-                {
-                  "name": "pm_tel",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "(≥10 dígitos)"
-                },
-                {
-                  "name": "pm_banco_origen",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "(≤4 dígitos)"
-                }
-              ],
+              "params": [],
               "notes": [],
               "examples": []
             },
@@ -1491,7 +1320,12 @@
               ],
               "params": [],
               "notes": [],
-              "examples": []
+              "examples": [
+                "{\n\"cedula\": \"V25592185\"\n}",
+                "{\n\"estado\": \"exito\",\n\"salida\": \"\",\n\"ids_facturas\": [60499],\n\"idcliente\": 4990,\n\"monto_total_moneda_factura\": 100,\n\"monto_total_bs\": 52687,\n\"facturas_pendientes\": [{\n\"id\": 60499,\n\"total\": 100,\n\"total_bs\": 52687,\n\"vencimiento\": \"2026-05-13\",\n\"estado\": \"No pagado\",\n\"tipo\": 1\n}],\n\"saldo_otros_no_cobrado\": 0,\n\"origen_movimientos\": \"Pago C2P Banco de Venezuela (pasarela bdvc2p): solicite OTP (request_otp) y confirme con c2p_pay. Pagador solo banco 0102.\",\n\"pasarela_activa\": true,\n\"monto_bs\": 52687,\n\"comision_bs\": 0,\n\"monto_total_bs_c2p\": 52687,\n\"banco_pagador_c2p_bdv\": \"0102\",\n\"tiene_telefono_cobrador\": true,\n\"consulta_por\": \"cedula\",\n\"cedula_consultada\": \"V25592185\",\n\"nombre_cliente\": \"GERMAN LEONARDO DEVIA BRIZUELA\"\n}",
+                "{\n\"accion\": \"request_otp\",\n\"pagador_id\": \"V12345678\",\n\"nfactura\": \"12345\"\n}",
+                "{\n\"nfactura\": \"12345,12346\",\n\"accion\": \"c2p_pay\",\n\"banco\": \"0102\",\n\"pagador_id\": \"V25592185\",\n\"telefono_pagador\": \"04141234567\",\n\"otp_c2p\": \"123456\"\n}"
+              ]
             }
           ]
         },
@@ -1558,6 +1392,20 @@
               "examples": []
             },
             {
+              "id": "ref-post-apiv2plantillasfacturacion",
+              "method": "POST",
+              "path": "/api/v2/plantillasfacturacion",
+              "title": "Registro con datos de pre-registro (plantilla)",
+              "description": [
+                "Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor del operador API."
+              ],
+              "params": [],
+              "notes": [],
+              "examples": [
+                "{\n\"pre\": {\n\"cedula\": \"9380632\",\n\"cliente\": \"Pilar\",\n\"direccion\": \"Calle 1\",\n\"coordenadas\": \"8.620868901230109, -70.23064335535541\",\n\"zona\": \"1\",\n\"telefono\": \"\",\n\"movil\": \"04146548523\",\n\"email\": \"\",\n\"notas\": \"Solicitud desde integración — datos de ejemplo\",\n\"promo_paquete_id\": \"2\",\n\"factura_libre_prorrateo\": 0\n},\n\"idvendedor\": 1\n}"
+              ]
+            },
+            {
               "id": "ref-get-apiv2metrics-tickets-customers-dashboard",
               "method": "GET",
               "path": "/api/v2/metrics · /tickets · /customers · /dashboard",
@@ -1622,61 +1470,107 @@
               "description": [
                 "Tras un pago efectivo sí devuelve user/pass de las fichas. Opcional WhatsApp (notif_whatsapp)."
               ],
-              "params": [
-                {
-                  "name": "token / Bearer",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "Operador API"
-                },
-                {
-                  "name": "id_router / router",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "Router hotspot"
-                },
-                {
-                  "name": "ficha_ids[] / id_ficha",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "Fichas a vender"
-                },
-                {
-                  "name": "referencia, monto",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "(PM) monto = total_bs"
-                },
-                {
-                  "name": "fecha, cedula, pm_tel, pm_banco_origen, notas, chatbot",
-                  "type": "—",
-                  "required": "No",
-                  "description": ""
-                },
-                {
-                  "name": "accion (en /c2p)",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "resumen | request_otp | c2p_pay"
-                }
-              ],
+              "params": [],
               "notes": [],
               "examples": [
                 "{\"pago_efectivo\":true,\"id_venta\":55,\"fichas\":[{\"user\":\"...\",\"pass\":\"...\"}],\"notif_whatsapp\":{}}"
               ]
             },
             {
-              "id": "ref-getputpost-apiv2hotspotwifiusuario-cambiar",
-              "method": "GET/PUT/POST",
-              "path": "/api/v2/hotspotwifi/{usuario} · /cambiar",
-              "title": "Usuario Wi-Fi recurrente (RADIUS)",
+              "id": "ref-get-apiv2hotspotwifiusername",
+              "method": "GET",
+              "path": "/api/v2/hotspotwifi/{username}",
+              "title": "Consultar usuario Wi‑Fi recurrente",
               "description": [
-                "GET consulta usuario, rate, activo, presencia en radcheck/radreply. PUT o POST /cambiar:nuevo_usuario,",
-                "rate, activo: 0 (desactivar). DELETE está bloqueado por Apache: usa activo: 0."
+                "Consulta el usuario Wi‑Fi recurrente en tblservicios (hotspot_wifi_user, hotspot_wifi_rate) y su presencia en RADIUS (radcheck / radreply). Implementación: HotspotwifiController.php.",
+                "Base: /api/v2/hotspotwifi. Autenticación: usuario login con api=1 y token_api (?token=, Authorization: Bearer, o campo token en body). 401 sin token; 403 token inválido.",
+                "Content-Type application/json UTF-8 en respuestas. Errores en campo salida. El username en la URL se decodifica (urlencode si lleva caracteres especiales); el @ del dominio Mikrotik se normaliza al buscar/guardar.",
+                "GET /api/v2/hotspotwifi/{username}?token=TU_TOKEN. Alternativas: GET ?usuario=, ?username= (alias user, hotspot_wifi_username)."
               ],
-              "params": [],
+              "params": [
+                {
+                  "name": "usuario",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Nombre guardado en el servicio"
+                },
+                {
+                  "name": "rate",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Perfil Mikrotik-Rate-Limit en RADIUS"
+                },
+                {
+                  "name": "activo",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Usuario Wi‑Fi recurrente activo en Nexo"
+                },
+                {
+                  "name": "en_servicio",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Existe en tblservicios.hotspot_wifi_user"
+                },
+                {
+                  "name": "en_radcheck",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Presencia en radcheck"
+                },
+                {
+                  "name": "en_radreply",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Presencia en radreply"
+                },
+                {
+                  "name": "tablas_ok",
+                  "type": "—",
+                  "required": "—",
+                  "description": "Existen radcheck y radreply"
+                }
+              ],
+              "notes": [
+                "400 Usuario no indicado o inválido (salida)",
+                "404 Usuario hotspot no encontrado"
+              ],
+              "examples": [
+                "{\n\"ok\": true,\n\"usuario\": \"juan.perez\",\n\"rate\": \"2M/2M\",\n\"activo\": true,\n\"en_servicio\": true,\n\"en_radcheck\": true,\n\"en_radreply\": true,\n\"tablas_ok\": true\n}"
+              ]
+            },
+            {
+              "id": "ref-post-apiv2hotspotwificambiar",
+              "method": "POST",
+              "path": "/api/v2/hotspotwifi/cambiar",
+              "title": "Cambiar usuario Wi‑Fi recurrente o desactivar",
+              "description": [
+                "POST /api/v2/hotspotwifi/cambiar con JSON, application/x-www-form-urlencoded o campos en query (se fusionan GET, POST y body).",
+                "Rutas relacionadas: PUT /api/v2/hotspotwifi/{usuario_actual} (mismo cuerpo; usuario en ruta); DELETE /api/v2/hotspotwifi/{username} (desactivar; Apache puede bloquear DELETE — use activo 0); POST /api/v2/hotspotwifi sin slug invoca cambiar().",
+                "Requisitos: columnas hotspot_wifi_user y hotspot_wifi_rate en tblservicios; radcheck y radreply. Sin migración, consultas devuelven 404.",
+                "Errores: 400 falta usuario, falta nuevo_usuario si no desactivas, o error al guardar; 404 usuario no encontrado en tblservicios.hotspot_wifi_user."
+              ],
+              "params": [
+                {
+                  "name": "usuario / username",
+                  "type": "—",
+                  "required": "Sí*",
+                  "description": "Usuario actual (alias user, usuario_actual, username_actual)"
+                },
+                {
+                  "name": "nuevo_usuario",
+                  "type": "—",
+                  "required": "Sí**",
+                  "description": "Nuevo nombre (username_nuevo, usuario_nuevo); no reutilizar solo usuario si ya identifica al actual"
+                }
+              ],
               "notes": [],
-              "examples": []
+              "examples": [
+                "{\n\"usuario\": \"juan.perez\",\n\"nuevo_usuario\": \"maria.lopez\",\n\"rate\": \"3M/3M\"\n}",
+                "{\n\"ok\": true,\n\"usuario_anterior\": \"juan.perez\",\n\"usuario\": \"maria.lopez\",\n\"rate\": \"3M/3M\",\n\"activo\": true,\n\"salida\": \"Usuario Wi‑Fi actualizado.\"\n}",
+                "{\n\"usuario\": \"juan.perez\",\n\"activo\": 0\n}",
+                "{\n\"ok\": true,\n\"usuario\": \"juan.perez\",\n\"salida\": \"Usuario Wi‑Fi desactivado.\"\n}"
+              ]
             },
             {
               "id": "ref-get-apiv2hotspotpartido-agenda",
@@ -1722,32 +1616,7 @@
               "path": "/api/v2/vehiculos · /registro",
               "title": "Telemetría GPS / OBD",
               "description": [],
-              "params": [
-                {
-                  "name": "token",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "Operador API"
-                },
-                {
-                  "name": "id_dispositivo",
-                  "type": "—",
-                  "required": "Sí",
-                  "description": "String ≤ 100"
-                },
-                {
-                  "name": "ubicaciones[] o latitud/longitud",
-                  "type": "—",
-                  "required": "Sí*",
-                  "description": "Al menos una ubicación o un log"
-                },
-                {
-                  "name": "comando, parametro, unidad, formula, datetime",
-                  "type": "—",
-                  "required": "No",
-                  "description": "Log de sensor"
-                }
-              ],
+              "params": [],
               "notes": [],
               "examples": []
             },
@@ -1946,38 +1815,7 @@
           "path": "/facilito/registrarpago",
           "title": "Facilito — registrar pago en caja",
           "description": [],
-          "params": [
-            {
-              "name": "token",
-              "type": "—",
-              "required": "Sí",
-              "description": "Token API"
-            },
-            {
-              "name": "IDFactura",
-              "type": "—",
-              "required": "Sí",
-              "description": "Factura"
-            },
-            {
-              "name": "valor",
-              "type": "—",
-              "required": "Sí",
-              "description": "Monto"
-            },
-            {
-              "name": "fecha",
-              "type": "—",
-              "required": "Sí",
-              "description": "YYYY-MM-DD"
-            },
-            {
-              "name": "secuencial",
-              "type": "—",
-              "required": "Sí",
-              "description": "Secuencial Facilito"
-            }
-          ],
+          "params": [],
           "notes": [],
           "examples": [
             "{\"code\":\"000\",\"autorizacion\":16401,\"valor\":\"500.00\",\"mensaje\":\"Operación exitosa.\"}"

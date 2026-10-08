@@ -587,6 +587,49 @@ ajuste de bolívares en facturas USD, autorización Cashea si aplica.
 Consulta estilo pagomovil + flujo C2P
 Permite consultar por nfactura o cédula (incluye montos C2P) y luego request_otp / c2p_pay. Rechaza un
 POST que solo traiga referencia+monto: eso va a pagomovil.
+{
+"cedula": "V25592185"
+}
+{
+"estado": "exito",
+"salida": "",
+"ids_facturas": [60499],
+"idcliente": 4990,
+"monto_total_moneda_factura": 100,
+"monto_total_bs": 52687,
+"facturas_pendientes": [{
+"id": 60499,
+"total": 100,
+"total_bs": 52687,
+"vencimiento": "2026-05-13",
+"estado": "No pagado",
+"tipo": 1
+}],
+"saldo_otros_no_cobrado": 0,
+"origen_movimientos": "Pago C2P Banco de Venezuela (pasarela bdvc2p): solicite OTP (request_otp) y confirme con c2p_pay. Pagador solo banco 0102.",
+"pasarela_activa": true,
+"monto_bs": 52687,
+"comision_bs": 0,
+"monto_total_bs_c2p": 52687,
+"banco_pagador_c2p_bdv": "0102",
+"tiene_telefono_cobrador": true,
+"consulta_por": "cedula",
+"cedula_consultada": "V25592185",
+"nombre_cliente": "GERMAN LEONARDO DEVIA BRIZUELA"
+}
+{
+"accion": "request_otp",
+"pagador_id": "V12345678",
+"nfactura": "12345"
+}
+{
+"nfactura": "12345,12346",
+"accion": "c2p_pay",
+"banco": "0102",
+"pagador_id": "V25592185",
+"telefono_pagador": "04141234567",
+"otp_c2p": "123456"
+}
 
 
 ### 7.3 Catálogo, tasas y métricas
@@ -613,6 +656,26 @@ Si las tablas no existen: tablas_instaladas: false. Escritura → 405.
 #### GET /api/v2/plantillasfacturacion · /{id}
 Plantillas de facturación NEXO
 Flags resumen e incluir_config. Devuelve plantillas[] con config e impuestos deserializados.
+
+#### POST /api/v2/plantillasfacturacion
+Registro con datos de pre-registro (plantilla)
+Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor del operador API.
+{
+"pre": {
+"cedula": "9380632",
+"cliente": "Pilar",
+"direccion": "Calle 1",
+"coordenadas": "8.620868901230109, -70.23064335535541",
+"zona": "1",
+"telefono": "",
+"movil": "04146548523",
+"email": "",
+"notas": "Solicitud desde integración — datos de ejemplo",
+"promo_paquete_id": "2",
+"factura_libre_prorrateo": 0
+},
+"idvendedor": 1
+}
 
 #### GET /api/v2/metrics · /tickets · /customers · /dashboard
 Métricas de soporte y clientes
@@ -653,10 +716,66 @@ accion (en /c2p) Sí resumen | request_otp | c2p_pay
 {"pago_efectivo":true,"id_venta":55,"fichas":[{"user":"...","pass":"..."}],"notif_whatsapp":{}}
 409 no conciliado. 503 módulo ventas no migrado. Efectos: marca fichas vendidas y provisiona en Mikrotik.
 
-#### GET/PUT/POST /api/v2/hotspotwifi/{usuario} · /cambiar
-Usuario Wi-Fi recurrente (RADIUS)
-GET consulta usuario, rate, activo, presencia en radcheck/radreply. PUT o POST /cambiar:nuevo_usuario,
-rate, activo: 0 (desactivar). DELETE está bloqueado por Apache: usa activo: 0.
+#### GET /api/v2/hotspotwifi/{username}
+Consultar usuario Wi‑Fi recurrente
+Consulta el usuario Wi‑Fi recurrente en tblservicios (hotspot_wifi_user, hotspot_wifi_rate) y su presencia en RADIUS (radcheck / radreply). Implementación: HotspotwifiController.php.
+Base: /api/v2/hotspotwifi. Autenticación: usuario login con api=1 y token_api (?token=, Authorization: Bearer, o campo token en body). 401 sin token; 403 token inválido.
+Content-Type application/json UTF-8 en respuestas. Errores en campo salida. El username en la URL se decodifica (urlencode si lleva caracteres especiales); el @ del dominio Mikrotik se normaliza al buscar/guardar.
+GET /api/v2/hotspotwifi/{username}?token=TU_TOKEN. Alternativas: GET ?usuario=, ?username= (alias user, hotspot_wifi_username).
+Campo Descripción
+usuario Nombre guardado en el servicio
+rate Perfil Mikrotik-Rate-Limit en RADIUS
+activo Usuario Wi‑Fi recurrente activo en Nexo
+en_servicio Existe en tblservicios.hotspot_wifi_user
+en_radcheck Presencia en radcheck
+en_radreply Presencia en radreply
+tablas_ok Existen radcheck y radreply
+400 Usuario no indicado o inválido (salida)
+404 Usuario hotspot no encontrado
+{
+"ok": true,
+"usuario": "juan.perez",
+"rate": "2M/2M",
+"activo": true,
+"en_servicio": true,
+"en_radcheck": true,
+"en_radreply": true,
+"tablas_ok": true
+}
+
+#### POST /api/v2/hotspotwifi/cambiar
+Cambiar usuario Wi‑Fi recurrente o desactivar
+POST /api/v2/hotspotwifi/cambiar con JSON, application/x-www-form-urlencoded o campos en query (se fusionan GET, POST y body).
+Rutas relacionadas: PUT /api/v2/hotspotwifi/{usuario_actual} (mismo cuerpo; usuario en ruta); DELETE /api/v2/hotspotwifi/{username} (desactivar; Apache puede bloquear DELETE — use activo 0); POST /api/v2/hotspotwifi sin slug invoca cambiar().
+Requisitos: columnas hotspot_wifi_user y hotspot_wifi_rate en tblservicios; radcheck y radreply. Sin migración, consultas devuelven 404.
+Errores: 400 falta usuario, falta nuevo_usuario si no desactivas, o error al guardar; 404 usuario no encontrado en tblservicios.hotspot_wifi_user.
+Campo Req. Descripción
+usuario / username Sí* Usuario actual (alias user, usuario_actual, username_actual)
+nuevo_usuario Sí** Nuevo nombre (username_nuevo, usuario_nuevo); no reutilizar solo usuario si ya identifica al actual
+rate No hotspot_wifi_rate, velocidad — ej. 5M/5M
+activo No hotspot_wifi_activo, enabled — 0/false para desactivar
+{
+"usuario": "juan.perez",
+"nuevo_usuario": "maria.lopez",
+"rate": "3M/3M"
+}
+{
+"ok": true,
+"usuario_anterior": "juan.perez",
+"usuario": "maria.lopez",
+"rate": "3M/3M",
+"activo": true,
+"salida": "Usuario Wi‑Fi actualizado."
+}
+{
+"usuario": "juan.perez",
+"activo": 0
+}
+{
+"ok": true,
+"usuario": "juan.perez",
+"salida": "Usuario Wi‑Fi desactivado."
+}
 
 #### GET /api/v2/hotspotpartido · /agenda
 Agenda deportiva para portal hotspot

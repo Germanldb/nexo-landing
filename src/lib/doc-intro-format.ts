@@ -12,6 +12,7 @@ const TABLE_HEADERS: { pattern: RegExp; headers: string[] }[] = [
   { pattern: /^Campo\s+(JSON|Dónde)/i, headers: ['Campo', 'JSON', 'Uso'] },
   { pattern: /^Campo\s+Tipo/i, headers: ['Campo', 'Tipo', 'Req.', 'Descripción'] },
   { pattern: /^Campo\s+Req\.\s+Descripción/i, headers: ['Campo', 'Req.', 'Descripción'] },
+  { pattern: /^Campo\s+Descripción/i, headers: ['Campo', 'Descripción'] },
   { pattern: /^Método\s+Ruta/i, headers: ['Método', 'Ruta', 'Acción'] },
   { pattern: /^Ruta\s+Función/i, headers: ['Ruta', 'Función'] },
   { pattern: /^Ruta\s+Equivalente/i, headers: ['Ruta', 'Equivalente Facilito'] },

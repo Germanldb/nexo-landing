@@ -56,8 +56,25 @@ function isParamTableHeader(header) {
   return (
     header.includes('Tipo') ||
     header.includes('JSON') ||
-    /Req/i.test(header)
+    /Req/i.test(header) ||
+    /^Campo\s+Descripción/i.test(header.trim())
   );
+}
+
+function parseFieldDescriptionRow(line) {
+  const t = line.trim();
+  if (/^\d{3}\b/.test(t)) return { note: t, param: null };
+  const m = t.match(/^(\S+)\s+(.+)$/);
+  if (!m) return { note: null, param: null };
+  return {
+    note: null,
+    param: {
+      name: m[1],
+      type: '—',
+      required: '—',
+      description: m[2],
+    },
+  };
 }
 
 function parseParamLineTyped(line) {
@@ -92,7 +109,7 @@ function parseParamLineSimple(line) {
   const t = line.trim();
   if (!t || t.startsWith('*')) return null;
   if (/^\d{3}\b/.test(t) || /\.\s*\d{3}\b/.test(t)) return null;
-  const m = t.match(/^(.+?)\s+(Sí\*?(?:\s+en\s+[\wáéíóú]+)?|No\*?|Cond\.)(\s+.*)?$/);
+  const m = t.match(/^(.+?)\s+(Sí\*+|No\*+|Cond\.)(\s+.*)?$/);
   if (!m) return null;
   const description = (m[3] ?? '').trim();
   return {
@@ -139,13 +156,21 @@ function parseParams(lines, startIdx) {
     if (isParamTableHeader(line)) {
       break;
     }
-    const parsed = parseParamLine(line);
-    if (parsed.footnote) {
+    const isDescTable = /^Campo\s+Descripción/i.test(header);
+    const parsed = isDescTable
+      ? parseFieldDescriptionRow(line)
+      : parseParamLine(line);
+    if (parsed?.footnote) {
       notes.push(parsed.footnote);
       i += 1;
       continue;
     }
-    if (parsed.param) {
+    if (parsed?.note) {
+      notes.push(parsed.note);
+      i += 1;
+      continue;
+    }
+    if (parsed?.param) {
       params.push(parsed.param);
       i += 1;
       continue;

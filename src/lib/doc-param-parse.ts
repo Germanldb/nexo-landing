@@ -34,7 +34,7 @@ export function parseParamLineSimple(line: string) {
   const t = line.trim();
   if (!t || t.startsWith('*')) return null;
   if (/^\d{3}\b/.test(t) || /\.\s*\d{3}\b/.test(t)) return null;
-  const m = t.match(/^(.+?)\s+(Sí\*?(?:\s+en\s+[\wáéíóú]+)?|No\*?|Cond\.)(\s+.*)?$/);
+  const m = t.match(/^(.+?)\s+(Sí\*+(?:\s+en\s+[\wáéíóú]+)?|No\*+|Cond\.)(\s+.*)?$/);
   if (!m) return null;
   return {
     name: m[1].trim(),
