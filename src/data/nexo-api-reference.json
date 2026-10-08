@@ -1333,7 +1333,8 @@
           "id": "ref-73-catalogo-tasas-y-metricas",
           "title": "7.3 Catálogo, tasas y métricas",
           "intro": [
-            "POST/PUT/DELETE → 405 Solo lectura."
+            "POST/PUT/DELETE → 405 Solo lectura.",
+            "]\n}\n}"
           ],
           "endpoints": [
             {
@@ -1397,12 +1398,14 @@
               "path": "/api/v2/plantillasfacturacion",
               "title": "Registro con datos de pre-registro (plantilla)",
               "description": [
-                "Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor del operador API."
+                "Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor del operador API.",
+                "Si hay conceptos facturables y total mayor a cero, la respuesta puede incluir factura_libre con monto_a_cancelar. Si no hay conceptos facturables o el total es cero, no se envía factura_libre (comportamiento anterior)."
               ],
               "params": [],
               "notes": [],
               "examples": [
-                "{\n\"pre\": {\n\"cedula\": \"9380632\",\n\"cliente\": \"Pilar\",\n\"direccion\": \"Calle 1\",\n\"coordenadas\": \"8.620868901230109, -70.23064335535541\",\n\"zona\": \"1\",\n\"telefono\": \"\",\n\"movil\": \"04146548523\",\n\"email\": \"\",\n\"notas\": \"Solicitud desde integración — datos de ejemplo\",\n\"promo_paquete_id\": \"2\",\n\"factura_libre_prorrateo\": 0\n},\n\"idvendedor\": 1\n}"
+                "{\n\"pre\": {\n\"cedula\": \"9380632\",\n\"cliente\": \"Pilar\",\n\"direccion\": \"Calle 1\",\n\"coordenadas\": \"8.620868901230109, -70.23064335535541\",\n\"zona\": \"1\",\n\"telefono\": \"\",\n\"movil\": \"04146548523\",\n\"email\": \"\",\n\"notas\": \"Solicitud desde integración — datos de ejemplo\",\n\"promo_paquete_id\": \"2\",\n\"factura_libre_prorrateo\": 0\n},\n\"idvendedor\": 1\n}",
+                "{\n\"estado\": \"exito\",\n\"id\": 190,\n\"promo\": { \"ok\": true, \"idcliente\": 501, \"idfactura\": 882, \"salida\": \"...\" },\n\"total_factura_libre\": 125.5,\n\"factura_libre\": {\n\"id\": 882,\n\"idcliente\": 501,\n\"emitido\": \"2026-10-08\",\n\"vencimiento\": \"2026-10-08\",\n\"sub_total\": \"125.50\",\n\"iva_igv\": \"0.00\",\n\"total\": 125.5,\n\"monto_a_cancelar\": 125.5,\n\"estado\": \"No pagado\",\n\"lineas\": [\n{ \"descripcion\": \"Servicio de instalación\", \"cantidad\": 1, \"unidades\": \"125.50\", \"impuesto\": \"NO\", \"idalmacen\": 0 }"
               ]
             },
             {

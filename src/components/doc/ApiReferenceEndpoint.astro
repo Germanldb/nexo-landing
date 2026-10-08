@@ -113,12 +113,16 @@ const methodClass =
                   : ex.includes('"ok"') && ex.includes('"usuario"')
                     ? 'Respuesta'
                     : ex.includes('"status"') && ex.includes('token')
-              ? 'Respuesta'
-              : idx === 0
-                ? 'Consulta (ejemplo)'
-                : ex.includes('"estado"') && ex.includes('exito')
-                  ? 'Respuesta'
-                  : 'Ejemplo';
+                ? 'Respuesta'
+                : ex.includes('"pre"') && ex.includes('"idvendedor"')
+                  ? 'Cuerpo de solicitud'
+                  : ex.includes('"estado"') && ex.includes('exito')
+                    ? ex.includes('factura_libre')
+                      ? 'Respuesta (monto a cancelar)'
+                      : 'Respuesta'
+                    : idx === 0
+                      ? 'Consulta (ejemplo)'
+                      : 'Ejemplo';
         return (
           <div>
             <p class="text-[10px] font-bold uppercase tracking-widest text-nexo-dark/40 mb-1.5">{label}</p>

@@ -660,6 +660,7 @@ Flags resumen e incluir_config. Devuelve plantillas[] con config e impuestos des
 #### POST /api/v2/plantillasfacturacion
 Registro con datos de pre-registro (plantilla)
 Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor del operador API.
+Si hay conceptos facturables y total mayor a cero, la respuesta puede incluir factura_libre con monto_a_cancelar. Si no hay conceptos facturables o el total es cero, no se envía factura_libre (comportamiento anterior).
 {
 "pre": {
 "cedula": "9380632",
@@ -675,6 +676,26 @@ Cuerpo JSON: objeto pre (datos del prospecto; valores de ejemplo) e idvendedor d
 "factura_libre_prorrateo": 0
 },
 "idvendedor": 1
+}
+{
+"estado": "exito",
+"id": 190,
+"promo": { "ok": true, "idcliente": 501, "idfactura": 882, "salida": "..." },
+"total_factura_libre": 125.5,
+"factura_libre": {
+"id": 882,
+"idcliente": 501,
+"emitido": "2026-10-08",
+"vencimiento": "2026-10-08",
+"sub_total": "125.50",
+"iva_igv": "0.00",
+"total": 125.5,
+"monto_a_cancelar": 125.5,
+"estado": "No pagado",
+"lineas": [
+{ "descripcion": "Servicio de instalación", "cantidad": 1, "unidades": "125.50", "impuesto": "NO", "idalmacen": 0 }
+]
+}
 }
 
 #### GET /api/v2/metrics · /tickets · /customers · /dashboard
